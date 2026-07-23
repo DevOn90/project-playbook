@@ -1,0 +1,88 @@
+.
+└── docs/
+    ├── 01_product/
+    │   ├── 00_indexes/
+    │   │   └── .gitkeep
+    │   ├── 01_governance/
+    │   │   ├── artifact-register/
+    │   │   │   └── .gitkeep
+    │   │   ├── change-mgt/
+    │   │   │   └── .gitkeep
+    │   │   ├── compliance/
+    │   │   │   └── .gitkeep
+    │   │   ├── q-gate/
+    │   │   │   └── .gitkeep
+    │   │   └── risks/
+    │   │       └── .gitkeep
+    │   ├── 02_discovery/
+    │   │      ├── 01_product/
+    │   │      │   └── .gitkeep
+    │   │      ├── 02_requirements/
+    │   │      │   └── .gitkeep
+    │   │      ├── 03_ux/
+    │   │      │   └── .gitkeep
+    │   │      ├── 04_domain/
+    │   │      │   └── .gitkeep
+    │   │      ├── 05_integration/
+    │   │      │   └── .gitkeep
+    │   │      ├── 06_security/
+    │   │      │   └── .gitkeep
+    │   │      ├── 07_observability/
+    │   │      │   └── .gitkeep
+    │   │      └── 08_metrics/
+    │   │          └── .gitkeep
+    │   ├── 03_architecture/
+    │   │   ├── 01_adr/
+    │   │   │   └── .gitkeep
+    │   │   ├── 02_deployment/
+    │   │   │   └── .gitkeep
+    │   │   └── 03_diagrams/
+    │   │       └── .gitkeep
+    │   ├── 04_delivery/
+    │   │   ├── 01_ci-cd/
+    │   │   │   └── .gitkeep
+    │   │   ├── 02_release/
+    │   │   │   └── .gitkeep
+    │   │   ├── 03_infra/
+    │   │   │   └── .gitkeep
+    │   │   ├── 04_governance/
+    │   │   │   └── .gitkeep
+    │   │   └── 05_qa/
+    │   │       └── .gitkeep
+    │   ├── 05_operations/
+    │   │   ├── analytics/
+    │   │   │   └── .gitkeep
+    │   │   ├── incidents/
+    │   │   │   └── .gitkeep
+    │   │   ├── monitoring/
+    │   │   │   └── .gitkeep
+    │   │   └── runbooks/
+    │   │       └── .gitkeep
+    │   ├── 06_maintenance/
+    │   │   ├── refactoring/
+    │   │   │   └── .gitkeep
+    │   │   ├── sustainability/
+    │   │   │   └── .gitkeep
+    │   │   └── tech-debt/
+    │   │       └── .gitkeep
+    │   ├── 07_templates/
+    │   │   └── .gitkeep
+    │   ├── 08_diagrams/
+    │   │   └── .gitkeep
+    │   └── 09_research/
+    │       └── .gitkeep
+    └── 02_project/
+        ├── 01_project-planning/
+        │   └── .gitkeep
+        ├── 02_project-backlog/
+        │   └── .gitkeep
+        ├── 03_project-risk/
+        │   └── .gitkeep
+        ├── 04_project-metrics/
+        │   └── .gitkeep
+        ├── 05_project-releases/
+        │   └── .gitkeep
+        ├── 06_project-changelog/
+        │   └── .gitkeep
+        └── 07_project-governance/
+            └── .gitkeep

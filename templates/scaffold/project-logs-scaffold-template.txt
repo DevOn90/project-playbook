@@ -1,0 +1,23 @@
+.
+└── logs/
+    ├── dev/
+    │   ├── docker/
+    │   │   └── .gitkeep    
+    │   └── shell/
+    │       └── .gitkeep
+    ├── local/
+    │   ├── docker/
+    │   │   └── .gitkeep    
+    │   └── shell/
+    │       └── .gitkeep
+    ├── prod/
+    │   ├── docker/
+    │   │   └── .gitkeep    
+    │   └── shell/
+    │       └── .gitkeep
+    └── test/
+        ├── docker/
+        │   └── .gitkeep    
+        └── shell/
+            └── .gitkeep
+ 
