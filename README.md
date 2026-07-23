@@ -24,6 +24,15 @@ Welcome to the Project Playbook! This repository serves as a comprehensive guide
 1.  **Git LFS** installed and configured --> [Git LFS Installation Guide](instructions/git-lfs-installation-guide/git-lfs-installation-guide.md).
   The reason for this is that some of the assets in this repository are large or binary files like (.png, .ods) and Git LFS is designed to handle such files efficiently.
 
+## Logical Flow
+The logical flow of the Project Playbook is as follows:
+
+```mermaid
+flowchart TB
+     A[Clone GH 'Project Playbook' Repository ] -- on local machine --> B
+     B[Prep the project environment using bootstrap script] -- on local machine --> C
+```
+
 
 ## Getting Started
 To get started with the Project Playbook, follow these steps:
@@ -37,6 +46,11 @@ To get started with the Project Playbook, follow these steps:
    cd project-playbook
    ```
 3. Run bootstrap script to set up the project environment:
+   
+   - pre-requisites:
+      - Ensure you have/know new `project name`
+      - Ensure you have/know new `project path full`
+   
    ```bash
    ./bootstrap.sh
    ```
