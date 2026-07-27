@@ -5,7 +5,10 @@
 # @exec <destinations-path>
 #
 # @exec = parser delaminator
-# # <destination-path> = relative path of excecutable file folder in destimation    
+# <destination-path> = relative path of excecutable file in destimation root  
+#
+# Note: This file (template) MUST end with new empty line  
 # ------------------------------------------------------
 
-@exec .githooks/pre-commit
+@exec test/pre-commit.sh
+@exec test2/test
