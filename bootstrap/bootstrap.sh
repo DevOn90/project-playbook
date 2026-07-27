@@ -21,6 +21,7 @@ set -euo pipefail
 # 5. Change directory to the project directory.
 # 6. Setup project environment.
 # 6.1 Setup Git conf user.name and user.email for the new project.
+# 6.2 Validate Git LFS installation and initialization in the repository.
 # ---------------------------------------------------------
 
 # ---------------------------------------------------------
@@ -145,6 +146,8 @@ clone_github_repo() {
 # 6. Function to prepare the project environment using the bootstrap script
 # ---------------------------------------------------------
 
+# 6.1 Setup Git configuration for the new project
+
 prepare_project_environment() {
   echo ""
   log_info "Preparing the project environment..."
@@ -172,11 +175,28 @@ prepare_project_environment() {
     log_warning $'Failed to set Git configuration for the project.\nPlease assign the Git user.name and user.email manually using the following commands:\n\n  git config user.name "Your Name"\n  git config user.email "your.email@example.com"'
   fi
 
-  # ---------------------------------------------------------
-  # 6.2 TBD
-  # ---------------------------------------------------------
 }
 
+# 6.2 Validate Git LFS installation and initialization in the repository
+
+validate_git_lfs() {
+
+   # Check if Git LFS is installed on the local machine system
+   if ! command -v git-lfs &> /dev/null; then
+      log_warning $'Git LFS is not installed.\n
+Please install Git LFS to manage large files in your repository\n
+using git-lfs-installation-guide.'
+      return 
+   fi
+
+   # Validate if Git LFS is initialized in the repository
+   if ! git lfs install &> /dev/null; then
+      log_warning $'Git LFS is not initialized in the repository.\n
+Please run the following command to initialize Git LFS:\n  git lfs install'
+      return
+   fi
+}
+ 
 
 # ---------------------------------------------------------
 # Main script execution
@@ -224,6 +244,10 @@ main() {
     # Prepare the project environment
     log_info "Preparing the project environment..."
     prepare_project_environment
+
+    # Validate Git LFS installation and initialization
+    log_info "Validating Git LFS installation and initialization..."
+    validate_git_lfs
 
     # Success message
     log_info "Bootstrap script completed successfully."
