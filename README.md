@@ -61,8 +61,7 @@ To get started with the Project Playbook, follow these steps:
 
 
 4. Follow the instructions:
-   - [instruction A](#instruction-a)
-   - [instruction B](#instruction-b)
+   - [scaffold-project-guide](./instructions/scaffold/project-scaffold-guide.md#toc)
 
 ---
 

@@ -1,0 +1,87 @@
+.
+└── scripts/
+    ├── start.sh
+<<<EOF
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+# PURPOSE:
+# Start application locally via docker-compose
+
+echo "Start application placeholder - not implemented yet"
+# docker-compose up -d
+
+# Remove file if not needed.
+EOF>>>
+    ├── dev.sh
+<<<EOF
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+# PURPOSE:
+# Start development environment with hot-reload via docker-compose
+
+echo "Start development environment placeholder - not implemented yet"
+# docker-compose -f docker-compose.dev.yml up --build -d
+
+# Remove file if not needed.
+EOF>>>
+    ├── test.sh
+<<<EOF
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+# PURPOSE:
+# Run tests locally or via docker-compose
+
+echo "Run tests placeholder - not implemented yet"
+# npm test
+# or
+# docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
+
+# Remove file if not needed.
+EOF>>>
+    ├── backup.sh
+<<<EOF
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+# PURPOSE:
+# Backup database locally or via docker-compose
+
+echo "Backup database placeholder - not implemented yet"
+# pg_dump -U username -h localhost dbname > backup.sql
+
+# Remove file if not needed.
+EOF>>>
+    ├── health-check.sh
+<<<EOF
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+# PURPOSE:
+# Perform a health check on the application
+
+echo "Health check placeholder - not implemented yet"
+# curl -f http://localhost:8080/health || echo "Down"
+
+# Remove file if not needed.
+EOF>>>    
+    ├── ci/
+    │   └── .gitkeep
+    ├── deploy/
+    │   └── .gitkeep
+    ├── local/
+    │   └── .gitkeep
+    └── tests/
+        ├── backend
+        │   └── .gitkeep
+        ├── common
+        │   └── .gitkeep        
+        └── frontend
+            └── .gitkeep

@@ -1,0 +1,13 @@
+# ------------------------------------------------------
+# Binary Template
+#
+# Usage:
+# @copy <source-path> <destinations-path>
+#
+# @copy = parser delaminator
+# <source-path> = relative path of binary file folder in project-playbook
+# <destination-path> = relative path of binary file folder in destimation    
+# ------------------------------------------------------   
+
+@copy assets/.githooks .githooks
+@copy assets/test test

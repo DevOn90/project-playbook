@@ -20,6 +20,7 @@ set -euo pipefail
 # 4. If yes, clone the repo; else, ask to create a new repo and ask for repo existence again.
 # 5. Change directory to the project directory.
 # 6. Setup project environment.
+# 6.1 Setup Git conf user.name and user.email for the new project.
 # ---------------------------------------------------------
 
 # ---------------------------------------------------------
