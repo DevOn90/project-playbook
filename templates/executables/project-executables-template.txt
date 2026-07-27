@@ -1,0 +1,11 @@
+# ------------------------------------------------------
+# Executables Template
+#
+# Usage:
+# @exec <destinations-path>
+#
+# @exec = parser delaminator
+# # <destination-path> = relative path of excecutable file folder in destimation    
+# ------------------------------------------------------
+
+@exec .githooks/pre-commit
