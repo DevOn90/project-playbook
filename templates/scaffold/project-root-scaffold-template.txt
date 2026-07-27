@@ -146,8 +146,74 @@ EOF>>>
 │   │       └── .gitkeep   
 │   └── tests/
 ├── .githooks/
-│   └── .gitkeep 
+│   └── pre-commit
+<<<EOF
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Extend PATH to include ~/.local/bin for uv (Astral) in 
+# "$HOME/.local/bin" if it exists
+export PATH="$HOME/.local/bin:$PATH"
+
+# ----------------------------------------------------
+# Stop commit if uv (Astral) is not installed or not discoverable.
+# ----------------------------------------------------
+
+# Check if uv (Astral) is installed and available in PATH
+UV_BIN="$(command -v uv 2>/dev/null || true)"
+
+# If uv is not found in PATH, check common installation locations   
+if [[ -z "${UV_BIN}" && -x "${HOME}/.local/bin/uv" ]]; then
+    # Store common uv installation path in UV_BIN for later use
+    UV_BIN="${HOME}/.local/bin/uv"
+fi
+
+# If uv is still not found, check for a user-specific installation 
+# in /home/${USER}/.local/bin 
+if [[ -z "${UV_BIN}" && -x "/home/${USER}/.local/bin/uv" ]]; then
+    # Store user-specific uv installation path in UV_BIN for later use
+    UV_BIN="/home/${USER}/.local/bin/uv"
+fi
+
+# If not found raise an error and provide instructions.
+if [[ -z "${UV_BIN}" ]]; then
+    echo "ERROR: uv is not installed or not in PATH."
+    echo "Install uv (Astral) and ensure it is available in shell PATH."
+    echo "  curl -LsSf https://astral.sh/uv/install.sh | sh"
+    echo "  source ~/.local/bin/env"
+    echo "HOME: ${HOME:-<unset>}"
+    echo "Current PATH: $PATH"
+    exit 1
+fi
+
+# ----------------------------------------------------
+# Run pre-commit for ODS to CSV conversion  and 
+# commit/push the generated CSVs to the repo.
+# ----------------------------------------------------
+
+echo "Running pre-commit hook: ODS to CSV conversion"
+
+# Run the ODS to CSV conversion script
+"${UV_BIN}" run scripts/ci/export_ods_to_csv.py
+
+# Stage the generated CSV files for commit
+git add -A -- ':(glob)**/exportsCSV/*.csv'
+
+echo "Pre-commit hook completed successfully."
+EOF>>>
 ├── .gitattributes
+<<<EOF
+*.ods filter=lfs diff=lfs merge=lfs -text lockable
+*.odg filter=lfs diff=lfs merge=lfs -text lockable
+*.odp filter=lfs diff=lfs merge=lfs -text lockable
+*.odt filter=lfs diff=lfs merge=lfs -text lockable
+*.xlsx filter=lfs diff=lfs merge=lfs -text lockable
+*.docx filter=lfs diff=lfs merge=lfs -text lockable
+*.pptx filter=lfs diff=lfs merge=lfs -text lockable
+*.fig filter=lfs diff=lfs merge=lfs -text lockable
+*.png filter=lfs diff=lfs merge=lfs -text lockable
+EOF>>>
 ├── .gitignore
 ├── .vscode/
 │   └── .gitkeep

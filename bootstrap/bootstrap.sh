@@ -22,6 +22,7 @@ set -euo pipefail
 # 6. Setup project environment.
 # 6.1 Setup Git conf user.name and user.email for the new project.
 # 6.2 Validate Git LFS installation and initialization in the repository.
+# 6.3 Validate local installation of uv (Astral).
 # ---------------------------------------------------------
 
 # ---------------------------------------------------------
@@ -196,6 +197,27 @@ Please run the following command to initialize Git LFS:\n  git lfs install'
       return
    fi
 }
+
+# 6.3 Validate local installation of uv (Universal Viewer)
+
+validate_uv_installation() {
+   
+   # Validate if uv (Astral) is installed on the local machine system
+   if ! command -v uv &> /dev/null; then
+      log_warning $'uv (Astral) is not installed.\n
+Please install uv to view various file formats in your repository\n
+using uv-installation-guide.'
+      return
+   fi
+
+   # Validate if uv is installed on user-specific path /home/user/.local/bin/uv
+   if [[ ! -f "$HOME/.local/bin/uv" ]]; then
+      log_warning $'uv (Astral) is not installed in the user-specific path.\n
+Please install uv in the user-specific path /home/user/.local/bin/uv\n
+using uv-installation-guide.'
+      return
+   fi 
+}
  
 
 # ---------------------------------------------------------
@@ -248,6 +270,10 @@ main() {
     # Validate Git LFS installation and initialization
     log_info "Validating Git LFS installation and initialization..."
     validate_git_lfs
+
+    # Validate local installation of uv (Universal Viewer)
+    log_info "Validating local installation of uv (Universal Viewer)..."
+    validate_uv_installation
 
     # Success message
     log_info "Bootstrap script completed successfully."
