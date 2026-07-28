@@ -11,5 +11,8 @@
 # Note: This file (template) MUST end with new empty line
 # ------------------------------------------------------   
 
-@copy assets/.githooks .githooks
-@copy assets/test test
+@copy assets/docs/product/architecture/template/ui docs/product/architecture/template/ui
+@copy assets/docs/product/discovery/templates/06-risks docs/product/discovery/templates/06-risks
+@copy assets/docs/product/discovery/templates/07-product-requirements-definition docs/product/discovery/templates/07-product-requirements-definition
+@copy assets/docs/project-governance/product-discovery/assets docs/project-governance/product-discovery/assets
+@copy assets/docs/risk docs/risk
