@@ -3,10 +3,372 @@
 │   └── .gitkeep
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   │   └── .gitkeep
-│   ├── PULL_REQUEST_TEMPLATE/
-│   │   └── .gitkeep
+│   │   └── issue-discovery.md
+<<<EOF
+---
+name: Discovery process starter
+title: "documentation: <insert title here>"
+about: Create a work item for discovery work
+labels: discovery
+---
+
+# Discovery Work Item
+
+## Purpose
+The purpose of this issue is to create a discovery artifact that captures initial knowledge and understanding of a problem, opportunity, or decision. This artifact will serve as a foundation for further exploration, analysis, and decision-making. Usually this document is `Business Problem`, `Business Case`, or `Decision Record`. The goal is to ensure that the team has a clear understanding of the context, objectives, and potential solutions before proceeding with implementation. 
+
+## Goal
+<!-- What knowledge change is needed? -->
+<!-- E.g., Create the initial Business Problem document in docs/bp/. -->
+
+## Deliverable
+<!-- What document should be created or updated? -->
+<!-- E.g., docs/bp/BP-001-business-problem.md exists in main branch -->
+
+## Tasks
+<!-- What tasks are needed to complete the deliverable? -->
+- [ ] Assign Issue metadata (Assignee, Labels, Project, Milestone)
+- [ ] Create dedicated branch for the artifact from GH Issue
+- [ ] Create/update document in dedicated branch
+- [ ] Validate content with appropriate evidence, stakeholder, or domain expert
+
+## Outcome & Decision
+<!-- What was learned or decided after completing this work? -->
+<!-- E.g., The Business Problem initial document is created and validated with stakeholders. The decision is to proceed with the proposed solution. -->
+
+## References
+<!-- What documents or resources are relevant to this work item? -->
+<!-- Use links to both documents in the main branch and the dedicated branch -->
+- Related documents (main branch): <!--E.g., [document1](https://github.com/<username>/<repo>/blob/main/docs/document1.md)-->
+- Related PRs: <!--E.g., #789, #1011-->
+- Related issues: <!--E.g., #123, #456-->
+- Related decisions: <!--E.g., [DEC-001](https://github.com/<username>/<repo>/blob/main/docs/decisions/DEC-001.md) -->
+
+## Definition of Done
+<!-- What criteria must be met for this work item to be considered complete? -->
+- [ ] Knowledge artifact created/updated and validated with appropriate evidence, stakeholder, or domain expert
+- [ ] Outcome and decision are documented in this issue
+- [ ] Changes committed
+- [ ] PR created
+- [ ] Ensure all hyperlinks in the document are valid and point to the correct resources
+EOF>>>
+│   ├── pull_request_template.md
+<<<EOF
+# Pull Request
+
+## Summary
+
+<!-- Briefly describe the changes introduced by this PR. -->
+
+## Changes
+
+### Added
+
+*
+
+### Updated
+
+*
+
+### Removed
+
+*
+
+## Why
+
+<!-- Explain the purpose of this change and what problem, decision, or improvement it supports. -->
+
+## Related Work
+<!-- Link related issues, documents, decisions, or discussions. -->
+
+* Closes # <!-- E.g., #123, #456 -->
+* Related documents: <!-- [document1](https://github.com/<username>/<repo>/blob/main/docs/document1.md) -->
+* Related Issues: <!-- E.g., #123, #456 -->
+* Related Decisions: <!-- [DEC-001](https://github.com/<username>/<repo>/blob/main/docs/decisions/DEC-001.md) -->
+
+## Review Checklist
+
+* [ ] Changes follow project conventions and standards
+* [ ] The change is understandable without additional context
+* [ ] Documentation has been created or updated where applicable
+* [ ] All links and references are valid
+* [ ] Naming conventions and file locations are correct
+* [ ] Related work items, documents, or decisions are linked
+* [ ] Changes have been self-reviewed before requesting merge
+
+## Notes to Reviewers
+
+<!-- Add any additional context, open questions, risks, or areas that require special attention. -->
+EOF>>>
+│   ├── skills/
+│   │   ├── bezpecnost
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: bezpecnost
+description: "Analyze the security of a piece of code and provide recommendations for improvement."
+argument-hint: Select a piece of code to analyze for security issues.
+disable-model-invocation: true
+---
+
+Analyze the selected code for security issues including:
+
+- XSS
+- SQL Injection
+- NoSQL Injection
+- Command Injection
+- SSRF
+- CSRF
+- Path Traversal
+- Authentication
+- Authorization
+- Sensitive data exposure
+- Secrets
+- Unsafe deserialization
+- Input validation
+
+For every finding include:
+
+- severity
+- explanation
+- recommendation
+EOF>>>
+│   │   ├── hranicni
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: hranicni
+description: "Checks selected code for boundary conditions, edge cases, and potential issues"
+argument-hint: Select a piece of code to generate edge cases for.
+disable-model-invocation: true
+---
+
+Generate a list of boundary conditions and edge cases.
+
+For each case provide:
+- scenario
+- expected behavior
+- why this case is important
+EOF>>>
+│   │   ├── jsdoc
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: jsdoc
+description: "Generates industry-standard JSDoc documentation"
+argument-hint: Select a piece of code to generate documentation for.
+disable-model-invocation: true
+---
+
+Generate JSDoc documentation for selected code. Ensure that the generated documentation is clear, concise,
+and follows best industry practices for JSDoc formatting.
+EOF>>>
+│   │   ├── pojmenuj
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: pojmenuj
+description: "Suggests a better name for the selected code"
+argument-hint: Select a piece of code and ask the skill to suggest a better name for it.
+disable-model-invocation: true  
+---
+
+Suggest better names for variables, functions, classes and constants.
+
+For each suggestion explain briefly why it is more descriptive.
+Respect existing project naming conventions.
+EOF>>>
+│   │   ├── proc
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: proc
+description: "Analyze why a piece of code is not working as expected and provide a solution."
+argument-hint: Select a piece of code to analyze.
+disable-model-invocation: true
+---
+
+Analyze why this code may fail.
+
+Focus on:
+
+- logical bugs
+- runtime exceptions
+- race conditions
+- async issues
+- null handling
+- invalid assumptions
+
+Do not explain what the code does unless necessary.
+EOF>>>
+│   │   ├── refaktor
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: refaktor
+description: "Refactors selected code to improve its structure, readability, and maintainability"
+argument-hint: Select a piece of code to refactor.
+disable-model-invocation: true
+---
+
+Improve readability, remove duplication, simplify control flow and preserve public API.
+
+Preserve the existing behavior and public API.
+
+Do not introduce unnecessary abstractions or overengineering.
+EOF>>>
+│   │   ├── testuj-e2e
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: testuj-e2e
+description: "Generates end-to-end tests for the selected code"
+argument-hint: Select a piece of code to generate end-to-end tests for.
+disable-model-invocation: true
+---
+
+Generate end-to-end tests using the project's existing E2E framework.
+
+If none is apparent, use Cypress.
+
+Cover:
+
+- happy path
+- user validation
+- error scenarios
+- boundary conditions
+EOF>>>
+│   │   ├── testuj-unit
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: testuj-unit
+description: "Generates unit tests for the selected code"
+argument-hint: Select a piece of code to generate unit tests for.
+disable-model-invocation: true
+---
+
+Generate comprehensive unit tests.
+
+Include:
+
+- happy path
+- invalid inputs
+- boundary conditions
+- exception cases
+- mocked dependencies where appropriate
+
+Use the project's existing testing framework and conventions.
+EOF>>>
+│   │   ├── vysvetli
+│   │   │   └── SKILL.md
+<<<EOF
+---
+name: vysvetli
+description: "How selected code works and what it does"
+argument-hint: Select a piece of code and ask the skill to explain it.
+disable-model-invocation: true
+---
+
+Explain precisely what the selected code does.
+
+Focus on:
+
+- purpose
+- inputs
+- outputs
+- important side effects
+
+Answer in one concise sentence starting with 💡.
+EOF>>>
+│   │   └── zkontroluj
+│   │       └── SKILL.md
+<<<EOF
+---
+name: zkontroluj
+description: "Checks selected code for errors, bugs, potential issues, edge cases, performance problems, security vulnerabilities and maintainability issues"
+argument-hint: Select a piece of code to check.
+disable-model-invocation: true
+---
+
+Review the selected code.
+
+Evaluate the following areas separately:
+
+1. Correctness
+2. Bugs
+3. Readability
+4. Maintainability
+5. Performance
+6. Security
+7. Edge cases
+
+For each section:
+
+- ✅ OK
+or
+
+- ❌ Problem
+- explanation
+- recommendation
+
+If no issues are found, explicitly state that.
+EOF>>>
+│   │
 │   ├── workflows/
+│   │   ├── ci-export_ods_to_csv.yml
+<<<EOF
+# ------------------------------------------------------------------------------
+# Purpose: This workflow is responsible for exporting ODS files to CSV format and 
+# verifying that the generated CSV files are up to date with the committed versions. 
+# ------------------------------------------------------------------------------ 
+name: Export ODS to CSV
+
+# This workflow is triggered when called by another workflow using the "workflow_call" event.
+on:
+  workflow_call:
+
+jobs:
+    export:
+        runs-on: ubuntu-latest
+        # Set permissions to read the repository contents, which is necessary for checking out the code and verifying CSV files.
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v4
+              # Set lfs to true to ensure that any large files managed by Git LFS are properly checked out.
+              with:
+                lfs: true
+
+              # Install Python dependencies required for the export process, including pandas for data manipulation and odfpy for handling ODS files.  
+            - name: Install Python dependencies
+              run: |
+                python -m pip install --upgrade pip
+                python -m pip install pandas odfpy
+
+              # The job step to export ODS files to CSV format using a Python script. 
+              # This script reads ODS files and generates corresponding CSV files in the specified output directory.
+            - name: Verify CSVs are up to date
+              shell: bash
+              run: |
+                set -euo pipefail
+
+                # Re-generate CSVs from ODS files in the CI working directory.
+                python scripts/ci/export_ods_to_csv.py
+
+                # Fail if any CSV differs from what is committed.
+                if [[ -n "$(git status --porcelain)" ]]; then
+                  echo ""
+                  echo "ERROR: The following CSV files are out of date:"
+                  git status --porcelain
+                  echo ""
+                  echo "Run the pre-commit hook locally and commit the updated CSVs:"
+                  echo "  git config core.hooksPath .githooks"
+                  exit 1
+                fi
+
+                echo "All CSV files are up to date."
+EOF>>>
 │   │   ├── ci-build.yml
 <<<EOF
 name: ci-build
@@ -97,25 +459,62 @@ jobs:
 EOF>>>
 │   │   ├── ci.yml
 <<<EOF
+# Orchestration workflow for all CI jobs. 
+# This workflow is triggered on push, pull request and manual dispatch.
 name: ci-orchestration
 
 on:
   push:
-    branches:
-      - main
   pull_request:
+  workflow_dispatch:
 
-jobs: 
+jobs:
+  # The "changes" job detects if any relevant files have changed in the current commit or pull request.
+  # If so, it sets an output variable that can be used by downstream jobs to determine whether they should run.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      # The output variable "ods_pipeline" is set to true if any relevant files have changed, and false otherwise.
+      ods_pipeline: ${{ steps.filter.outputs.ods_pipeline }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect relevant changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          # The "ods_pipeline" filter checks for changes in the following files and directories:
+          filters: |
+            ods_pipeline:
+              - "**/*.ods"
+              - "**/exportsCSV/*.csv"
+              - ".githooks/pre-commit"
+              - "scripts/ci/export_ods_to_csv.py"
+              - ".github/workflows/ci-export-ods-to-csv.yml"
+              - ".github/workflows/ci.yml"
+
+  # The "export-ods-to-csv" job runs the export process if relevant files have changed or 
+  # if the workflow was manually triggered. For job details, see the ci-export-ods-to-csv.yml workflow file.
+  # Policy: CSV files under exportsCSV are generated artifacts and must match ODS + exporter output.             
+  export-ods-to-csv:
+     needs: [changes]
+     if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.ods_pipeline == 'true'
+     uses: ./.github/workflows/ci-export-ods-to-csv.yml
+
+  # Placeholder job for linting. This job runs after the export-ods-to-csv job and is defined in the ci-lint.yml workflow file.   
   lint:
-    uses: ./.github/workflows/ci-lint.yml
+     needs: export-ods-to-csv
+     uses: ./.github/workflows/ci-lint.yml
 
+  # Placeholder job for testing. This job runs after the lint job and is defined in the ci-test.yml workflow file.   
   test:
-    needs: lint
-    uses: ./.github/workflows/ci-test.yml
+     needs: lint
+     uses: ./.github/workflows/ci-test.yml
 
+  # Placeholder job for building. This job runs after the test job and is defined in the ci-build.yml workflow file.   
   build:
-    needs: test
-    uses: ./.github/workflows/ci-build.yml 
+     needs: test
+     uses: ./.github/workflows/ci-build.yml 
 EOF>>>
 │   │   ├── cd.yml
 <<<EOF
