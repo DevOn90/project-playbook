@@ -1,88 +1,3857 @@
 .
 └── docs/
-    ├── 01_product/
-    │   ├── 00_indexes/
+    ├── 01_infra/
+    │   ├── ci/
     │   │   └── .gitkeep
-    │   ├── 01_governance/
-    │   │   ├── artifact-register/
-    │   │   │   └── .gitkeep
-    │   │   ├── change-mgt/
-    │   │   │   └── .gitkeep
-    │   │   ├── compliance/
-    │   │   │   └── .gitkeep
-    │   │   ├── q-gate/
-    │   │   │   └── .gitkeep
-    │   │   └── risks/
+    │   └── templates/
+    │       ├── CIO-XXX-ci-documentation-overview-[template].md
+<<<EOF
+## Metadata
+
+- Project: <name-of-project>
+- Status: <Draft-In-Progress-Active-Superseded>
+- Stage: <infra>
+- Owner: <name-of-owner>
+- Last Updated: <YYYY-MM-DD>
+
+## Related Documents
+<!--- Add links to related documents here. Remove non-relevant items. -->
+
+- CI Pipeline Details 01
+- CI Pipeline Details 02
+- CI Troubleshooting Guide
+- Contribution Guide
+- Project Runbook
+
+# CI Documentation Overview
+
+## The first time Use  
+- **Copy** this template to `docs/infra/ci/` and rename it appropriately for your project
+- **Remove** this section after the first use
+
+---
+
+## Purpose
+This document is the root entry point for CI documentation in this project.
+
+Use it to:
+- explain the CI strategy at a high level
+- link to detailed pipeline docs
+- document ownership, guardrails, and troubleshooting basics
+
+Keep this document short. Put implementation details in linked docs.
+
+---
+
+## Scope
+This CI documentation covers:
+
+### In scope:
+
+- workflow orchestration and execution rules
+- quality gates and validation checks
+- deployment or release automation (if applicable)
+- local developer hooks that affect CI outcomes
+
+### Out of scope:
+
+- product requirements
+- feature-level business decisions
+- detailed implementation notes for non-CI systems
+
+---
+
+## CI Architecture Summary
+
+### Entry workflows
+
+- workflows: `path/to/workflows` - CI workflows that orchestrate the pipeline
+
+- [ci.yml](<link-to-ci-yml>) - the main entry point for CI orchestration
+
+### Reusable workflows
+
+- workflows: `path/to/reusable-workflows` - reusable workflows that can be called by other workflows
+- [<some-reusable-workflow>.yml](<link-to-reusable-workflow-yml>) - reusable workflow for <purpose>
+- [<some-reusable-workflow>.yml](<link-to-reusable-workflow-yml>) - reusable workflow for <purpose>
+
+### Supporting scripts/tools
+
+- scripts: `path/to/scripts` - scripts used by CI workflows
+
+- [script1.sh](<link-to-script1-sh>) - tools used by CI ... <name-of-workflow> workflows for <purpose> ...
+- [script2.sh](<link-to-script2-sh>) - tools used by CI ... <name-of-workflow> workflows for <purpose> ...
+
+### Local Hooks
+
+- hooks: `path/to/hooks` - local hooks that run on developer machines to enforce CI rules
+- [pre-commit](<link-to-pre-commit-hook>) - example pre-commit hook for linting and formatting
+- [pre-push](<link-to-pre-push-hook>) - example pre-push hook for running tests before pushing code
+
+## CI Flow Diagram
+<!--Describe flow in high-level steps in both text and diagram form -->
+
+### High-level steps
+1. ... <!--Developer pushes code to the repository.-->
+2. ... <!--CI workflow is triggered by the push event.-->
+3. ... <!--CI workflow runs a series of jobs, including linting, testing, and building the application.-->
+4. ... <!--If all jobs pass, the workflow may trigger deployment or release automation.-->
+
+### Flow Diagram
+```mermaid
+graph TD
+    A[Developer Pushes Code] --> B[CI Workflow Triggered]
+    B --> C[Run Linting Job]
+    B --> D[Run Testing Job]
+    B --> E[Run Build Job]
+    C --> F[Linting Passed?]
+    D --> G[Testing Passed?]
+    E --> H[Build Passed?]
+    F --> I{All Jobs Passed?}
+    G --> I
+    H --> I
+    I -->|Yes| J[Trigger Deployment/Release]
+    I -->|No| K[Notify Developer of Failures]
+```
+
+## Workflow Catalog
+
+***Status:** [Draft, In-Progress, Active, Superseded] 
+
+| Workflow | Purpose | Trigger | *Status | Detail Doc |
+|----------|---------|---------|--------|-------------|
+| <workflow-name> | <brief-purpose> | <trigger-event> | <status> | [link-to-detail-doc](#) |
+
+## Pipeline Decision Rules
+<!--Document only the key rules the newcomer should know about the pipeline-->
+
+- Rule 1: ... <!--E.g. when workflow runs-->
+- Rule 2: ... <!--E.g. when workflow fails-->
+- Rule 3: ... <!--E.g. when workflow is skipped-->
+- Rule 4: ... <!--E.g. what must pass before merge-->
+- Rule 5: ... <!--E.g. manual override or dispatch behaviour-->
+
+## Required Checks
+<!--These checks are set in Github to protect the main branch or other important branches-->
+
+**Main Branch**<br>
+- Check 1: ... <!--E.g. linting must pass before merge-->
+- Check 2: ... <!--E.g. unit tests must pass before merge-->
+
+**Other Important Branch**<br>
+- Check 1: ... <!--E.g. integration tests must pass before merge-->
+
+### Exceptions
+<!--Document exceptions if any-->
+
+## Local Development Contract
+
+- prerequisites: ... <!--tools/runtime environment required for local development-->
+- local validation commands: ... <!--commands to run locally to validate code before pushing-->
+- local hook setup (if used): ... <!--instructions to set up local hooks for pre-commit or pre-push validation-->
+- local hook behavior: ... <!--describe what the local hooks do and how they affect the CI process-->
+
+## Failure Handling
+
+### Common Failure Types
+- Failure Type 1: ... <!--E.g. linting errors-->
+- Failure Type 2: ... <!--E.g. unit test failures-->
+- Failure Type 3: ... <!--E.g. build failures-->    
+
+### First response Checklist
+1. Read failing job logs
+2. Confirm local environment prerequisites
+3. Re-run local validation steps
+4. Update affected artifacts and commit
+5. Re-run CI
+
+## Escalation Path
+<!--not applicable for solo devs -->
+
+## Change Management
+Update this document when:
+- a new workflow is added to the CI process
+- an existing workflow is modified in a way that affects the CI process 
+- trigger or gating logic is changed
+- required checks are added, removed, or modified
+
+Review cadence:
+- <monthly or per major change>... - review this document for accuracy and completeness
+
+---
+EOF>>>
+    │       └── CIP-ci-pipeline-[ciName]-[template].md
+<<<EOF
+## Metadata
+
+- Project: <name-of-project>
+- Status: <Draft-In-Progress-Active-Superseded>
+- Stage: <infra>
+- Owner: <name-of-owner>
+- Last Updated: <YYYY-MM-DD>
+
+## Related Documents
+<!--- Add links to related documents here. Remove non-relevant items. -->
+
+- CI Documentation Overview
+- Aditional pipeline doc
+- CI Troubleshooting Guide
+- Contribution Guide
+- Project Runbook
+
+---
+
+# CI Pipeline Detail: [ciName]
+
+## The first time Use
+- **Copy** this template to `docs/infra/ci/` and rename it appropriately for your project
+- **Link** to this document from the CI Documentation Overview doc for your project
+- **Remove** this section after the first use
+
+---
+
+## Purpose
+<!--Describe what this pipeline protects or verifies in 2-4 sentences.--><!--- E.g. This pipeline runs on every pull request to verify that the code meets quality standards and passes all tests before merging. -->
+
+---
+
+## Scope
+
+### In scope:
+
+- ... <what this pipeline does>
+- ... <what this pipeline validates>
+- ... <what this pipeline protects>
+- ... <what artifacts it touches or produces>
+
+### Out of scope:
+
+- ... <what this pipeline does not do>
+- ... <checks delegated to other pipelines>
+
+---
+
+## Pipeline Contract
+
+### Inputs
+
+- Trigger events: 
+   - ...<!--e.g. pull request, push to main branch, scheduled run, workflow_dispatch, workflow_call, etc.-->
+- Changed paths/filters:
+   - ... <!--e.g. only run when files in `src/` or `docs/` change-->
+- Required files/tools: 
+   - ...<!--e.g. `requirements.txt`, `Dockerfile`, etc.-->
+
+### Outputs
+
+- Status checks produced: <!--e.g. build, test, lint, deploy, etc.-->
+- Artifacts produced: 
+   - ...<!--e.g. build artifacts, test reports, coverage reports, etc.-->
+- Logs/diagnostics produced: 
+   - ...<!--e.g. console logs, error messages, stack traces, etc.--> 
+
+### Success Criteria
+- ... <!--e.g. all tests pass, code coverage above threshold, no linting errors, etc.-->
+- ... <!--e.g. deployment successful, artifacts generated, etc.-->
+- ... <!--e.g. no critical errors, all required checks completed, etc.-->
+
+### Failure Criteria
+- ... <!--e.g. any test fails, code coverage below threshold, linting errors present, etc.-->
+- ... <!--e.g. deployment fails, artifacts not generated, etc.-->   
+
+---
+
+## Triggers & Gating Rules
+
+- ... <!--when pipeline runs-->
+- ... <!--when pipeline is skipped-->
+- ... <!--manual run behavior-->
+- ... <!--dependency behavior using other pipelines (needs, etc.)-->
+- ... <!--branch specific behavior-->
+
+---
+
+## Workflow Topology
+
+- Entry workflow: ... <!--path to entry workflow-->
+- Reusable workflows: ... <!--paths to reusable workflows-->
+- Supporting scripts: ... <!--paths to supporting scripts or tools used in the pipeline-->
+- Local hooks (if used): ... <!--paths to local hooks for pre-commit or pre-push validation-->
+
+---
+
+## Job Catalog
+
+| Job Name | Purpose | Runs When | Depends On | Fails When | Artifacts Produced | Logs Produced |
+|----------|---------|-----------|------------|------------|------------------|---------------|
+| <job-name> | <brief-purpose> | <trigger-event> | <dependencies> | <failure-conditions> | [Link](<artifacts-path>) | [Link](<logs-path>) |
+
+---
+
+## Step-Level Logic Summary
+
+### Job: <job-name>
+
+1. ... <!--step 1 description-->
+2. ... <!--step 2 description-->
+3. ... <!--step 3 description-->
+4. ... <!--validation / fail condition-->
+
+---
+
+## Flow Diagram
+<!--Include a flow diagram of the pipeline, showing the sequence of jobs and their dependencies.-->
+<!--This is example only. Replace with actual pipeline flow diagram -->
+
+```mermaid
+flowchart TD
+    A[Event Triggered: push, pull_request, workflow_dispatch] --> B{Pipeline Conditions Met?}
+    B -->|No| C[Skip Pipeline]
+    B -->|Yes| D[Checkout Repository]
+    D --> E[Setup Runtime and Dependencies]
+    E --> F[Run Validation Jobs]
+    F --> G{All Jobs Passed?}
+    G -->|No| H[Publish Logs and Fail Status]
+    G -->|Yes| I[Generate Artifacts or Reports]
+    I --> J{Deployment Enabled?}
+    J -->|No| K[Mark Workflow Success]
+    J -->|Yes| L[Deploy or Release Step]
+    L --> M[Mark Workflow Success]
+```
+
+
+---
+
+## Decision Notes:
+<!--Include links to relevant discussions, PRs, or issues if applicable.-->
+
+Capture key implementation decisions, trade-offs, rationale and why they were made for future reference.
+
+- **Decision 1**: ...<What> 
+   - Rationale: ...<Why>
+   - Trade-offs:
+      - Pro: ...<Pros>
+      - Con: ...<Cons>
+
+---
+
+## Local Reproduction
+
+### Prerequisites
+- ... <!--tools/runtime environment required for local reproduction-->
+- ... <!--dependencies required for local reproduction-->
+
+### Run Steps
+1. ... <!--command or action-->
+2. ... <!--command or action-->
+3. ... <!--expected result-->
+
+### Common Local Pitfalls
+- ... <!--common issues encountered during local reproduction and fix-->
+
+---
+
+## Failure Handling
+<!--Describe how to handle failures in the pipeline, including common failure types, first response checklist, and recovery path.-->
+
+### Common Failure Types
+
+- <type 1>: <likely cause>
+- <type 2>: <likely cause>
+- <type 3>: <likely cause>
+
+### First Response Checklist
+
+1. Check failing job logs
+2. Confirm local prerequisites
+3. Re-run local validation
+4. Update affected files/artifacts
+5. Re-run CI
+
+### Recovery Path
+
+- Fast fix: <what to do for common case>
+- Deep fix: <what to inspect for edge cases>
+
+---
+
+## Change Management
+Update this document when:
+- a new workflow is added to the CI process
+- an existing workflow is modified in a way that affects the CI process 
+- trigger or gating logic is changed
+- required checks are added, removed, or modified
+
+Review cadence:
+- <monthly or per major change>... - review this document for accuracy and completeness
+
+---
+EOF>>>
+    ├── 02_product/
+    │   ├── architecture/
+    │   │   ├── templates/
+    │   │   │   └── ui/
+    │   │   │       └── FL-XXX-<name-fo-flow>-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In-Progress-Completed-Superseded>
+- **Stage**: <discovery-delivery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- User Story: [US-XXX](<link-to-user-story>)
+
+---
+
+# User Flow [FL-XXX]: <Name of Flow>
+
+## Purpose
+<!-- One sentence why this flow exists. -->
+
+## Trigger
+<!-- What event or action initiates this flow? -->
+<!-- Example: User clicks on "Sign Up" button. -->
+
+## Steps Flow Diagram
+<!-- Use the flow diagram template to create a flow diagram for this user flow. -->
+**Complexity Guard:**<br>
+If `Max-steps` > 8 or `Max-decision-points` > 3, split into second flow diagram and link to it in the references section.
+
+
+```mermaid
+flowchart TB
+  %% ====== STYLE ======
+  classDef step fill:#E8F1FF,stroke:#2F5FA8,stroke-width:1px,color:#0F2A4A;
+  classDef decision fill:#FFF4D6,stroke:#B7791F,stroke-width:1px,color:#4A2D00;
+  classDef variant fill:#E6FFFA,stroke:#0F766E,stroke-width:1px,color:#063B37;
+  classDef exception fill:#FFE8E8,stroke:#B42318,stroke-width:1px,color:#5C1111;
+  classDef terminal fill:#EAFBEA,stroke:#2E7D32,stroke-width:1px,color:#123015;
+  classDef handoff fill:#F3E8FF,stroke:#6B21A8,stroke-width:1px,color:#2E1065;
+
+  %% ====== MAIN FLOW ======
+  START([Start]):::terminal --> S1[Step 1: USER_ACTION]:::step
+  S1 --> S2[Step 2: SYSTEM_RESPONSE]:::step
+  S2 --> D1{Decision 1: CONDITION?}:::decision
+
+  %% Happy path
+  D1 -->|Yes| S3[Step 3: CONTINUE]:::step
+  S3 --> S4[Step 4: COMPLETE]:::step
+  S4 --> STOP([Stop / Success]):::terminal
+
+  %% Variant path
+  D1 -->|Variant A| V1[Variant: ALTERNATE_STEP]:::variant
+  V1 --> V2[Variant: RETURN_TO_MAIN]:::variant
+  V2 --> S3
+
+  %% Exception path
+  D1 -->|No / Error| E1[Exception: SHOW_ERROR]:::exception
+  E1 --> E2{Retry allowed?}:::decision
+  E2 -->|Retry| S1
+  E2 -->|Abort| STOP_ERR([Stop / Failed]):::terminal
+
+  %% ====== SPLIT TO NEXT FLOW (if > 8 steps or > 3 decisions) ======
+  S3 --> D_SPLIT{More steps needed?}:::decision
+  D_SPLIT -->|No| S4
+  D_SPLIT -->|Yes| H1[[Go to next flow: FL-002]]:::handoff
+```
+
+## Sequence Diagram (Optional)
+<!--Use sequence diagram only for edge technical cases. -->
+
+```mermaid
+sequenceDiagram
+  participant User
+  participant System
+  User->>System: Action 1
+  System-->>User: Response 1
+  User->>System: Action 2
+  System-->>User: Response 2
+```
+
+## Success Criteria
+<!-- Define 1-X measurable success criteria for this flow. -->
+<!-- Example: 
+1. User completes the flow in less than 3 minutes. 
+2. User successfully completes the flow without errors. 
+3. Exception case transfers the user to a support page with a contact form.
+X. ...
+-->
+
+1. ...
+2. ...
+3. ...
+
+## References
+- Issue: <!--e.g. #123-->
+- PR: <!--e.g. #456-->
+- Wireframes: <!--e.g. [link-to-wireframes]-->
+- Parrent Flow: <!--e.g. [FL-001](link-to-parent-flow)-->
+- Child Flow: <!--e.g. [FL-002](link-to-child-flow)-->
+EOF>>>
+    │   │   └── ui/
+    │   │       ├── lo-fi_wireframe/
+    │   │       │   └── .gitkeep
+    │   │       └── ui-flows/
+    │   │           └── .gitkeep
+    │   ├── delivery/
+    │   │   └── releases/
     │   │       └── .gitkeep
-    │   ├── 02_discovery/
-    │   │      ├── 01_product/
-    │   │      │   └── .gitkeep
-    │   │      ├── 02_requirements/
-    │   │      │   └── .gitkeep
-    │   │      ├── 03_ux/
-    │   │      │   └── .gitkeep
-    │   │      ├── 04_domain/
-    │   │      │   └── .gitkeep
-    │   │      ├── 05_integration/
-    │   │      │   └── .gitkeep
-    │   │      ├── 06_security/
-    │   │      │   └── .gitkeep
-    │   │      ├── 07_observability/
-    │   │      │   └── .gitkeep
-    │   │      └── 08_metrics/
-    │   │          └── .gitkeep
-    │   ├── 03_architecture/
-    │   │   ├── 01_adr/
-    │   │   │   └── .gitkeep
-    │   │   ├── 02_deployment/
-    │   │   │   └── .gitkeep
-    │   │   └── 03_diagrams/
-    │   │       └── .gitkeep
-    │   ├── 04_delivery/
-    │   │   ├── 01_ci-cd/
-    │   │   │   └── .gitkeep
-    │   │   ├── 02_release/
-    │   │   │   └── .gitkeep
-    │   │   ├── 03_infra/
-    │   │   │   └── .gitkeep
-    │   │   ├── 04_governance/
-    │   │   │   └── .gitkeep
-    │   │   └── 05_qa/
-    │   │       └── .gitkeep
-    │   ├── 05_operations/
-    │   │   ├── analytics/
-    │   │   │   └── .gitkeep
-    │   │   ├── incidents/
-    │   │   │   └── .gitkeep
-    │   │   ├── monitoring/
-    │   │   │   └── .gitkeep
-    │   │   └── runbooks/
-    │   │       └── .gitkeep
-    │   ├── 06_maintenance/
-    │   │   ├── refactoring/
-    │   │   │   └── .gitkeep
-    │   │   ├── sustainability/
-    │   │   │   └── .gitkeep
-    │   │   └── tech-debt/
-    │   │       └── .gitkeep
-    │   ├── 07_templates/
-    │   │   └── .gitkeep
-    │   ├── 08_diagrams/
-    │   │   └── .gitkeep
-    │   └── 09_research/
-    │       └── .gitkeep
-    └── 02_project/
-        ├── 01_project-planning/
-        │   └── .gitkeep
-        ├── 02_project-backlog/
-        │   └── .gitkeep
-        ├── 03_project-risk/
-        │   └── .gitkeep
-        ├── 04_project-metrics/
-        │   └── .gitkeep
-        ├── 05_project-releases/
-        │   └── .gitkeep
-        ├── 06_project-changelog/
-        │   └── .gitkeep
-        └── 07_project-governance/
-            └── .gitkeep
+    │   └── discovery/
+    │       ├── artifacts/
+    │       │   └── .gitkeep
+    │       ├── assumptions/
+    │       │   ├── .gitkeep
+    │       ├── business-problem/
+    │       │   └── .gitkeep
+    │       ├── decisions/
+    │       │   └── .gitkeep
+    │       ├── experiments/
+    │       │   └── .gitkeep
+    │       ├── requirements/
+    │       │   └── .gitkeep
+    │       └── templates/
+    │           ├── 01-problem-framing/
+    │           │   ├── BP-XXX-business-problem-[template].md
+<<<EOF
+## Metadata
+- **Project**: <name-of-project>
+- **Status**: <Draft-Validated-Superseded>
+- **Stage**: <discovery-delivery-retrospective>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+## Related Documents
+<!--e.g. [document name](link)-->
+- Business Problem Template
+- Feature Template
+- Epic Template
+- Issue Doc Strategy Minimal 
+
+---
+
+# Business Problem
+
+## Problem Summary
+<!-- Briefly describe the business problem in 2-4 sentences. -->
+
+---
+
+## Background
+<!-- Explain context: what changed, when issue started, and affected workflows. -->
+
+---
+
+## Current State
+<!-- Describe how things work today and where friction exists. -->
+
+---
+
+## Impact
+<!-- Describe the impact of the problem on the business and users. -->
+- Business impact (revenue, cost, risk, compliance, operations): 
+- User impact (experience, productivity, satisfaction): 
+- Estimated severity:
+
+---
+
+## Evidence (Facts and Data)
+<!-- Add data that proves the problem exists. E.g. metrics, user feedback, logs, research findings, Support tickets -->
+
+---
+
+## Open Questions
+<!-- List any open questions that need to be answered to understand the problem. -->    
+
+---
+
+## Affected Stakeholders
+- Primary owner: <name-of-owner>
+- Teams affected: <name-of-teams-affected>
+- User segments affected: <name-of-user-segments-affected>
+
+---
+
+## Constraints
+<!-- Budget, timeline, technical, legal, compliance, policy constraints. -->
+ 
+---
+
+## Success Criteria
+<!-- Define measurable outcomes that confirm the problem is resolved. -->
+- Metric 1 (baseline -> target): 
+- Metric 2 (baseline -> target): 
+
+---
+
+## Non-Goals
+<!-- Clarify what this issue does not aim to solve. -->
+
+---
+
+## Problem Assumptions
+<!--E.g. I believe the problem is caused by X because of Y. This assumption/s is specific to problem not solution and will be validated during Problem Discovery-->
+
+---
+
+## Dependencies and Risks
+- Dependencies: 
+- Risks and mitigations:
+
+---
+
+## Next Step
+<!-- Expected output: e.g., create feature.md, epic.md, RFC, or run discovery. -->
+
+---
+
+## Definition of Done
+- [ ] Business problem is clear and agreed upon
+- [ ] Success criteria are measurable and aligned with stakeholders
+- [ ] Constraints are identified and documented  
+- [ ] Created documentation using guide in `<path-to-guide>` or mark `no doc needed` if applicable
+- [ ] No doc needed  
+- [ ] Issue contains reference to updated doc and doc contains link to issue (e.g. #123)
+
+---
+
+## References
+<!-- Add any relevant links to data, research, related issues, or documentation. -->
+- Issue: <!--e.g., #123 -->
+- PR: <!--e.g., #456 -->
+- GH Docs: <!--e.g., [document name](link) -->
+EOF>>>
+    │           │   ├── PDS-XXX-problem-discovery-[template].md
+<<<EOF
+## Metadata
+- **Project**: <name-of-project>
+- **Status**: <Draft-Validated-Superseded>
+- **Stage**: <discovery-delivery-retrospective>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+## Related Documents
+<!--e.g. [document name](link)-->
+- Business Problem Template
+- Feature Template
+- Epic Template
+- Issue Doc Strategy Minimal 
+
+---
+
+
+# Problem Discovery
+
+# Discovery Goal
+<!-- What are we trying to understand? -->
+
+---
+
+# Research Plan
+
+## Objectives
+<!-- What do we need to learn? -->
+
+## Research Methods
+<!-- Interviews, observation, analytics, literature review, competitor analysis, surveys, etc. -->
+
+---
+
+# Findings
+
+## Target User
+<!-- Who experiences this problem? -->
+
+---
+
+## Context
+<!-- Where and when does the problem occur? -->
+
+---
+
+## Current Behavior
+<!-- What do users do today? -->
+
+---
+
+## Pain Points
+<!-- What makes the current behavior difficult or frustrating? -->
+
+---
+
+## Desired Outcome
+<!-- What outcome is the user actually trying to achieve? -->
+
+---
+
+## Root Cause Analysis
+
+<!-- What appears to be causing the problem? -->
+
+### Evidence-supported causes
+
+-
+
+### Remaining hypotheses
+
+-
+
+---
+
+## Evidence
+
+### User Research
+
+-
+
+### Analytics / Metrics
+
+-
+
+### Literature / Domain Research
+
+-
+
+### Competitor / Existing Solutions
+
+-
+
+---
+
+## Open Questions
+
+-
+
+---
+
+## Problem Statement
+<!-- Final output of this document -->
+<!--Use dedicated Problem Statement template if the problem needs extensive documentation or multiple problem statements discovered for the same business problem-->
+
+**Template**
+
+> Help **[target user]**
+> achieve **[desired outcome]**
+> because currently **[current behavior / pain]**.
+
+Example:
+
+> Help junior developers retain technical knowledge from self-learning because they rarely revisit their notes after completing tutorials.
+
+---
+
+## Scope
+
+### In Scope
+
+-
+
+### Out of Scope
+
+-
+
+---
+
+## Decision
+
+<!-- Is the problem sufficiently understood? -->
+
+- [ ] Ready to proceed to Solution Discovery
+- [ ] More research required
+
+Reason:
+
+---
+
+## References
+<!-- Add any relevant links to data, research, related issues, or documentation. -->
+- Issue: <!--e.g., #123 -->
+- PR: <!--e.g., #456 -->
+- GH Docs: <!--e.g., [document name](link) -->
+EOF>>>
+    │           │   ├── PST-XXX-problem-statement-[template].md
+<<<EOF
+## Metadata
+- **Project**: <name-of-project>
+- **Status**: <Draft-Validated-Superseded>
+- **Stage**: <discovery-delivery-retrospective>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+## Related Documents
+<!--e.g. [document name](link)-->
+- Business Problem Template
+- Problem Discovery Template
+
+---
+
+# PST-XXX Problem Statement: [Name]
+
+## Statement
+
+Help **[target user]**
+achieve **[desired outcome]**
+because currently **[current behavior/pain]**.
+
+---
+
+## Scope
+
+### In Scope
+
+-
+
+### Out of Scope
+
+-
+
+---
+
+## Supporting Evidence
+
+- Finding 1
+- Finding 2
+- Finding 3
+
+---
+
+## Ready for Solution Discovery
+
+- [ ] Problem is specific
+- [ ] User is identified
+- [ ] Context is understood
+- [ ] Desired outcome is clear
+- [ ] Supported by evidence
+
+## Related Work
+
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #456 -->
+- Decisions: <!-- e.g. PDR-001 -->
+EOF>>>
+    │           │   ├── SCS-XXX-solution-concept-selection-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In Progress-Completed-Superseded>
+- **Stage**: <discovery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- Business Problem
+- Problem Discovery
+- Problem Statement
+- Solution Space Exploration
+
+---
+
+# Solution Concept Selection
+
+## Problem Context
+
+### Problem Statement
+<!-- Link or copy the validated problem statement -->
+
+> Help [target user] achieve [desired outcome] because currently [current behavior / pain].
+
+---
+
+## Selection Goal
+<!-- What decision are we making? -->
+
+Example:
+
+> Select the solution concept most worth validating based on user value, feasibility, and risk.
+
+---
+
+## Candidate Concepts
+
+<!-- Concepts identified during Solution Space Exploration -->
+
+### Concept 1: [Name]
+
+#### Description
+<!-- How does this approach solve the problem? -->
+-
+
+#### Expected Value
+
+<!-- Why could this solve the problem? -->
+
+-
+
+#### Key Advantages
+<!-- Why is this concept promising? -->
+-
+
+#### Main Concerns
+<!-- What are the potential risks or downsides of this concept? -->
+-
+
+---
+
+### Concept 2: [Name]
+
+#### Description
+<!-- How does this approach solve the problem? -->
+-
+
+#### Expected Value
+<!-- Why could this solve the problem? -->
+
+-
+
+#### Key Advantages
+
+-
+
+#### Main Concerns
+
+-
+
+---
+
+### Concept 3: [Name]
+
+#### Description
+
+-
+
+#### Expected Value
+<!-- Why could this solve the problem? -->
+
+-
+
+#### Key Advantages
+
+-
+
+#### Main Concerns
+
+-
+
+---
+
+## Evaluation Criteria
+
+<!-- Define what matters when selecting a concept -->
+
+| Criteria | Importance | Description |
+|---|---|---|
+| User Value | High/Medium/Low | Does it meaningfully solve the problem? |
+| Feasibility | High/Medium/Low | Can it be built with available resources? |
+| Effort | High/Medium/Low | How much time/complexity is required? |
+| Risk | High/Medium/Low | What could make this fail? |
+| Differentiation | High/Medium/Low | Why would users choose this? |
+
+---
+
+## Concept Comparison
+
+| Concept | User Value | Feasibility | Effort | Risk | Differentiation | Notes |
+|---|---|---|---|----|---|---|
+| | | | | | | |
+
+---
+
+## Selected Solution Concept
+
+### Decision
+<!-- Which concept will be pursued? -->
+
+Selected concept:
+
+-
+
+---
+
+### Decision Rationale
+<!-- Why was this concept selected over alternatives? -->
+
+-
+
+---
+
+## Rejected Concepts
+<!-- Which concepts were rejected and why? -->
+
+| Concept | Reason Rejected |
+|---|---|
+| | |
+
+---
+
+## Initial Uncertainties
+<!-- What must be true for this solution concept to succeed? -->
+
+Examples:
+
+> I don't know if [Users will adopt this approach.]
+
+> I don't know if [Technical implementation is feasible.]
+
+> I don't know if [The solution creates enough value.]
+
+> I don't know if [The cost is acceptable.]
+
+---
+
+## Next Step
+
+Expected output:
+
+- Identify assumptions
+- Create assumption map
+- Define critical hypotheses
+- Design experiments
+
+---
+
+## References
+
+- Solution Space Exploration:
+- Research:
+- Competitor examples:
+- Supporting evidence:
+EOF>>>
+    │           │   └── SSE-XXX-solution-space-exploration-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In Progress-Completed-Superseded>
+- **Stage**: <discovery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- Business Problem
+- Problem Discovery
+- Problem Statement
+
+---
+
+# Solution Space Exploration
+
+## Problem Context
+
+### Problem Statement
+<!-- Link or copy the validated problem statement -->
+
+> Help [target user] achieve [desired outcome] because currently [current behavior / pain].
+
+---
+
+## Exploration Goal
+
+<!-- What are we trying to discover? -->
+
+Example:
+
+> Identify possible solution directions that could help junior developers retain technical knowledge.
+
+---
+
+## Solution Landscape
+<!-- Explore different categories of solutions, not individual features yet -->
+
+Reference: [Opportunity Solution Tree](#opportunity-solution-tree) as visualization of the solution landscape.
+
+### Solution Direction 1: [Name]
+
+#### Description
+
+<!-- How does this approach solve the problem? -->
+
+#### Examples / Existing Solutions
+
+<!-- Existing products, research, competitors, patterns -->
+
+-
+
+#### Advantages
+
+-
+
+#### Limitations / Risks
+
+-
+
+---
+
+### Solution Direction 2: [Name]
+
+#### Description
+
+-
+
+#### Examples / Existing Solutions
+
+-
+
+#### Advantages
+
+-
+
+#### Limitations / Risks
+
+-
+
+---
+
+#### Solution Direction 3: [Name]
+
+#### Description
+
+-
+
+#### Examples / Existing Solutions
+
+-
+
+#### Advantages
+
+-
+
+#### Limitations / Risks
+
+-
+
+---
+
+## Existing Solutions Research
+<!-- What already exists in this space? E.g. existing products, research, competitors, patterns, services, solutions -->
+
+| Solution | Approach | Strengths | Weaknesses | Relevant Learning |
+|---|---|---|---|---|
+| | | | | |
+
+---
+
+## Candidate Concepts
+<!-- Concepts identified as potentially promising. No decision made yet. -->
+
+-
+-
+-
+
+---
+
+## Next Step
+
+Expected output:
+
+- Create Solution Concept Selection artifact
+- Continue research
+- Gather additional evidence
+
+---
+
+## References
+
+- Research:
+- Competitor examples:
+- Existing products:
+- Articles/papers:
+
+---
+
+## Opportunity Solution Tree
+<!-- Visualize the solution landscape and candidate concepts -->
+<!--
+Desired Outcome = Business relevant metric that you want to improve.
+Opportunity = Pain point / problem that the user is experiencing.
+Solution = Possible solution direction that could help the user achieve the desired outcome.
+Experiment = Just a reference to the dedicated experiment that will validate the solution concept.
+-->
+
+```mermaid
+flowchart TD
+
+    O["Desired Outcome"]
+
+    O --> OP1["Opportunity 1<br>pain point**"]
+    O --> OP2["Opportunity 2"]
+    O --> OP3["Opportunity 3"]
+
+    OP1 --> S11["Solution A"]
+    OP1 --> S12["Solution B"]
+
+    OP2 --> S21["Solution C"]
+    OP2 --> S22["Solution D"]
+    OP2 --> S23["Solution E"]
+
+    OP3 --> S31["Solution F"]
+
+    S11 --> E111["Experiment"]
+    S12 --> E121["Experiment"]
+
+    S21 --> E211["Experiment"]
+    S22 --> E221["Experiment"]
+    S23 --> E231["Experiment"]
+
+    S31 --> E311["Experiment"]
+```
+EOF>>>
+    │           ├── 02-assumptions/
+    │           │   ├── ASB-assumptions-backlog-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In Progress-Completed-Superseded>
+- **Stage**: <discovery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- Business Problem
+- Problem Discovery
+- Problem Statement
+- Solution Space Exploration
+- Solution Concept Selection
+
+---
+
+# Assumptions Backlog
+
+## Purpose
+- Select assumptions from the list of assumptions to focus on first with the highest combination of:
+  - Importance
+  - Uncertainty
+  - Risk if Wrong 
+- Select the best validation approach (tool) to validate the citical assumptions.
+
+## Assumptions Backlog
+Use `ART-XXX-assumption-list.md` to create the assumptions backlog and prioritize the assumptions based on their importance and evidence level.
+
+**Priority** = `Impact (Importance)` × `Uncertainty (Evidence)` × `Consequence (Risk if Wrong)`
+
+**Validation Strategies:**
+- Interview users
+- Survey
+- Prototype
+- Wizard of Oz
+- Concierge test
+- Technical spike
+- Build & Observe
+- Analytics
+- A/B test
+- MVP
+
+**Validation Strategy Usage in %:** [Link](#validation-strategy-usage)
+
+**MVP Related rules**<br>
+- if assumption is (Yes or Maybe) MVP != automatically means `Build & Observe` as validation strategy. Choose appropriate validation strategy.
+- if assumption is (No) MVP != automatically means `Don't validate`. Choose appropriate validation strategy.
+
+### Backlog Table
+
+| Assumption ID | Type | Description | Priority | Validation Strategy | Tool ID | Reason for Selection | MVP Related |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| AS-XXX | User | What is the belief that you have about this uncertainty? | TBD | See Validation Strategy Types | ART-XXX-survey (TBD hyperlink) | TBD | <Yes/Maybe/No> |
+
+
+## Select Best Validation Approach (Tool)
+Populate table in section `Assumptions Backlog` with the best validation approach (tool) to validate the critical assumptions. Use tool selection steps from the [Discovery Guide](../../../project-governance/product-discovery/discovery-guide.md#3-tool-selection-heuristic) section 3 `Tool Selection Heuristic` to help you choose the right technique.
+
+## References
+- <!--[Discovery Guide](path-to-guide)-->
+- Issue <!--e.g. #125-->
+- PR <!--e.g. #220-->
+- <!--[Problem Discovery Guide Simple](path-to-guide)-->
+
+## Next Steps
+1. Use `Assumption backlog` as input to create `Experiments backlog` and prioritize the experiments based on their importance and evidence level.
+EOF>>>
+    │           │   └── ASL-assumption-list-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In Progress-Completed-Superseded>
+- **Stage**: <discovery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- Business Problem
+- Problem Discovery
+- Problem Statement
+- Solution Space Exploration
+- Solution Concept Selection
+
+---
+
+# Assumptions List
+
+## Purpose
+The purpose of this document is to capture all currently known product uncertainties and their associated assumptions and translate them into a `Assumption List` and `Assumption Mapping` to help prioritize the assumptions and identify the riskiest assumptions to focus on first.
+
+## Assumption List
+
+**Types to cover:**
+- Desirability (Market, Users)
+- Feasibility (Technology, Resources)
+- Viability (Business Model, Revenue Streams)
+
+**Uncertainty:**><br>
+`What we dont know?`
+
+**Uncertainties --> Assumptions:**<br>
+`What is our current belief (assumption) on this uncertainty?`
+
+**Scoring** = [Link](#scoring)
+
+| ID | Type | Uncertainty | (Belief) Assumption | Importance | Evidence | Risk if Wrong | Risk Level | Total Score |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| AS-XXX | User | [UNC-XXX] - What we dont know? | What is the belief that you have about this uncertainty? | <1-5> | <1-5> | What is the risk if this assumption is wrong? | <1-5> | <1-125> |
+
+---
+
+## Detailed Assumption Notes (Optional)
+<!--Use only for assumptions that require additional context or explanation-->
+
+### AS-XXX: [Assumptions Title]
+
+#### Assumption:
+
+#### Further Details / Notes:
+
+---
+
+## Assumption Mapping
+Visualize with a quadrant chart to help prioritize the uncertainties.
+`belief(Assumption)` + `evidence` + `importance` = `assumption mapping(prioritization)` 
+
+```mermaid
+quadrantChart
+    title Assumption Mapping
+    x-axis "Uncertainty 1 (strong evidence)" --> "Uncertainty 5 (no evidence)"
+    y-axis "Importance 1 (Low)"-->  "Importance 5 (Critical)"
+    quadrant-1 Critical Assumption
+    quadrant-2 Proven & Important
+    quadrant-3 Monitor
+    quadrant-4 Ignore
+    "Market needs feature": [0.15,0.95]
+    "Users prefer mobile": [0.75,0.85]
+    "Email reminders help": [0.65,0.45]
+    "Logo color matters": [0.25,0.15]   
+```
+
+### Scoring:
+- Importance Level:              
+  - 1 - Low
+  - 2 - Nice to have
+  - 3 - Useful
+  - 4 - Important
+  - 5 - Critical
+- Uncertainty Level (Evidence):
+  - 1 - Almost certain (strong evidence)
+  - 2 - Low uncertainty (some evidence)
+  - 3 - Some uncertainty (limited evidence)
+  - 4 - High uncertainty (little evidence)
+  - 5 - Unknown (no evidence)
+- Risk Level (Risk if Wrong):
+  - 1 - None
+  - 2 - Low
+  - 3 - Medium
+  - 4 - High
+  - 5 - Critical
+
+## References
+- [product-discovery-guide-simple.md](#) <!--e.g. [Product Discovery Guide Simple](https://github.com/your-repo/blob/main/path-to-guide) -->
+- Issue <!---e.g. #125-->
+- PR <!---e.g. #220-->
+
+## Next Steps
+1. Translate the `Critical Assumptions` into `Assumption Backlog` and prioritize them in artifact `assumption-backlog.md` to focus on the riskiest assumptions first.
+EOF>>>
+    │           ├── 03-discovery-techniques/
+    │           │   ├── CNS-XXX-constraints-notes-[template].md
+<<<EOF
+# CNS-XXX Constraints Notes: [Name]
+
+## Status
+<!-- Options: Draft | Active | Superseded -->
+
+## Related Context
+
+- Business Problem: <!-- [BP-XXX](URL-github/blob/main/path/to/business-problem) -->
+- Problem Statement: <!-- [PST-XXX](URL-github/blob/main/path/to/problem-statement) -->
+- Hypothesis: <!-- [HYP-XXX](URL-github/blob/main/path/to/hypothesis) -->
+- Option Sets: <!-- [OSS-XXX](URL-github/blob/main/path/to/option-sets) -->
+
+---
+
+## Constraint Summary
+<!-- High-level description of the constraint -->
+
+---
+
+## Constraint Type
+
+<!-- Select one or more -->
+
+- [ ] Technical constraint
+- [ ] Time constraint
+- [ ] Cost constraint
+- [ ] Resource constraint
+- [ ] UX / usability constraint
+- [ ] Security constraint
+- [ ] Performance constraint
+- [ ] Legal / compliance constraint
+- [ ] Infrastructure constraint
+
+---
+
+## Constraint Description
+
+<!-- Detailed explanation of the constraint -->
+
+---
+
+## Impact on Solution Space
+
+<!-- How this constraint limits or shapes possible solutions -->
+
+- [ ] Restricts:
+- [ ] Forces:
+- [ ] Eliminates:
+- [ ] Prioritizes:
+
+---
+
+## Affected Areas
+
+<!-- Where this constraint applies -->
+
+- [ ] Product features
+- [ ] Architecture
+- [ ] UX flow
+- [ ] Performance
+- [ ] Data handling
+- [ ] Integrations
+
+---
+
+## Severity
+
+<!-- How limiting is this constraint -->
+
+- [ ] Low (flexible, can be worked around)
+- [ ] Medium (requires design consideration)
+- [ ] High (strongly shapes solution)
+- [ ] Critical (non-negotiable)
+
+---
+
+## Workarounds / Flexibility
+
+<!-- If any, how can we mitigate or adapt -->
+
+- Workaround 1 <!-- e.g., alternative approach, design change -->
+- Workaround 2 <!-- e.g., temporary solution, process adjustment -->
+
+---
+
+## Risks Introduced
+
+<!-- What new risks does this constraint create -->
+
+- Risk 1 <!-- e.g., potential delay in project timeline -->
+- Risk 2 <!-- e.g., increased cost due to additional resources -->
+
+---
+
+## Open Questions
+
+<!-- What still needs clarification -->
+
+- Question 1 <!-- e.g., is this constraint applicable to all user segments? -->
+- Question 2 <!-- e.g., what is the impact on the overall timeline? -->
+
+---
+
+## Related Artifacts
+
+- Hypotheses: <!-- [HYP-XXX](URL-github/blob/main/path/to/hypothesis) -->
+- Option Sets: <!-- [OSS-XXX](URL-github/blob/main/path/to/option-sets) -->
+- Experiments: <!-- [EXP-XXX](URL-github/blob/main/path/to/experiment) -->
+- PDR: <!-- [PDR-XXX](URL-github/blob/main/path/to/pdr) -->
+
+---
+
+## Related Work
+
+- Issues: <!-- e.g., #125 -->
+- PRs: <!-- e.g., #130 -->
+- Notes: <!-- e.g., [Meeting Notes](URL-github/blob/main/path/to/meeting-notes) -->
+EOF>>>
+    │           │   ├── JTBD-XXX-job-to-be-done-[template].md
+<<<EOF
+# JTBD-XXX Job To Be Done: [Name of the Job To Be Done]
+
+## Status
+<!-- Options: Draft | Validated | Superseded -->
+
+---
+
+## User
+<!-- Who is trying to get the job done? -->
+<!-- Avoid demographics unless they directly influence behavior. -->
+
+---
+
+## Context
+<!-- What situation triggers the need? -->
+<!-- When does the job appear? -->
+<!-- What conditions make the job important? -->
+
+---
+
+## Job Statement
+<!-- Format:
+
+When <situation>,
+I want to <motivation/action>,
+so I can <desired outcome>.
+-->
+
+When:
+
+I want:
+
+So I can:
+
+---
+
+## Desired Outcomes
+<!-- What does success look like for the user? -->
+
+- 
+- 
+- 
+
+---
+
+## Current Alternatives
+
+<!-- How is the user solving the problem today? -->
+
+- 
+- 
+- 
+
+---
+
+## Pain Points
+
+<!-- What is frustrating, slow, risky, expensive, or difficult today? -->
+
+- 
+- 
+- 
+
+---
+
+## Assumptions
+
+<!-- What is believed but not yet validated? -->
+
+- 
+
+---
+
+## Evidence
+
+<!-- Interviews, observations, analytics, support tickets, research, etc. -->
+
+- 
+
+---
+
+## Insights
+
+<!-- Key learnings from this JTBD work -->
+
+- 
+
+---
+
+## Related Work
+
+- Business Problems: <!--[BP-001-business-problem](<URL: github/blob/main/>)-->
+- Assumptions: <!--[ASM-001-assumption](<URL: github/blob/main/>)-->
+- Experiments: <!--[EXP-001-experiment](<URL: github/blob/main/>)-->
+- Product Decision Records: <!--[PDR-001-product-decision-record](<URL: github/blob/main/>)-->
+- Issues: <!--e.g. #225-->
+- PRs: <!--e.g. #123-->
+EOF>>>
+    │           │   ├── OSS-XXX-option-sets-&-solution-sketches-[template].md
+<<<EOF
+# OSS-XXX Option Sets & Solution Sketches: [Name]
+
+## Status
+<!-- Options: Draft | Reviewed | Superseded -->
+
+## Problem Context
+<!-- What problem or hypothesis are these options addressing? -->
+
+- Related Problem Statement: <!-- [PST-XXX](<URL-github/blob/main/path/to/PST-XXX.md>) -->
+- Related Hypothesis: <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+
+## Goal
+<!-- What are we trying to optimize for? -->
+<!-- e.g. speed, cost, usability, simplicity, scalability -->
+
+## Option Set Overview
+<!-- High-level summary of possible solution directions -->
+
+- Option A: 
+- Option B:
+- Option C:
+
+---
+
+## Option A: [Name]
+
+### Description
+<!-- What is this approach? -->
+
+### How it works
+<!-- Brief explanation of mechanics -->
+
+### Pros
+- Advantage 1
+- Advantage 2
+
+### Cons
+- Disadvantage 1
+- Disadvantage 2
+
+### Complexity
+<!-- Low / Medium / High -->
+
+### Confidence
+<!-- How confident are we this could work? -->
+
+---
+
+## Option B: [Name]
+
+### Description
+...
+
+### How it works
+...
+
+### Pros
+- ...
+
+### Cons
+- ...
+
+### Complexity
+<!-- Low / Medium / High -->
+
+### Confidence
+<!-- Low / Medium / High -->
+
+---
+
+## Option C: [Name]
+<!-- Same structure as above -->
+
+---
+
+## Comparison Summary
+<!-- High-level comparison of options -->
+
+| Option | Complexity | Risk | Confidence | Notes |
+|--------|------------|------|------------|------|
+| A      | Low/Med/High | Low/Med/High | Low/Med/High | ... |
+| B      | Low/Med/High | Low/Med/High | Low/Med/High | ... |
+| C      | Low/Med/High | Low/Med/High | Low/Med/High | ... |
+
+---
+
+## Key Trade-offs
+<!-- What are the key trade-offs between the options? -->
+
+- Trade-off 1:
+- Trade-off 2:
+- Trade-off 3:
+
+---
+
+## Open Questions
+<!-- What questions remain unanswered about the options? -->
+- Question 1
+- Question 2
+
+---
+
+## Evidence
+<!-- What evidence do we have to support or refute the options? -->
+- Research: <!-- [RES-XXX](<URL-github/blob/main/path/to/RES-XXX.md>) -->
+- Benchmarks: <!-- [BM-XXX](<URL-github/blob/main/path/to/BM-XXX.md>) -->
+- User feedback: <!-- [UF-XXX](<URL-github/blob/main/path/to/UF-XXX.md>) -->
+- Technical constraints: <!-- [TC-XXX](<URL-github/blob/main/path/to/TC-XXX.md>) -->
+
+---
+
+## Related Artifacts
+
+- Business Problem: <!-- [BP-XXX](<URL-github/blob/main/path/to/BP-XXX.md>) -->
+- Problem Statement: <!-- [PST-XXX](<URL-github/blob/main/path/to/PST-XXX.md>) -->
+- Hypotheses: <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+- Experiments: <!-- [EXP-XXX](<URL-github/blob/main/path/to/EXP-XXX.md>) -->
+- Decision Records: <!-- [PDR-XXX](<URL-github/blob/main/path/to/PDR-XXX.md>) -->
+
+---
+
+## Next Step
+<!-- What happens after this? -->
+<!-- Usually: convert into Experiment or Decision Record candidate -->
+EOF>>>
+    │           │   ├── PER-XXX-persona-[name]-[template].md
+<<<EOF
+# PER-XXX Persona: [Name]
+
+## Status
+<!-- Options: Draft | Validated | Superseded -->
+
+## Purpose
+<!-- Why was this persona created? -->
+<!-- What user differences does it help explain? -->
+
+## Summary
+<!-- Short description of the user type. -->
+
+## Goals
+<!-- What is this user trying to achieve? -->
+
+- Goal 1
+- Goal 2
+
+## Needs
+<!-- What does this user require to be successful? -->
+
+- Need 1
+- Need 2
+
+## Behaviors
+<!-- Observable patterns, habits, or workflows. -->
+
+- Behavior 1
+- Behavior 2
+
+## Pain Points
+<!-- Common frustrations or obstacles. -->
+
+- Pain Point 1
+- Pain Point 2
+
+## Constraints
+<!-- Factors that limit or influence decisions. -->
+
+- Constraint 1
+- Constraint 2
+
+## Success Criteria
+<!-- How does this user define success? -->
+
+- Success Criterion 1
+- Success Criterion 2
+
+## Related Artifacts
+
+- JTBD: <!-- [JTBD-XXX](<URL-github/blob/main/path/to/JTBD-XXX.md>) -->
+- User Journeys: <!-- [ART-XXX](<URL-github/blob/main/path/to/ART-XXX.md>) -->
+- Assumptions: <!-- [ASM-XXX](<URL-github/blob/main/path/to/ASM-XXX.md>) -->
+- Experiments: <!-- [EXP-XXX](<URL-github/blob/main/path/to/EXP-XXX.md>) -->
+
+## Evidence
+<!-- Evidence supporting this persona. -->
+
+- Interviews:
+- Observations:
+- Analytics:
+- Research:
+
+## Insights
+<!-- Key learnings about this user type. -->
+
+- Insight 1
+- Insight 2
+
+## Related Work
+
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #456 -->
+- Decisions: <!-- e.g. PDR-001 -->
+EOF>>>
+    │           │   ├── PRO-XXX-prototype-[template].md
+<<<EOF
+# PRO-XXX Prototype: [Name]
+
+## Status
+<!-- Options: Draft | In Review | Tested | Discarded -->
+
+## Related Hypothesis
+- HYP-XXX: <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+
+## Related Experiment
+- EXP-XXX: <!-- [EXP-XXX](<URL-github/blob/main/path/to/EXP-XXX.md>) -->
+
+---
+
+## Problem / Uncertainty
+<!-- What are we trying to understand that cannot be tested with an experiment alone? -->
+
+---
+
+## Goal of Prototype
+<!-- What is this prototype meant to clarify? -->
+
+- [ ] UX understanding
+- [ ] Workflow validation
+- [ ] Interaction clarity
+- [ ] Feasibility exploration
+
+---
+
+## Prototype Link(s)
+
+<!-- Primary section: actual prototype artifacts -->
+
+- Figma: <!-- link -->
+- Figma FigJam (if used): <!-- link -->
+- Code prototype: <!-- repo / branch link -->
+- Mock / demo: <!-- link -->
+
+---
+
+## What This Tests
+<!-- What uncertainty does this prototype reduce? -->
+
+- [ ] User understanding of flow
+- [ ] Interaction clarity
+- [ ] Concept comprehension
+- [ ] Technical feasibility (light)
+
+---
+
+## What This Does NOT Test
+<!-- Explicit boundaries -->
+
+- [ ] Performance at scale
+- [ ] Production readiness
+- [ ] Full system integration
+- [ ] Edge case handling
+
+---
+
+## Success Criteria
+<!-- What would indicate this prototype is useful? -->
+
+- [ ] Users understand concept without explanation
+- [ ] Key interactions feel intuitive
+- [ ] Confusion points are minimal or identifiable
+
+---
+
+## Failure Criteria
+<!-- What indicates the prototype is not valid? -->
+
+- [ ] Users misinterpret flow
+- [ ] Core interaction is unclear
+- [ ] Concept requires heavy explanation
+
+---
+
+## Observations
+<!-- Findings from review or testing -->
+
+---
+
+## Insights
+<!-- What did we learn? -->
+
+---
+
+## Outcome
+
+- [ ] Proceed to Experiment
+- [ ] Refine Prototype
+- [ ] Reject Direction
+- [ ] Update Hypothesis
+
+---
+
+## Related Artifacts
+
+- Hypothesis: <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+- Option Sets: <!-- [OSS-XXX](<URL-github/blob/main/path/to/OSS-XXX.md>) -->
+- Experiment: <!-- [EXP-XXX](<URL-github/blob/main/path/to/EXP-XXX.md>) -->
+- Problem Statement: <!-- [PST-XXX](<URL-github/blob/main/path/to/PST-XXX.md>) -->
+- PDR: <!-- [PDR-XXX](<URL-github/blob/main/path/to/PDR-XXX.md>) -->
+
+---
+
+## Related Work
+
+- Issues:
+- PRs:
+- Notes:
+EOF>>>
+    │           │   ├── SM-XXX-simple-measurement-[template].md
+<<<EOF
+# SM-XXX Simple Measurement: [Name]
+
+## Status
+<!-- Options: Planned | Active | Completed | Archived -->
+
+## Related Hypothesis
+- HYP-XXX: <!--[HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+
+## Related Experiment (if any)
+- EXP-XXX: <!--[EXP-XXX](<URL-github/blob/main/path/to/EXP-XXX.md>) -->
+
+---
+
+## What We Are Measuring
+<!-- What exact behavior, metric, or signal are we tracking? -->
+
+---
+
+## Why Experiment is Not Suitable
+<!-- Why can't this be validated via a proper experiment? -->
+
+- [ ] Too early / low fidelity signal
+- [ ] No ability to control variables
+- [ ] No user access for testing
+- [ ] Operational or technical constraints
+- [ ] Cost/time too high for experiment
+
+---
+
+## Measurement Goal
+<!-- What decision or uncertainty does this measurement help reduce? -->
+
+---
+
+## Metric Definition
+
+### Primary Metric
+<!-- The main thing being observed -->
+
+- Metric: <!-- e.g. Number of users completing a task -->
+- Definition: <!-- e.g. Number of users who successfully complete the task divided by total number of users attempting the task -->
+- Unit: <!-- e.g. Percentage of users -->
+
+### Supporting Metrics (optional)
+<!-- Additional metrics that help interpret the primary metric -->
+
+- Metric 1: <!-- e.g. Time taken to complete the task -->
+- Metric 2: <!-- e.g. Number of errors encountered -->
+
+---
+
+## Measurement Method
+<!-- How will we collect this data? -->
+
+- [ ] Manual tracking
+- [ ] Logs / analytics
+- [ ] Observational sampling
+- [ ] Spreadsheet tracking
+- [ ] System counters
+- [ ] Proxy indicators
+
+---
+
+## Data Source
+<!-- Where will the data come from? -->
+
+- Users: <!-- e.g. Beta testers, internal users, etc. -->
+- System: <!-- e.g. Internal systems, production environment, etc. -->
+- Logs: <!-- e.g. Server logs, application logs, etc. -->
+- External tools: <!-- e.g. Analytics platforms, third-party services, etc. -->
+
+---
+
+## Baseline (if known)
+<!-- What is the current state or value of the metric before any changes? -->
+
+- Current value: <!-- e.g. 75% of users complete the task successfully -->
+- Observation context: <!-- e.g. Based on last quarter's data, during peak usage hours -->
+
+---
+
+## Thresholds
+
+### Success Signal
+<!-- What indicates improvement or validation direction? -->
+
+- Condition 1 <!-- e.g. Metric exceeds 80% completion rate -->
+- Condition 2 <!-- e.g. Metric shows consistent improvement over 3 consecutive weeks -->
+
+### Warning Signal
+<!-- What indicates negative or inconclusive trend? -->
+
+- Condition 1 <!-- e.g. Metric falls below 50% completion rate -->
+- Condition 2 <!-- e.g. Metric shows inconsistent results over 3 consecutive weeks -->
+
+---
+
+## Expected Insight
+
+<!-- What do we expect to learn from this measurement? -->
+
+---
+
+## Observations
+
+<!-- Raw collected data or notes -->
+
+---
+
+## Insights
+
+<!-- Interpretation of measurement -->
+
+---
+
+## Decision Impact
+
+<!-- What changes if this signal is confirmed? -->
+
+- Update hypothesis: <!-- e.g. Refine the hypothesis based on new insights -->
+- Proceed to experiment: <!-- e.g. Launch the next phase of testing -->
+- Create PDR: <!-- e.g. Document the proposed direction -->
+- Stop direction: <!-- e.g. Halt the current approach -->
+
+---
+
+## Related Artifacts
+
+- Hypothesis: <!-- [HYP-XXX](URL-github/blob/main/path/to/hypothesis) -->
+- Experiment: <!-- [EXP-XXX](URL-github/blob/main/path/to/experiment) -->
+- Problem Statement: <!-- [PST-XXX](URL-github/blob/main/path/to/problem-statement) -->
+- PDR: <!-- [PDR-XXX](URL-github/blob/main/path/to/pdr) -->
+
+---
+
+## Related Work
+
+- Issues: <!-- e.g. #125 -->
+- PRs: <!-- e.g. #130 -->
+- Notes: <!-- e.g. [Meeting Notes](URL-github/blob/main/path/to/meeting-notes) -->
+EOF>>>
+    │           │   ├── SUR-XXX-survey-[template].md
+<<<EOF
+# SUR-XXX Survey: [Name]
+
+## Status
+<!-- Options: Draft | Ready | Running | Closed | Archived -->
+
+---
+
+## Purpose
+<!-- Why are we running this survey? --> <!-- What decision or uncertainty should this help with? -->
+
+---
+
+## Related Problem / Hypothesis (optional)
+- **Problem:**<br>
+<!-- [UNC-XXX](path-to-uncertainty) - Short description of the uncertainty -->
+- **Hypothesis:**<br>
+<!-- [HYP-XXX](path-to-hypothesis) - Short description of the hypothesis -->
+
+---
+
+## Target Respondents
+<!-- Who should answer this survey? Keep this broad and behavior-based. -->
+
+- Primary audience:
+   - <!--TBD-->
+- Optional segments:
+   - <!--TBD-->
+- Exclusions (if any):
+   - <!--TBD-->
+
+---
+
+##  Survey Scope
+
+### Main Research Questions
+<!-- 1-3 core things we want to learn -->
+
+- Question 1: <!--TBD-->
+- Question 2: <!--TBD-->
+- Question 3: <!--TBD-->
+
+### Survey Type
+- [ ] Discovery (understand needs and pain points)
+- [ ] Validation (test assumptions or concepts)
+- [ ] Feedback (collect reactions to something existing)
+
+### Estimated Completion Time
+
+- Estimated time: <!-- e.g. 3-5 minutes -->
+
+---
+
+## Survey Questions
+
+### Warm-up Questions
+<!-- Basic context questions -->
+
+1. <!--Question 1-->
+2. <!--Question 2-->
+
+### Core Questions
+<!-- Keep questions clear, neutral, and short -->
+
+1. <!--Question 1-->
+   - [ ] <!--Option 1-->
+   - [ ] <!--Option 2-->    
+2. <!--Question 2-->
+3. <!--Question 3-->
+   - [ ] <!--Option 1-->
+   - [ ] <!--Option 2-->
+   - [ ] <!--Option 3--> 
+4. <!--Question 4-->
+5. <!--Question 5-->
+
+### Optional Open-ended Questions
+<!-- Useful for richer qualitative insight -->
+
+1. <!--Question 1-->
+2. <!--Question 2-->
+
+---
+
+## Distribution Plan
+<!-- How and where will we collect responses? -->
+
+- Channel(s): 
+   - <!--Distribution channel 1-->
+   - <!--Distribution channel 2-->
+- Start date: <!-- e.g. 2024-01-01 -->
+- End date: <!-- e.g. 2024-01-07 -->
+- Owner: <!-- e.g. John Doe -->
+- Sample target: 
+   - <!-- e.g. at least 30 responses -->
+
+---
+
+## Success Criteria
+<!-- What makes this survey useful? -->
+
+- Minimum responses:
+   - <!--20 responses for initial analysis-->
+- Required response quality:
+   - <!-- e.g. at least 80% of respondents answer all core questions -->
+- Decision readiness signal: 
+   - <!-- e.g. clear pattern across top 2 pain points -->
+
+---
+
+## Risks / Bias Checks
+<!-- Keep it simple and practical -->
+
+- Questions are neutral (not leading)
+- Audience matches target users
+- Survey length is reasonable
+- We have a plan for low response rate
+
+---
+
+## Results Summary
+
+### Response Overview
+
+- Total responses: <!-- e.g. 25 -->
+- Completion rate: <!-- e.g. 80% -->
+- Time window: <!-- e.g. 2024-01-01 to 2024-01-07 -->
+
+For details, see <!--[EVI-XXX-evidence](path-to-evidence)-->
+
+---
+
+## Related Work
+
+- Business Problem: <!-- BP-XXX -->
+- JTBD: <!-- JTBD-XXX -->
+- Assumptions: <!-- ASM-XXX -->
+- Experiments: <!-- EXP-XXX -->
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #456 -->
+EOF>>>
+    │           │   └── UJR-XXX-user-journey-[name]-[template].md
+<<<EOF
+# UJR-XXX User Journey: [Name]
+
+## Status
+<!-- Options: Draft | Validated | Superseded -->
+
+## Purpose
+<!-- Why was this journey created? -->
+<!-- What uncertainty or question does it help answer? -->
+
+## User
+<!-- Who is trying to get the job done? -->
+<!-- Reference related JTBD or Persona if available.-->
+Persona: <!--[PER-XXX-persona](<URL: github/blob/main/>)--> 
+
+## Context
+<!-- What situation triggers the need? -->
+
+## Related Artifacts
+<!-- Link supporting discovery artifacts. -->
+
+- JTBD: <!-- [JTBD-XXX](<URL: github/blob/main/>) -->
+- Persona: <!-- [PER-XXX](<URL: github/blob/main/>) -->
+- Assumptions: <!-- [ASM-XXX](<URL: github/blob/main/>) -->
+- Experiments: <!-- [EXP-XXX](<URL: github/blob/main/>) -->
+
+## Journey Map
+
+```mermaid
+flowchart LR
+
+%% ========== STAGES ==========
+A[Trigger / Context] --> B[Entry Point]
+B --> C[Core Action 1]
+C --> D[Core Action 2]
+D --> E[Outcome]
+
+%% ========== FRICTIONS ==========
+C -. friction .-> F1[Problem / Friction A]
+D -. friction .-> F2[Problem / Friction B]
+
+%% ========== WORKAROUNDS ==========
+F1 -. workaround .-> W1[Workaround / User behavior]
+F2 -. workaround .-> W2[Workaround / User behavior]
+
+%% ========== INSIGHTS ==========
+F1 -. insight .-> I1[Insight]
+F2 -. insight .-> I2[Insight]
+
+%% ========== OPTIONAL BRANCHES ==========
+C --> X1[Alternative path]
+X1 --> E
+
+%% ========== FAILURE STATE ==========
+D --> Z[Drop-off / Failure]
+```
+
+## Key Frictions
+<!-- What obstacles, delays, confusion, or pain points were identified? -->
+
+- Friction 1:
+- Friction 2:
+
+## Insights
+<!-- What was learned from mapping the journey? -->
+
+- Insight 1:
+- Insight 2:
+
+## Opportunities
+<!-- Potential improvements, hypotheses, or areas for further discovery. -->
+
+- Opportunity 1:
+- Opportunity 2:
+
+## Evidence
+<!-- Supporting evidence for this journey. -->
+<!--If not physical evidence artifact is not available, describe the context, observations, or data that support the journey. -->
+
+- Interviews: <!-- with user XYZ -->
+- Observations: <!-- when, where, and context of observations -->
+- Analytics: <!-- relevant metrics or data points -->
+- Research: <!-- studies, reports, or other research findings -->
+
+## Related Work
+
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #456 -->
+- Decisions: <!-- e.g. PDR-001 -->
+EOF>>>
+    │           ├── 04-experiments/
+    │           │   ├── EVI-XXX-evidence-[template].md
+<<<EOF
+# EVI-XXX Evidence: <Insert Evidence Title>
+
+### Survey: <!--[ART-XXX-survey](path-to-survey)-->
+### Status: <!-- Planned | In Progress | Completed -->
+### Responses: <!-- e.g. 28 -->
+
+## Reference
+- <!--[ART-XXX-survey](path-to-survey)-->
+- <!--[HYP-XXX-hypothesis](path-to-hypothesis)-->
+- <!--[ATR-XXX-experiments-backlog](path-to-experiments-backlog)--> 
+
+---
+
+## Questions
+
+### Question 1 - <!-- Insert Question 1 -->
+
+<!-- evidence e.g. table
+| Option               | Responses |   % |
+| -------------------- | --------: | --: |
+| Email                |        15 | 54% |
+| In-app notification  |         8 | 29% |
+| No strong preference |         5 | 18% |
+-->
+
+---
+
+### Question 2 - <!-- Insert Question 2 -->
+
+<!-- evidence e.g. bullet points
+**Email**
+- I check email throughout the workday.
+- Easier to find important information later.
+- Less likely to miss than in-app messages.
+
+**In-app**
+- I ignore most emails.
+- Notifications are relevant only while using the app.
+- I dislike inbox clutter.
+
+**No preference**
+- As long as it's timely.
+- Depends on urgency.
+- Either is fine.
+-->
+
+---
+
+## Representative Quotes
+<!--Representative quotes highlight key insights from the survey responses-->
+
+> "Insert representative quote 1"
+
+
+---
+
+## Findings
+<!-- Findings summarize the key insights from the survey responses -->
+
+### Finding 1
+<!--Insert key finding-->
+
+### Finding 2
+<!--Insert key finding-->
+
+---
+EOF>>>
+    │           │   ├── EXB-experiments-backlog-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In Progress-Completed-Superseded>
+- **Stage**: <discovery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- Business Problem
+- Problem Discovery
+- Problem Statement
+- Solution Space Exploration
+- Solution Concept Selection
+
+---
+
+# Experiments Backlog
+
+## Purpose
+
+- **1)** The purpose of this document is to capture the experiments backlog for the product discovery process. It serves as a central repository for all experiments that are planned, in progress, or completed.
+
+- **2)** It serve as simple execution guide for experiments
+
+---
+
+## ToC:
+1. [Backlog](#1-backlog)
+2. [Execution Guide](#2-execution-guide)<br>
+2.1 [Execution Flow](#21-execution-flow)<br>
+2.2 [Hypothesis Creation Rules](#22-hypothesis-creation-rules)<br>
+2.3 [Experiment Creation Rules](#23-experiment-creation-rules)<br>
+2.4 [Evidence Gathering Rules](#24-evidence-gathering-rules)<br>
+
+---
+
+## 1. Backlog
+
+| Priority | Assumption ID | Hypothesis | Experiment | Evidence | Decision | Owner| Status | Start Date | Completion Date |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | [AS-XXX,...,...] | <!--[HYP-XXX-hypothesis](path-to-hypothesis)--> | <!--[ART-XXX-survey](path-to-survey)--> | <!--[EVI-XXX-evidence](path-to-evidence)--> | <!--[PDR-XXX-product-decision-record](path-to-decision)--> | TBD | <!--Planned | In Progress | Completed --> | YYYY-MM-DD | YYYY-MM-DD |
+
+---
+
+## 2. Execution Guide
+
+### 2.1 Execution Flow
+```mermaid
+flowchart LR
+    A[Experiment Backlog] --> B["Select next experiment to execute"]
+    B --> C[Create GH Issue for experiment] --> D[Create dedicate branch] --> E[Use Execution Guide to execute experiment] --> f[Gather Evidence] --> G[Update Experiment Backlog with evidence and decision] --Repeat--> A
+```
+
+### 2.2 Hypothesis Creation Rules
+
+- `A hypothesis always belongs to an experiment, not directly to an uncertainty or assumption.` --> one hypothesis = one experiment.
+
+- To create a hypothesis, use the following formula:<br>
+`Hypothesis = Assumption + Expected Outcome + Rationale`, hypothesis makes the assumption testable and measurable.
+
+- Hypothesis `does not require standalone artifact` if the assumption is simple and can be tested with a single experiment. However, if the assumption is complex and requires multiple experiments to test, then it is recommended to create a separate hypothesis artifact.
+
+- Add hypothesis ID `HYP-XXX` and link it to the assumption backlog table to link the assumption with the hypothesis. If Hypothesis is simple, just add hypothesis descition in the assumption backlog table.
+
+- Use template from: `docs/product/discovery/templates/HYP-XXX-hypothesis-[template].md`
+
+### 2.3 Experiment Creation Rules
+- To create an experiment, use the following formula:<br>
+`Experiment = Hypothesis + Experiment Design + Metrics`, experiment makes the hypothesis testable and measurable    
+
+- Experiment `does not require standalone artifact` if the hypothesis is simple and can be tested with a single experiment. However, if the hypothesis is complex and requires multiple experiments to test, then it is recommended to create a separate experiment artifact.
+
+- Add experiment ID `EXP-XXX` and link it to the hypothesis backlog table to link the hypothesis with the experiment. If Experiment is simple, just add experiment descition in the hypothesis backlog table.
+
+- Use template from: `docs/product/discovery/templates/EXP-XXX-experiment-[template].md`
+
+### 2.4 Evidence Gathering Rules
+- Evidence is gathered from the experiment and used to make a decision on whether to proceed with the solution, pivot, or abandon the idea.
+
+- Evidence `does not require standalone artifact` if the experiment is simple and can be tested with a single experiment. However, if the experiment is complex and requires multiple experiments to test, then it is recommended to create a separate evidence artifact.
+
+- Add evidence ID `EVD-XXX` and link it to the experiment backlog table to link the experiment with the evidence. If Evidence is simple, just add evidence descition in the experiment backlog table.
+
+- Use template from: `docs/product/discovery/templates/PDR-XXX-product-decision-record-[template].md`
+EOF>>>
+    │           │   ├── EXP-XXX-experiment-[template].md
+<<<EOF
+# EXP-XXX Experiment: [Name]
+
+## Status
+<!-- Options: Planned | Running | Completed | Validated | Invalidated | Abandoned -->
+
+## Related Hypothesis
+<!-- What hypothesis is this experiment testing? -->
+
+- <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+
+## Problem / Unknown
+<!-- What do we not understand yet? -->
+<!-- What uncertainty are we trying to reduce? -->
+
+## Goal of Experiment
+<!-- What are we trying to learn or validate? -->
+
+## Assumptions Being Tested
+<!-- What must be true for the hypothesis to hold? -->
+
+- Assumption 1
+- Assumption 2
+
+---
+
+## Experiment Design
+
+### Approach
+<!-- How will we test this? -->
+
+### Method Type
+<!-- Choose one or more -->
+- [ ] Prototype (e.g. Figma, InVision, etc.)
+- [ ] Fake door test (e.g. landing page, email, etc.)
+- [ ] User test (e.g. moderated, unmoderated, diary study, etc.)
+- [ ] A/B test (e.g. Google Optimize, Optimizely, etc.)
+- [ ] Technical spike (e.g. POC, feasibility study, etc.)
+- [ ] Analytics review (e.g. GA, Mixpanel, Amplitude, etc.)
+- [ ] Manual simulation (e.g. concierge, Wizard of Oz, etc.)
+
+
+### Setup
+<!-- What needs to be prepared to run this experiment? -->
+
+- Step 1
+- Step 2
+- Step 3
+
+### Participants / Data Source
+<!-- Who or what provides the signal? -->
+
+- Users:
+- System data:
+- Logs / metrics:
+
+---
+
+## Success Criteria
+
+<!-- What would indicate the hypothesis is supported? -->
+
+- Signal 1:
+- Signal 2:
+
+## Failure Criteria
+
+<!-- What would clearly invalidate the hypothesis? -->
+
+- Signal 1:
+- Signal 2:
+
+---
+
+## Metrics
+
+<!-- What will you measure? -->
+
+- Primary metric:
+- Secondary metrics:
+- Guardrail metrics:
+
+---
+
+## Expected Outcome
+
+<!-- What do we expect to learn, not build? -->
+
+---
+
+## Results
+
+### Observations
+<!-- What actually happened? -->
+
+### Data
+<!-- Any measurable results -->
+
+### Insights
+<!-- What did we learn? -->
+
+---
+
+## Conclusion
+
+<!-- What does this mean for the hypothesis? -->
+
+- [ ] Validated
+- [ ] Invalidated
+- [ ] Inconclusive
+
+---
+
+## Decision Impact
+
+<!-- What changes after this experiment? -->
+
+- Update hypothesis: <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+- Proceed to option set / solution: <!-- [OSS-XXX](<URL-github/blob/main/path/to/OSS-XXX.md>) -->
+- Create PDR: <!-- [PDR-XXX](<URL-github/blob/main/path/to/PDR-XXX.md>) -->
+- Stop exploration: 
+
+---
+
+## Related Artifacts
+
+- Hypothesis: <!-- [HYP-XXX](<URL-github/blob/main/path/to/HYP-XXX.md>) -->
+- Problem Statement: <!-- [PST-XXX](<URL-github/blob/main/path/to/PST-XXX.md>) -->
+- Option Sets: <!-- [OSS-XXX](<URL-github/blob/main/path/to/OSS-XXX.md>) -->
+- PDR: <!-- [PDR-XXX](<URL-github/blob/main/path/to/PDR-XXX.md>) -->
+
+---
+
+## Related Work
+
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #456 -->
+- Notes: <!-- e.g. [NOTE-XXX](<URL-github/blob/main/path/to/NOTE-XXX.md>) -->
+EOF>>>
+    │           │   ├── EXS-XXX-experiment-simple-[template].md
+<<<EOF
+# EXS-XXX Experiment Simple: <!-- Experiment Name -->
+
+## Status
+<!-- Options: Planned | Running | Completed | Validated | Invalidated | Abandoned -->
+
+---
+
+## Uncertainty
+- UNS-XXX: - <!-- Insert uncertainty description -->
+
+## Assumptions
+- AS-XXX: - <!-- Insert assumption description -->
+
+## Hypothesis
+- HYP-XXX: - <!-- Insert hypothesis description -->
+
+---
+
+## Experiment
+
+### Tool: <!-- Insert tool name -->
+
+### Description
+<!-- Example: Survey 20 users using three questions about UI theme preference. -->
+
+---
+
+## Evidence
+(To be completed)
+
+- Total responses: <!-- e.g. 20 -->
+- Completion rate: <!-- e.g. 100% -->
+- Time window: <!-- e.g. 2026-07-01 to 2026-07-15 -->
+
+
+
+## Design Lightweight Exploration Artifact (Optional)
+<!-- Example: Link to Figma prototype or wireframe, sketch, or other design artifact -->
+
+## Decision
+<!--✅ Supported | ⚠️ Partially Supported | ⛔ Refused -->
+
+### Detail
+<!--Detail description of decision-->
+
+### Decision Date: <YYYY-MM-DD>
+
+(To be completed)
+
+## Next Steps
+(To be completed)
+
+## References
+- ISSUE: <!--e.g. #125-->
+- PR: <!--e.g. #126-->
+- <!--[EXB-experiments-backlog.md](path-to-experiments-backlog)--> 
+EOF>>>
+    │           │   └── HYP-XXX-hypothesis-[template].md
+<<<EOF
+# HYP-XXX Hypothesis: [Name]
+
+## Status
+<!-- Options: Draft | Validated | Invalidated | Superseded -->
+<!-- Example: 
+We are testing user preference distribution between email notifications, in-app notifications, and no strong preference.
+ -->
+
+---
+
+## Summary
+<!-- One-sentence description of the hypothesis. -->
+
+---
+
+## Hypothesis Statement
+<!-- Format & Example:
+
+We believe that <users' notification channel preference (email, in-app, or no strong preference) will show a measurable distribution rather than a single dominant choice>
+
+for <active users of the product>
+
+will result in <a split distribution across email, in-app, and no preference responses, with no single option universally dominating>
+
+because <user behavior varies based on communication habits, attention patterns, and perceived intrusiveness of notification channels>.
+-->
+
+---
+
+## Problem Being Addressed
+<!-- What problem or uncertainty does this hypothesis attempt to explain or solve? -->
+
+<!--Example
+We don't know whether users prefer email notifications or in-app notifications or have no strong preference.
+
+This uncertainty blocks product decisions around notification system design.
+-->
+
+---
+
+## Expected Outcome
+<!-- What outcome do you expect if the hypothesis is true? -->
+
+<!--Example
+- Users will select email, in-app, or no preference in measurable proportions
+- No single option will account for all users
+-->
+
+- Outcome 1
+  - <!--Example: Users will select email, in-app, or no preference in measurable proportions--> 
+- Outcome 2
+  - <!--Example: No single option will account for all users-->
+
+---
+
+## Success Criteria
+<!-- What observable evidence would support this hypothesis? -->
+
+- Criterion 1
+   - <!--Example: ≥40% of users selecting one option indicates strong preference signal -->
+- Criterion 2
+   - <!--Example: ≤20% of users selecting any single option indicates no dominant preference -->
+- Criterion 3
+   - <!--Example: Distribution across all three options indicates no dominant channel-->
+
+---
+
+## Failure Criteria
+<!-- What evidence would invalidate this hypothesis? -->
+
+- Criterion 1
+   - <!--Example: 90%+ selecting one option (unexpected dominance not aligned with assumption set) -->
+- Criterion 2
+   - <!--Example: Low response rate (<10 users) making results inconclusive -->
+
+---
+
+## Assumptions
+<!-- What assumptions must be true for this hypothesis to hold? -->
+
+- AS-XXX: <!--Example: Users prefer email notifications due to habitual email checking--> 
+- AS-XXX: <!--Example: Users prefer in-app notifications due to email fatigue or spam avoidance-->
+- AS-XXX: <!--Example: Users have no strong preference if notifications are timely and relevant--> 
+
+---
+
+## Risks
+<!-- What could make the hypothesis incorrect even if initial evidence appears positive? -->
+
+- Risk 1
+- Risk 2
+
+---
+
+## Related Artifacts
+
+- Business Problem: <!-- [BP-XXX](<URL-github/blob/main/path/to/BP-XXX.md>) -->
+- Problem Statement: <!-- [PST-XXX](<URL-github/blob/main/path/to/PST-XXX.md>) -->
+- JTBD: <!-- [JTBD-XXX](<URL-github/blob/main/path/to/JTBD-XXX.md>) -->
+- Assumptions: <!-- [ASM-XXX](<URL-github/blob/main/path/to/ASM-XXX.md>) -->
+- Experiments: <!-- [EXP-XXX](<URL-github/blob/main/path/to/EXP-XXX.md>) -->
+
+---
+
+## Evidence
+<!-- Existing evidence supporting the hypothesis. -->
+<!--If not physical evidence artifact is not available, describe the context, observations, or data that support the journey. -->
+
+- <!--[EVI-XXX-evidence](path-to-evidence) -->
+
+---
+
+## Decision
+
+- <!--[PDR-XXX-product-decision-record](path-to-decision-record) -->
+
+---
+
+## Related Work
+
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #456 -->
+- Decisions: <!-- e.g. PDR-001 -->
+EOF>>>
+    │           ├── 05-decisions/
+    │           │   └── PDR-XXX-product-decision-record-[template].md
+<<<EOF
+# PDR-XXX: Title
+
+## Status
+<!-- Options: Proposed | Accepted | Superseded | Rejected -->
+
+---
+
+## Context
+<!-- Describe the context and background of the decision. Include any relevant information that led to the decision being made. -->
+
+<!--One sentence summary of the context-->
+
+### Assumptions Evaluation:
+<!-- Evaluate the assumptions related to this decision. Include any relevant information that supports the decision. -->
+
+**AS-XXX**<br>
+> We believe [assumption statement].
+
+**Evidence**<br>
+<!--Evidence/statements/data that support or refuse the assumption-->
+
+**Decision**<br>
+<!--✅ Supported | ⚠️ Partially Supported | ⛔ Refused -->
+
+<!--One sentence reason for assumption refinement-->
+
+A refined assumption might be:
+> [Refined assumption statement] 
+
+---
+
+## Design lightweight Exploration Artifact (Optional)
+<!-- Example: Link to Figma prototype or wireframe, sketch, or other design artifact -->
+
+---
+
+## Decision
+<!-- Describe the decision that was made. Include any relevant information that supports the decision. -->
+
+---
+
+## Decision Date
+<!-- Date the decision was made. -->
+
+---
+
+## Alternatives Considered
+<!-- Describe the alternatives that were considered and why they were not chosen. -->
+
+### Option A - [Alternative Name]
+<!-- Describe the first alternative considered. Include any relevant information that supports the decision (pros/cons). -->
+Pros:
+-
+
+Cons:
+-
+
+### Option B - [Alternative Name]
+<!-- Describe the second alternative considered. Include any relevant information that supports the decision (pros/cons). -->
+Pros:
+-
+
+Cons:
+-
+
+---
+
+## Supporting Evidence
+<!-- Describe the evidence that was used to make the decision. Include any relevant information that supports the decision (data, research insights, etc.). -->
+Links to:
+
+- BP: <!--[BP-001-business-problem](<URL: github/blob/main/>)-->
+- Experiments: <!--[EXP-001-experiment](<URL: github/blob/main/>)-->
+- Assumptions: <!--[ASM-001-assumption](<URL: github/blob/main/>)--> 
+- Research: <!--[RES-001-research](<URL: github/blob/main/>)-->
+
+---
+
+## Consequences
+<!-- Describe the expected outcomes, tradeoffs, and risks associated with the decision. -->
+
+### Positive Consequences
+- <!--Describe the positive consequences of the decision.-->
+
+### Trade-offs
+- <!--Describe the trade-offs of the decision.-->
+
+### Risks
+- <!--Describe the risks of the decision.-->
+
+---
+
+## Related Work
+<!-- Describe any related work that is relevant to the decision. Include links to any relevant artifacts. -->
+- Issues: <!--e.g. #225-->
+- PRs: <!--e.g. #123-->
+- Epic: <!--e.g. #456-->
+EOF>>>
+    │           ├── 06-risks/
+    │           │   └── .gitkeep
+    │           ├── 07-product-requirements-definition/
+    │           │   └── PRD-XXX-product-requirements-definition.[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In-Progress-Completed-Superseded>
+- **Stage**: <discovery-delivery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- Business Problem
+- Problem Discovery
+- Problem Statement
+- Solution Space Exploration
+- Solution Concept Selection
+- Assumptions List
+- Assumptions Backlog
+
+---
+
+# Product Requirements Document (PRD)
+
+## Purpose
+
+<!--
+Define the purpose of this PRD.
+
+This document describes:
+- What product will be built
+- Why it will be built
+- What requirements it must satisfy
+
+It is the single source of truth for product scope and requirements.
+-->
+
+---
+
+# Product Baseline
+
+## Product Goal
+
+<!-- What problem does this product solve and what outcome should it achieve? -->
+
+---
+
+## Target Users
+
+<!-- Who will use this product? -->
+
+- User segment 1: <!-- E.g.: "Small business owners who want to manage their finances more effectively" -->
+- User segment 2: <!-- E.g.: "Freelancers who need to track their time and expenses" -->
+
+---
+
+## Desired User Outcome
+
+<!-- What should users be able to achieve after using the product? -->
+<!-- E.g.: "Users should be able to easily track their expenses and generate reports to manage their finances more effectively" -->
+
+---
+
+## MVP / Release Scope
+<!-- What is the minimum set of features that must be delivered to achieve the product goal? -->
+
+**Rule for MVP:**<br>
+- Start from outcomes, not feature ideas.
+- List only capabilities required to hit Success Criteria.
+- Mark `Must` only if removing it would make goal failure likely.
+
+***Priority:** Must / Should / Could<br>
+***Release Decision:** Included / Excluded
+
+| ID | Feature | User Outcome Supported | *Priority | *Release Decision | Reason | Validation Metric |
+|----|---------|-----------------------|----------|-----------------|--------|------------------| 
+| MVP-XXX | <Basic Onboarding Flow> | <First-time user can start without help> | Must | Included | <Removes first-use friction> | <activation rate> |
+
+---
+
+## Success Criteria
+<!-- How will we know the product/release is successful? -->
+
+| Metric | Current Baseline | Target |
+|---|---|---|
+| <!-- SC-XXX --> | <!-- Activation rate: 32% --> | <!-- Activation rate: 32% to 50% --> |
+| <!--SC-XXX--> | <!-- Task completion: 58% --> | <!-- Task completion: 58% to 80% --> |
+
+---
+
+# Product Features
+
+<!--
+High-level capabilities/features.
+Detailed requirements belong below.
+-->
+
+## Epics:
+
+### Epic [ID]: [Name]
+
+#### Purpose
+<!-- Why does this epic exist? -->
+
+#### User Value
+<!-- What user problem does this epic solve? -->
+
+#### Requirements
+<!-- List of requirements that belong to this epic -->
+- 
+
+#### Acceptance Criteria
+<!-- How will we know this epic is complete? -->
+- 
+
+#### Dependencies
+<!-- What other epics, features, or systems does this epic depend on? -->
+
+#### Risks
+<!-- What are the risks associated with this epic? -->  
+
+#### Github Milestones
+- <!-- [MILESTONE-NAME-XXX](https://github.com/repo-owner/repo-name/milestone/#number) -->
+
+---
+
+## Features
+
+### Feature [ID]: [Name]
+
+#### Purpose
+<!-- Why does this feature exist? -->
+
+#### User Value
+<!-- What user problem does this feature solve? -->
+
+#### Requirements
+
+| ID | Requirement | Priority |
+|---|---|---|
+| REQ-XXX | | Must / Should / Could |
+
+
+#### Acceptance Criteria
+<!-- How will we know this feature is complete? -->
+- 
+
+#### Dependencies
+<!-- What other features, epics, User stories, or systems does this feature depend on? -->
+
+#### Risks
+<!-- What are the risks associated with this feature? -->  
+
+#### Github Issue
+- <!-- [ISSUE-NAME-XXX](https://github.com/repo-owner/repo-name/issues/#number) -->
+
+---
+
+# User Stories
+<!-- Convert requirements into user-focused scenarios -->
+<!--Process:
+1. Copy `BL-product-backlog-[template]_v0.0.0.ods` to `docs/product/discovery/requirements/` and rename it appropriately.
+2. Copy `BL-product-backlog-log-[template].md` to `docs/product/discovery/requirements/` and rename it appropriately.
+3. Revision control described in the log file.
+-->
+
+- Reference: [BL-product-backlog_v0.0.0.ods](<link-to-product-backlog>)<br>
+- Reference: [BL-product-backlog-log.md](<link-to-product-backlog-log>)
+
+
+---
+
+# User Experience
+
+## User Flows
+<!-- 
+1. Describe only the main/core user flows:
+- Onboarding
+- Purchase
+- Settings
+- Account Management 
+  
+2. Use the User flow diagram template `docs/product/architecture/templates/ui/FL-XXX-<name-flow>-[template].md` to create a flow diagram and store it in the dedicated folder `docs/product/architecture/ui/ui-flows/`.
+
+3. Update the flow diagram links in the `BL-product-backlog_v0.0.0.ods` file.
+  -->
+
+### Core User Flows:
+1. FL-XXX: [Name of Flow]
+   - Description: 
+   - Steps:
+     1. Step 1
+     2. Step 2
+     3. Step 3
+   - References:
+     - [FL-XXX-<name-of-flow>.md](<link-to-flow-diagram>)
+
+---
+
+**Flow Types:**
+- **Core**: Main user flows that are essential to the product
+- **Variant**: Alternative flows based on different conditions
+- **Exception**: Flows that handle errors or exceptional cases
+
+### Flows Lists:
+| ID | Flow Name | Description | Type| Reference |
+|----|-----------|-------------|-----------|-----|
+| FL-XXX | Flow Name XYZ | Description of the flow | <Core-Variant-Exception> | [FL-XXX-<name-of-flow>.md](<link-to-flow-diagram>) |
+
+---
+
+## Wireframes / Mockups
+<!-- Add links or references -->
+
+### Wireframes
+<!--Process for adding wireframes:
+1. Open Figma and load the wireframe file template.
+2. Update name and version in Figma.
+3. Create or update content in the wireframe.
+4. Export the wireframe as a .fig file and upload it to the appropriate location in the repository.
+5. Update the reference link in this PRD to point to the wireframe file 
+6. Update wireframe log with the new version and changes.
+-->
+
+#### Lo-fi Wireframe (status: Active | Inactive)
+Reference: [lo-fi-wireframe-<name-of-wireframe>.fig](<link-to-wireframe>)
+
+#### Hi-fi Wireframe (status: Active | Inactive)
+Reference: [hi-fi-wireframe-<name-of-wireframe>.fig](<link-to-wireframe>)
+
+---
+
+# Requirements
+<!--Process steps for adding requirements:
+1. Copy `RR-requirements-register-[template]_v0.0.0.ods` to `docs/product/discovery/requirements/` and rename it appropriately.
+2. Copy `RR-requirements-register-log-[template].md` to `docs/product/discovery/requirements/` and rename it appropriately.
+3. Revision control described in the log file.  
+-->
+
+## Functional Requirements
+<!-- System behaviour requirements -->
+<!-- In PRD keep only stable, product-defining requirements. Keep evolving requirements in the requirements register. -->
+
+Reference: [RR-requirements-register.ods](<link-to-requirements-register>)<br>
+Reference: [RR-requirements-register-log.md](<link-to-requirements-register-log>)
+
+***Priority:** Must / Should / Could
+
+| ID     | Requirement | *Priority              |
+| ------ | ----------- | --------------------- |
+| FR-XXX | Example requirement | Must |
+
+---
+
+## Non-Functional Requirements
+<!-- Quality attributes -->
+<!-- In PRD keep only stable, product-defining requirements. Keep evolving requirements in the requirements register. -->
+
+Reference: [RR-requirements-register.ods](<link-to-requirements-register>)<br>
+Reference: [RR-requirements-register-log.md](<link-to-requirements-register-log>)
+
+***Priority:** Must / Should / Could<br>
+***Type:** Performance / Security / Reliability / Scalability / Other
+
+| ID     | Requirement | *Type | *Priority              |
+| ------ | ----------- | ----- | --------------------- |  
+| NFR-XXX | Example requirement | Performance | Must |
+
+---
+
+## Technical Requirements
+<!-- Technical constraints or implementation requirements or platform requirements -->
+<!-- In PRD keep only stable, product-defining requirements. Keep evolving requirements in the requirements register. -->
+
+Reference: [RR-requirements-register.ods](<link-to-requirements-register>)<br>
+Reference: [RR-requirements-register-log.md](<link-to-requirements-register-log>)
+
+***Priority:** Must / Should / Could<br>
+
+| ID     | Requirement | *Priority              |
+| ------ | ----------- | --------------------- |
+| TR-XXX | Example requirement | Must |
+
+---
+
+# Assumptions
+<!--Assumptions backlog lives in `docs/product/discovery/assumptions/ART-XXX-assumptions-backlog.md`-->
+
+Reference: [ART-XXX-assumptions-backlog.md](<link-to-assumptions-list>)
+
+---
+
+# Decisions
+<!-- Product decisions records lives in `docs/product/discovery/decisions/PDR-XXX-product-decision-record.md` -->
+
+Reference: [PDR-XXX-product-decision-record.md](<link-to-decision-record>)
+
+---
+
+# Open Questions
+<!-- Dedicated for decision-blocking unknowns that affect scope, release, implementation, architecture or user behavior -->
+<!--Limit to 3-7 questions, don't include trivial or non-blocking questions-->
+
+***Impact:** High / Medium / Low<br>
+***Status:** Open / Answered / Closed<br>
+**Note:** Remove completed questions from this section and move them to the decision record.
+
+| ID | Question | *Impact | *Status |
+|----|----------|--------|--------|
+| Q-XXX | Example question | High | Open |
+
+---
+
+# Dependencies and Risks
+
+## Dependencies
+<!-- What other products, teams, or systems does this product depend on? -->
+
+***Type:** Product / Team / System<br>
+***Status:** Open / In Progress / Completed / Blocked
+
+| ID | Dependency | *Type | Owner | Why it matters | *Status |
+|----|------------|------|-------|----------------|--------|
+| Dep-XXX | Example dependency | Product / Team / System | <name-of-owner> | <why-it-matters> | Open |  
+
+---
+
+## Risks and Mitigations
+<!--Process for risks management:
+1. Copy `RSK-XXX-risk-register-[template]_v0.0.0.ods` to `docs/risk/` and rename it appropriately.
+2. Copy `RSK-XXX-risk-register-log-[template].md` to `docs/risk/` and rename it appropriately.
+3. Revision control described in the log file.
+-->
+
+Reference: [RSK-XXX-risk-register.ods](<link-to-risk-register>)<br>
+Reference: [RSK-XXX-risk-register-log.md](<link-to-risk-register-log>)
+
+---
+
+# Release Plan
+<!-- How will this product be released to users? -->
+<!--Process:
+1. Define the release plan and rollback values
+2. Monitor after release
+3. If success, close PRD else rollback -->
+
+## Release Version
+- <!-- E.g. v1.1.0 -->
+
+## Release Goal
+<!-- What is the goal of this release? -->
+- <!--E.g.: Deploy core onboarding flow to reduce user drop-off from 45% to 30% -->
+
+## Validation After Release
+<!-- How will we measure learning after users start using it? -->
+
+1. <!--E.g.: Service uptime above 99% over 7 days-->
+2. <!--E.g.: Error rate below 1% over 7 days-->
+3. <!-- Onboarding completion increases by at least 10 percentage points within 14 days -->
+
+## Rollback Criteria
+<!-- Define exact conditions that trigger rollback -->
+
+1. <!-- Crash loop persists over 10 minutes -->
+2. <!-- Error rate above 5% for more than 30 minutes -->
+3. <!-- Critical user path unavailable for more than 15 minutes -->
+
+---
+
+# Release Runbook
+<!--Execution, monitoring and recovery of the release-->
+<!--Process:  
+1. Create a dedicated release runbook file in `docs/product/delivery/releases/v<release-version>/` using the template `RRB-XXX-release-runbook-[template].md`.
+2. Update the reference link in this PRD to point to the release runbook file. 
+-->
+
+Release runbook is a step-by-step guide for executing, monitoring, and recovering from the release.
+
+Reference: [RRB-XXX-release-runbook.md](<link-to-release-runbook>)
+
+---
+
+## References
+- Business Problem: <!-- Link to the business problem document -->
+- Problem Statement: <!-- Link to the problem statement document -->
+- Solution Discovery: <!-- Link to the solution discovery document -->
+- Assumptions: <!-- Link to the assumptions document -->
+- Experiments: <!-- Link to the experiments document -->
+- Research: <!-- Link to the research document -->
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #125 -->
+EOF>>>
+    │           └── 08-runbook/
+    │           │   └── RRB-XXX-release-runbook-[template].md
+<<<EOF
+## Metadata
+
+- **Project**: <name-of-project>
+- **Status**: <Draft-In-Progress-Completed-Superseded>
+- **Stage**: <discovery-delivery>
+- **Owner**: <name-of-owner>
+- **Last Updated**: <YYYY-MM-DD>
+
+---
+
+## Related Documents
+
+- PRD: <!-- link -->
+- Release Plan: <!-- link -->
+- Issues: <!-- e.g. #123 -->
+- PRs: <!-- e.g. #125 -->
+
+---
+
+# Release Runbook [RRB-XXX]: <Name of Release>
+
+## Release Summary
+
+- **Release Version**: <!--e.g. v1.1.0-->
+- **Environment**: <!--prod / staging / pi5-->
+- **Target Host**: <!--server / device / cluster-->
+- **Release Goal**: <!--one sentence-->
+- **Deployment Window**: <!--date/time-->
+
+---
+
+## Included Scope
+
+- <!--feature / issue / PR-->
+- <!--feature / issue / PR-->
+
+## Excluded Scope
+
+- <!--explicitly not included-->
+
+---
+
+## Prerequisites
+
+- [ ] All required PRs merged
+- [ ] Build passes
+- [ ] Environment variables / secrets configured
+- [ ] Backups created if needed
+- [ ] Monitoring available
+- [ ] Rollback path confirmed
+
+---
+
+## Deployment Steps
+<!--E.g.:
+1. Pull latest code / checkout release tag
+2. Build application or image
+3. Publish artifact if needed
+4. Run database migration if needed
+5. Deploy to target environment
+6. Restart service / container
+7. Confirm service is healthy
+-->
+
+1. ...
+2. ...
+3. ...
+
+---
+
+## Verification Steps
+
+- [ ] Application starts successfully
+- [ ] Health endpoint responds
+- [ ] Core user flow works
+- [ ] Logs show no critical errors
+- [ ] Monitoring shows normal CPU / memory / error rate
+
+---
+
+## Validation Window
+
+- **Duration**: <!--e.g. 7 days-->
+- **Metrics to watch**:
+1. <!--uptime target-->
+2. <!--error-rate target-->
+3. <!--business metric target-->
+
+---
+
+## Rollback Criteria
+
+Rollback if any of the following occur:
+
+- <!--critical user flow broken-->
+- <!--error rate above threshold-->
+- <!--service unavailable for threshold duration-->
+
+---
+
+## Rollback Steps
+<!-- E.g.:
+1. Stop current release
+2. Re-deploy previous stable version
+3. Restore previous config or image tag
+4. Verify service health
+5. Confirm core user flow works again
+-->
+
+1. ...
+2. ...
+3. ...
+
+---
+
+## Post-Release Notes
+
+- **Release Result**: <!--successful / rolled back / partial-->
+- **Observed Issues**: <!--list any issues observed during release-->
+- **Follow-up Actions**: <!--list any follow-up actions needed-->
+- **Decision**: <!--close PRD / hotfix / new release-->
+
+---
+
+## References
+
+- Monitoring dashboard: <!-- link -->
+- Deployment script: <!-- link -->
+- Rollback artifact/version: <!-- link -->
+EOF>>>
+    ├── 03_project-governance/
+    │   ├── assets/
+    │   │   └── .gitkeep 
+    │   ├── discovery-technique-guide.md
+<<<EOF
+# Discovery Technique Guide
+
+## ToC
+1. [Purpose](#1-purpose)
+2. [Uncertainty Dimensions](#2-uncertainty-dimensions)
+3. [Concept Flow](#3-concept-flow)
+4. [Discovery Techniques Type selection](#4-discovery-techniques-type-selection)
+5. [Practical Process Example](#5-practical-process-example)
+
+## 1. Purpose
+The purpose of discovery techniques guide is to provide a explanation of process leading to appropriate discovery techniques selection. The guide is intended to help me understand the process and how to apply it in practice.
+
+**Key Concept:<br> Discovery techniques are selected based on the type of uncertainty and the evidence needed to reduce that uncertainty.** 
+
+**Core Model:**<br>
+1. Why are we investigating?
+   - Assumption
+   - Hypothesis
+2. What type of uncertainty exists?
+   - User
+   - Context
+   - Behavior
+   - Operational
+   - Value
+   - Feasibility
+   - Risk
+3. How do we investigate?
+   - Technique
+   - Artifact
+   - Evidence
+
+---
+
+## 2. Uncertainty Dimensions
+
+- User
+  - Who is the user?
+  - What matters to them?
+- Context
+  - In what situation the need/problem occurs?
+- Behavior
+  - What do users actually do?
+- Operational
+  - How is the system operated?
+- Value
+  - Does solving this create enough value?
+- Feasibility
+  - Can we realistically build and operate this?
+- Risk
+  - What can prevent success?
+
+---
+
+## 3. Concept Flow
+
+Note that focus is on gathering right type of evidence to reduce uncertainty. That is the key for discovery techniques selection. 
+
+```mermaid
+flowchart LR
+    A[Assumption] --> B
+    B[Hypothesis] --> C
+    C[Uncertainty Dimensions] --What evidence should we gather? --> D
+    D[Discovery Techniques Type selection] --> E
+    E[Evidence]
+```
+
+---
+
+## 4. Discovery Techniques Type selection 
+
+Hereby are examples of discovery techniques selection based on uncertainty dimensions. The table is not exhaustive and is intended to provide a starting point for discovery techniques selection.
+
+| Dimension | Key Question              | Sub-question  | Evidence Needed                   | Preferred Technique |
+| --------- | ------------------------- | -------------------------------- | ------------------- | ------------------- |
+| User      | Who is the user?          | Who is the target user? | User Segments | Personas            |
+| User      | Who is the user?          | Are there different user groups? | User Segments | Personas            |
+| User      | What matters to the user? | What are they trying to achieve? | User Goals          | JTBD Interview      |
+| User      | What matters to the user? | What motivates them?             | User Motivations    | JTBD Interview      |
+| User      | What matters to the user? | What outcome are they trying to achieve?   | Desired Outcome     | JTBD Interview      |
+| Context   | In what situation does the need/problem occur? | When does the need/problem occur?                 | Timing |  Context Interview                     |
+| Context   | In what situation does the need/problem occur? | Where does the need/problem occur?                | Location | Context Interview                     |
+| Context   | In what situation does the need/problem occur? | What triggers the need/problem?     | Triggers     | Context Interview                     |
+| Context   | In what situation does the need/problem occur? | What external factors influence the situation?    | External Factors | Context Interview                     |
+| Context   | In what situation does the need/problem occur? | What constraints exist in the user's environment? | Constraints  | Context Interview / Constraints Notes |
+| Behavior  | What do users actually do? | What steps do users perform to achieve their goal?   | Steps | User Journey Mapping               |
+| Behavior  | What do users actually do? | What is the current workflow?                        | Workflow | User Journey Mapping               |
+| Behavior  | What do users actually do? | Where do users experience pain or friction?          | Pain Points | User Journey Mapping               |
+| Behavior  | What do users actually do? | What workarounds do users use today?                 | Workarounds | User Journey Mapping / Observation |
+| Behavior  | What do users actually do? | Which tools or systems do users interact with?       | Tools | User Journey Mapping               |
+| Behavior  | What do users actually do? | What information is created, consumed, or exchanged? | Information | User Journey Mapping               |
+| Operational | How is the system operated? | Who operates the system?  | Responsibilities | Operational Notes                     |
+| Operational | How is the system operated? | Who owns which responsibilities? | Ownership | Operational Notes                     |
+| Operational | How is the system operated? | How is the system maintained? | Maintenance | Operational Notes                     |
+| Operational | How is the system operated? | How are operational issues handled? | Issue Management | Operational Notes                     |
+| Operational | How is the system operated? | What operational procedures exist?  | Procedures | Operational Notes                     |
+| Operational | How is the system operated? | What operational constraints exist? | Constraints | Operational Notes / Constraints Notes |
+| Value     | Does solving this create enough value? | What value does solving this create for the user? | Value map              | JTBD / Interview               |
+| Value     | Does solving this create enough value? | What outcome improves if this is solved?  | Value map                         | JTBD / Interview               |
+| Value     | Does solving this create enough value? | How significant is the impact of the problem? |  Problem impact and severity     | Interview / Measurement        |
+| Value     | Does solving this create enough value? | How frequently does the problem occur?  | Occurrence frequency    | Interview / Measurement        |
+| Value     | Does solving this create enough value? | How much effort, time, or cost does the current situation consume? | Effort, time, cost | Measurement                    |
+| Value     | Does solving this create enough value? | Would users change their current behavior to use a solution? | Behavior change | Prototype / Experiment         |
+| Value     | Does solving this create enough value? | Would someone pay for this solution?  | Willingness to pay | Pricing Experiment / Interview |
+| Feasibility | Can we realistically build and operate this? | Is the required technology available? |   Technology capability and limitations    | Technical Spike / Research          |
+| Feasibility | Can we realistically build and operate this? | Can we integrate with required systems or dependencies? | Integration capability and dependency constraints      | Technical Spike / Prototype         |
+| Feasibility | Can we realistically build and operate this? | Can we access the required data?  | Data accessibility and quality | Data Analysis / Technical Spike     |
+| Feasibility | Can we realistically build and operate this? | Can we achieve required performance or scalability? | Performance and scalability | Proof of Concept / Performance Test |
+| Feasibility | Can we realistically build and operate this? | Can we achieve required security requirements? | Security requirements | Security Review / Spike             |
+| Feasibility | Can we realistically build and operate this? | Do we have the required skills and resources? | Skills and resources | Constraint Notes                    |
+| Feasibility | Can we realistically build and operate this? | Is the complexity acceptable compared to expected value? | Complexity | Option Analysis                     |
+| Risk      | What can prevent success?                      | What assumptions have the highest impact if wrong? |  Critical assumptions and impact            | Assumption Mapping    |
+| Risk      | What can prevent success?                      | What external dependencies can affect success? | External dependencies and impact | Dependency Analysis   |
+| Risk      | What constraints can limit success?            | What business, technical, or organizational constraints exist? | Constraints and impact | Constraints Notes     |
+| Risk      | What could cause failure after implementation? | What failure scenarios should we consider? | Failure scenarios and impact | Risk Analysis         |
+| Risk      | What risks need ongoing monitoring?             | Which risks require tracking over time?   | Risks and monitoring plan | Risk Log              |
+| Risk      | What risks are unknown or poorly understood?   | What information is missing?   | Unknown risks and knowledge gaps | Experiment / Research |
+
+---
+
+## 5. Practical Process Example
+
+### Rules:
+1. Dimensions are tackled in parallel, not sequentially.
+2. Hypothesis can have one or more dimensions of uncertainty.
+3. Each dimension of uncertainty can have one or more artifacts to capture the knowledge generated.
+4. Discovery techniques are selected based on the type of evidence needed to reduce uncertainty.
+
+```mermaid
+flowchart TB
+   A[**Assumption**<br>'I assume that users will adopt automatic invoice generation'] 
+   B[**Hypothesis**<br>'If we provide automatic invoice generation, users will reduce manual work and prefer this workflow.']
+   
+   subgraph "Uncertainty Dimensions:"     
+       direction TB
+       C[User]
+       C1[Do users actually want this?]
+       C2[Technique = JTBD Interview]
+       C3[Artifact = Interview Notes] 
+       D[Context]
+       E[Behavior]
+       E1[How do users create invoices today?]
+       E2[Technique = Observation / Journey Mapping]
+       E3[Artifact = Current Journey Map]
+       F[Operational]
+       G[Value]
+       G1[Is the saved time valuable enough?]
+       G2[Technique = Measurement]
+       G3[Artifact = Impact Analysis]
+       H[Feasibility]
+       H1[Can we integrate with the accounting system?]
+       H2[Technique = Technical Spike]
+       H3[Artifact = Spike report] 
+       I[Risk]
+       J[Evidence]
+
+      A --> B 
+      B --Yes--> C
+      C --> C1 --> C2 --> C3
+      B --No --> D
+      B --Yes--> E
+      E --> E1 --> E2 --> E3
+      B --No --> F
+      B --Yes--> G
+      G --> G1 --> G2 --> G3
+      B --Yes --> H
+      H --> H1 --> H2 --> H3
+      B --No --> I
+      C3 --> J
+      E3 --> J
+      G3 --> J
+      H3 --> J
+   end
+   
+```
+EOF>>>
+    │   └── product-discovery-guide-simple.md
+<<<EOF
+# Product Discovery Guide - Simple
+
+## ToC
+1. [Purpose](#1-purpose)
+2. [Flow Diagrams](#2-flow-diagrams)<br>
+   2.1. [SW Delivery Flow](#21-sw-delivery-flow)<br>
+   2.2. [Discovery Flow](#22-discovery-flow)<br>
+3. [Problem Discovery](#3-problem-discovery)<br>
+   3.1. [Business Problem](#31-business-problem)<br>
+   3.2. [Problem Discovery](#32-problem-discovery)<br>
+   3.3. [Problem Statement](#33-problem-statement)<br>
+4. [Solution Discovery](#4-solution-discovery)<br>
+   4.1. [Solution Space Exploration](#41-solution-space-exploration)<br>
+   4.2. [Solution Concept Selection](#42-solution-concept-selection)<br>
+   4.3. [Uncertainties & Assumptions](#43-uncertainties--assumptions)<br>
+   4.4. [Experiments](#44-experiments)<br>
+   4.5. [Decisions Record](#45-decisions-record)<br>
+5. [Product Requirements Document (PRD)](#5-product-requirements-document-prd)<br>
+    5.1. [Requirements Register](#51-requirements-register)<br>
+    5.2. [Product Backlog](#52-product-backlog)<br>
+    5.3. [Product Requirements Document (PRD)](#53-product-requirements-document-prd)<br>
+6. [Risk Management](#6-risk-management)
+
+## 1. Purpose
+This is a simplified guide to product discovery. It is designed to help me quickly understand the key steps in the product discovery process and how to apply them in practice.
+
+### Usage:
+This document is intended to describe the process `flow` as well as usage of `artifacts and templates` for each step of the process.
+
+#### Artifacts and Templates location:
+- **Architecture related:** `docs/product/architecture/templates`
+- **Product Discovery related:** `docs/product/discovery/templates`
+
+The Artifact and Template are copy/paste to relevant project folder and modified to fit the project context. The original template is `not modified`.
+
+
+---
+
+## 2. Flow Diagrams
+
+### 2.1 SW Delivery Flow
+See the High-level flowchart of the SW Delivery process below. Notice that `Architecture` is cross-cutting activity.
+
+![SW_Delivery_High-Level_Flowchart.drawio.png](assets/SW_Delivery_High-level_Flowchart.drawio.png)
+
+### 2.2 Discovery Flow
+
+```mermaid
+flowchart TD
+
+    subgraph PD["Problem Discovery"]
+        direction LR
+
+        A["Initial Business Problem"]
+        B["Problem Discovery<br/>• Target User<br/>• Context<br/>• Current Behavior<br/>• Pain / Impact<br/>• Desired Outcome<br/>• Open Questions"]
+        C["Problem Statement"]
+
+        A -->|"Frame & understand the problem"| B
+        B --> C
+    end
+
+    subgraph SD["Solution Discovery"]
+        direction TD
+
+        D["Solution Space Exploration"]
+        E["Solution Concept Selection"]
+        F["Identify Uncertainties"]
+        G["Formulate Assumptions"]
+        H["Assumption Map"]
+        I["Critical Hypotheses"]
+        J["Experiments / Tests"]
+        K["Evidence"]
+        L["Decision"]
+        M["MVP Definition + MVP Build"]
+        N["Requirements List<br>- As part of PRD"]
+        O["Product Features<br>- As part of PRD"]
+
+        C -->|"Explore possible solutions"| D
+        D -->|"Evaluate & select the most promising concept"| E
+        E --> F
+        F --> G
+        G --> H
+        H --> I
+        I --> J
+        J --> K
+        K --> L
+        L --> M
+        M --> N
+        N -- Req = one or multiple Features --> O
+    end
+    subgraph "PRD - Product Requirements Document"
+        direction TB
+        P["Product Requirements Document"]
+        Q["Product Features"]
+        R["Acceptance Criteria"]
+        S["User Stories"]
+        T["Wireframes / Mockups"]
+        U["Technical Requirements"]
+        V["Non-functional Requirements"]
+        W["Product Baseline"]
+
+        O --> P
+        P --> Q
+        P --> R
+        P --> S
+        P --> T
+        P --> U
+        P --> V
+        P --> W
+    end
+
+       M -- Discover further Uncertainties till its worth it --> F
+```
+
+## 3. Problem Discovery
+
+### 3.1 Business Problem
+
+Used to discover the problem from the business perspective.
+
+**Template:** `docs/product/discovery/templates/01-problem-framing/BP-XXX-business-problem-[template].md`
+
+---
+
+### 3.2 Problem Discovery
+
+Used to discovery the problem from the technical/user perspective.
+
+**Template:** `docs/product/discovery/templates/01-problem-framing/PDS-XXX-problem-discovery-[template].md`
+
+---
+
+### 3.3 Problem Statement
+
+Used to summarize the problem discovery results into a concise statement. Use it only when the problem is complex and requires dedicated artifact to summarize the problem discovery results. Otherwise, the problem statement should be included in the problem discovery artifact.
+
+**Template:** `docs/product/discovery/templates/01-problem-framing/PST-XXX-problem-statement-[template].md`
+
+---
+
+## 4. Solution Discovery
+
+### 4.1 Solution Space Exploration
+
+Used to explore the solution space and identify potential solutions to the problem.
+
+**Template:** `docs/product/discovery/templates/01-problem-framing/SSE-XXX-solution-space-exploration-[template].md`
+
+---
+
+### 4.2 Solution Concept Selection
+
+Used to select the most promising solution concept candidate from the solution space exploration based on assessment criteria.
+
+**Template:** `docs/product/discovery/templates/01-problem-framing/SCS-XXX-solution-concept-selection-[template].md`
+
+---
+
+### 4.3 Uncertainties & Assumptions
+
+Used to identify the uncertainties and related assumptions. Evaluate and map the assumptions to prioritize the riskiest assumptions to focus on first. Manage and track the assumptions via backlog.
+
+**Template:** `docs/product/discovery/templates/02-assumptions/ASL-assumption-list-[template].md`<br>
+**Template:** `docs/product/discovery/templates/02-assumptions/ASB-assumptions-backlog-[template].md`
+
+**Note:** After several projects, consider moving the `backlog.md to backlog.ods`.
+
+---
+
+### 4.4 Experiments
+
+Used to design and execute experiments to test the assumptions and gather evidence to support or refute the assumptions. The experiments are managed and tracked via backlog.
+
+```mermaid
+flowchart TB
+    A[Assumption] --Complex --> B
+    B[Experiment Artifact]
+    A --Simple--> C[Experiment-Simple Artifact]
+    B --Complex Evidence --> D[Evidence Artifact]
+    B --Simple Evidence --> E[Evidence-Inline of Experiment Artifact]
+    C --Simple Evidence --> E
+    D --> F[Experiment Backlog Artifact]
+    E --> F
+```
+
+**Template:** `docs/product/discovery/templates/04-experiments/EXP-XXX-experiment-[template].md`<br>
+**Template:** `docs/product/discovery/templates/04-experiments/EXS-XXX-experiment-simple-[template].md`<br>
+**Template:** `docs/product/discovery/templates/04-experiments/EVI-XXX-evidence-[template].md`<br>
+**Template:** `docs/product/discovery/templates/04-experiments/EXB-experiments-backlog-[template].md`
+
+**Note:** After several projects, consider moving the `backlog.md to backlog.ods`.
+
+#### Discovery Techniques (Tools) for Experiments
+
+Is defined as part of the experiment artifact and depends on the type of assumption and the resources available. The guide for selecting use [discovery-technique-guide.md](./discovery-technique-guide.md#toc) to help you choose the right technique.
+
+**Common Discovery Techniques Artifact Templates:**<br>
+Location: `docs/product/discovery/templates/03-discovery-techniques/*`
+- JTBD (Jobs to be Done)
+- User Journey Mapping
+- Constraints Notes
+- Option Sets & Solution Sketches
+- Personas
+- Prototypes
+- Simple Measurement
+- Survey
+- Etc.
+
+---
+
+### 4.5 Decisions Record
+
+Used to document the decisions made based on the evidence gathered from the experiments. Dedicated decision artifact is used when the decision is complex else the decision is part of the experiment artifact.
+
+**Template:** `docs/product/discovery/templates/05-decisions/PDR-XXX-product-decision-record-[template].md`
+
+---
+
+## 5. Product Requirements Document (PRD)
+
+```mermaid
+flowchart TB
+    A[Experiment/Decision] --> B
+    B[Requirements Register Artifact] --> C
+    C[Product Backlog Artifact]
+    B --> E[Product Requirements Document Artifact]
+```
+
+
+### 5.1 Requirements Register
+
+Used to capture the requirements from the experiments and decisions. The requirements are managed and tracked via register.
+
+**Template:** `docs/product/discovery/templates/07-product-requirements-definition/RR-requirements-register-[template].ods`
+
+---
+
+### 5.2 Product Backlog
+
+Used to manage and track product backlog items. It also tracks product by releases.
+
+**Template:** `docs/product/discovery/templates/07-product-requirements-definition/BL-product-backlog-[template].ods`
+
+---
+
+### 5.3 Product Requirements Document (PRD)
+
+Used to document the product requirements in a structured format. The PRD is used to communicate the product requirements to the stakeholders.
+
+**Template:** `docs/product/discovery/templates/07-product-requirements-definition/PRD-XXX-product-requirements-definition.[template].md`
+
+---
+EOF>>>
+    └── 04_risk/
+        └── .gitkeep
