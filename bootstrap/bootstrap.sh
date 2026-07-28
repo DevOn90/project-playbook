@@ -23,6 +23,7 @@ set -euo pipefail
 # 6.1 Setup Git conf user.name and user.email for the new project.
 # 6.2 Validate Git LFS installation and initialization in the repository.
 # 6.3 Validate local installation of uv (Astral).
+# 6.4 Set custom git config hookpath
 # ---------------------------------------------------------
 
 # ---------------------------------------------------------
@@ -31,6 +32,8 @@ set -euo pipefail
 PROJECT_NAME=""
 TS=$(date +"%Y-%m-%d %H:%M:%S")
 SCRIPT_NAME=$(basename "$0")
+GIT_HOOK_PATH=".githooks"
+
 GH_USERNAME=""
 GH_CONF_USER_NAME=""
 GH_CONF_USER_EMAIL=""
@@ -218,6 +221,20 @@ using uv-installation-guide.'
       return
    fi 
 }
+
+# 6.4 Set custom git config hookpath
+set_custom_git_hookpath() {
+    
+    # If the current git config hookpath is not equal to the desired GIT_HOOK_PATH, set it to the desired value
+    if [[ "$(git config --get core.hooksPath)" != "$GIT_HOOK_PATH" ]]; then
+        log_info "Setting custom git config hookpath to '$GIT_HOOK_PATH'..."
+        git config core.hooksPath "$GIT_HOOK_PATH"
+        log_info "Git config hookpath set to '$GIT_HOOK_PATH' successfully."
+    else
+        log_info "Git config hookpath is already set to '$GIT_HOOK_PATH'."
+        return
+    fi
+}
  
 
 # ---------------------------------------------------------
@@ -275,6 +292,9 @@ main() {
     log_info "Validating local installation of uv (Universal Viewer)..."
     validate_uv_installation
 
+    # Set custom git config hookpath
+    set_custom_git_hookpath
+    
     # Success message
     log_info "Bootstrap script completed successfully."
 

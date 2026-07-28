@@ -5,6 +5,7 @@
 2. [Pre-requisites](#2-pre-requisites)
 3. [Scaffold new project (for text based files)](#3-scaffold-new-project-for-text-based-files)
 4. [Scaffold new project (for binary files)](#4-scaffold-new-project-for-binary-files)
+5. [Make executable files executable](#5-make-executable-files-executable)
 
 ---
 
@@ -90,3 +91,35 @@ bash ./bin/scaffold/binary_scaffold.sh --template "$HOME/Desktop/04_Today_Work/p
 Repeat steps 4.2 to 4.5 for other scaffolding templates as needed.
 
 ---
+
+## 5. Make executable files executable
+ 
+### 5.1 Get project path
+Get/remember the full project path e.g. `/home/<user-name>/path-to/my-test-project`
+
+### 5.2 Template selection
+- Choose the executables template from the list in `templates/executables/` directory as per your need. E.g. `project-executables-template.txt` for executables based files.
+
+### 5.3 Change directory
+Open new terminal and change directory to the project-playbook root.
+```bash
+cd /home/<user-name>/path-to/project-playbook
+```
+
+### 5.4 Run executables script
+
+Run the script with the template and project path as arguments. Use `--dry-run` to see what will be created without actually creating the files and directories.
+
+```bash
+bash ./bin/scaffold/executables_init.sh --template "$HOME/Desktop/04_Today_Work/project-playbook/templates/executables/project-executables-template.txt" --path "$HOME/Desktop/04_Today_Work/my-test-project" --dry-run
+```
+
+### 5.5 Commit and push changes
+1. Open new terminal
+2. Go to directory of the new project e.g. `cd /home/<user-name>/path-to/my-test-project`  
+3. git add . (manually)
+4. git commit -m "Initial commit: make executables executable" (manually)       
+5. git push -u origin development (manually)
+
+### 5.6 Repeat for other executables templates
+Repeat steps 5.2 to 5.5 for other executables templates as needed.

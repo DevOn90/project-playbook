@@ -6,7 +6,9 @@
 #
 # @copy = parser delaminator
 # <source-path> = relative path of binary file folder in project-playbook
-# <destination-path> = relative path of binary file folder in destimation    
+# <destination-path> = relative path of binary file folder in destimation
+#
+# Note: This file (template) MUST end with new empty line
 # ------------------------------------------------------   
 
 @copy assets/.githooks .githooks
