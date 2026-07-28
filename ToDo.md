@@ -9,84 +9,88 @@
 │   ├── pre-commit
          1. (add script to scaffold root) - done
          2. requires uv to be installed (add to bootstrap) - done
-         3. requires scripts/ci/export_ods_to_csv.py
-         4. ?? are created .sh file executable by default? (if not find way to make it executable)
-         5. how to configure git to use the pre-commit hook? (add to bootstrap) 
+         3. requires scripts/ci/export_ods_to_csv.py -done
+         4. ?? are created .sh file executable by default? (if not find way to make it executable) -done
+         5. how to configure git to use the pre-commit hook? (add to bootstrap)  - done
 │   └── pre-push
 ├── .github
 │   ├── ISSUE_TEMPLATE
-│   │   └── issue-discovery.md
-│   ├── pull_request_template.md
-│   ├── skills
-│   │   ├── documentace-jsdoc
-│   │   │   └── SKILL.md
-│   │   └── vysvetli
-│   │       └── SKILL.md
+│   │   └── issue-discovery.md - done
+│   ├── pull_request_template.md - done
+│   ├── skills/
+│   │   ├── bezpecnost
+│   │   │   └── SKILL.md - done
+│   │   ├── hranicni
+│   │   │   └── SKILL.md - done
+│   │   ├── jsdoc
+│   │   │   └── SKILL.md - done
+│   │   ├── pojmenuj
+│   │   │   └── SKILL.md - done
+│   │   ├── proc
+│   │   │   └── SKILL.md - done
+│   │   ├── refaktor
+│   │   │   └── SKILL.md - done
+│   │   ├── testuj-e2e
+│   │   │   └── SKILL.md - done
+│   │   ├── testuj-unit
+│   │   │   └── SKILL.md - done
+│   │   ├── vysvetli
+│   │   │   └── SKILL.md - done
+│   │   └── zkontroluj
+│   │       └── SKILL.md - done
 │   └── workflows
-│       ├── ci-export-ods-to-csv.yml
-│       └── ci.yml
+│       ├── ci-export-ods-to-csv.yml - done
+│       └── ci.yml - done
 ├── docs
 │   ├── infra
 │   │   ├── ci
-│   │   │   └── .gitkeep
+│   │   │   └── .gitkeep - done
 │   │   └── templates
-│   │       ├── CIO-XXX-ci-documentation-overview-[template].md
-│   │       └── CIP-ci-pipeline-[ciName]-[template].md
+│   │       ├── CIO-XXX-ci-documentation-overview-[template].md - done
+│   │       └── CIP-ci-pipeline-[ciName]-[template].md - done
 │   ├── product
 │   │   ├── architecture
-│   │   │   ├── .gitkeep
+│   │   │   ├── .gitkeep - done
 │   │   │   ├── templates
-│   │   │   │   └── ui
+│   │   │   │   └── ui - done
 │   │   │   └── ui
-│   │   │       ├── lo-fi_wireframe
-│   │   │       └── ui-flows
-│   │   ├── delivery
-│   │   │   └── releases
-│   │   │       └── .gitkeep
-│   │   └── discovery
-│   │       ├── artifacts
-│   │       │   └── ART-001-JTBD.md
+│   │   │       ├── lo-fi_wireframe - done
+│   │   │       └── ui-flows - done
+│   │   ├── delivery  - done
+│   │   │   └── releases  - done
+│   │   │       └── .gitkeep  - done
+│   │   └── discovery  - done
+│   │       ├── artifacts  - done
+│   │       │   └── .gitkeep  - done
 │   │       ├── assumptions
-│   │       │   ├── ART-002-assumption-list.md
-│   │       │   └── ART-003-assumptions-backlog.md
+│   │       │   └── .gitkeep  - done
 │   │       ├── business-problem
-│   │       │   └── BP-001-business-problem.md
+│   │       │   └── .gitkeep  - done
 │   │       ├── decisions
-│   │       │   └── PDR-001-product-decision-record.md
+│   │       │   └── .gitkeep  - done
 │   │       ├── experiments
-│   │       │   ├── ART-005-survey.md
-│   │       │   ├── ATR-004-experiments-backlog.md
-│   │       │   ├── EVI-001-evidence.md
-│   │       │   ├── EXP-002-dark-mode
-│   │       │   ├── EXP-003-quick-action-location
-│   │       │   ├── EXP-XXX-name
-│   │       │   └── HYP-001-hypothesis.md
+│   │       │   └── .gitkeep  - done
 │   │       ├── requirements
-│   │       │   ├── BL-product-backlog.ods
-│   │       │   └── exportsCSV
+│   │       │   └── .gitkeep  - done
 │   │       └── templates
-│   │           ├── 01-problem-framing
-│   │           ├── 02-assumptions
-│   │           ├── 03-discovery-techniques
-│   │           ├── 04-experiments
-│   │           ├── 05-decisions
-│   │           ├── 06-risks
-│   │           ├── 07-product-requirements-definition
-│   │           └── 08-runbook
+│   │           ├── 01-problem-framing - done
+│   │           ├── 02-assumptions - done
+│   │           ├── 03-discovery-techniques - done
+│   │           ├── 04-experiments - done
+│   │           ├── 05-decisions - done
+│   │           ├── 06-risks - done
+│   │           ├── 07-product-requirements-definition - done
+│   │           └── 08-runbook - done
 │   ├── project-governance
 │   │   └── product-discovery
-│   │       ├── assets
+│   │       ├── assets -done
 │   │       │   ├── discovery-cheat-sheet-image.png
 │   │       │   ├── SW_Delivery_High-level_Flowchart.drawio
 │   │       │   └── SW_Delivery_High-level_Flowchart.drawio.png
-│   │       ├── discovery-technique-guide.md
-│   │       └── product-discovery-guide-simple.md
+│   │       ├── discovery-technique-guide.md - done
+│   │       └── product-discovery-guide-simple.md - done
 │   └── risk
-│       ├── exportsCSV
-│       │   ├── RSK-001-risk-register_Metadata.csv
-│       │   ├── RSK-001-risk-register_Risk_Register.csv
-│       │   └── RSK-001-risk-register_Scoring.csv
-│       └── RSK-001-risk-register.ods
+│       └── .gitkeep
 ├── image-1.png
 ├── image.png
 ├── README.md
