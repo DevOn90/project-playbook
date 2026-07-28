@@ -224,11 +224,9 @@ using uv-installation-guide.'
 
 # 6.4 Set custom git config hookpath
 set_custom_git_hookpath() {
-
-    # Get the current git config hookpath
-    git_hook_path=$(git config --get core.hooksPath)
-
-    if [[ "$git_hook_path" !== "$GIT_HOOK_PATH" ]]; then
+    
+    # If the current git config hookpath is not equal to the desired GIT_HOOK_PATH, set it to the desired value
+    if [[ "$(git config --get core.hooksPath)" != "$GIT_HOOK_PATH" ]]; then
         log_info "Setting custom git config hookpath to '$GIT_HOOK_PATH'..."
         git config core.hooksPath "$GIT_HOOK_PATH"
         log_info "Git config hookpath set to '$GIT_HOOK_PATH' successfully."
