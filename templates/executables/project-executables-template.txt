@@ -10,5 +10,5 @@
 # Note: This file (template) MUST end with new empty line  
 # ------------------------------------------------------
 
-@exec test/pre-commit.sh
-@exec test2/test
+@exec .githooks/pre-commit.sh
+@exec scripts/ci/export_ods_to_csv.py
