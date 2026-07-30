@@ -54,7 +54,7 @@ bash ./bin/scaffold/scaffold_project.sh --template="$HOME/Desktop/04_Today_Work/
 5. git push -u origin development (manually) 
 
 ### 3.6 Repeat for other scaffolding templates
-Repeat steps 3.2 to 3.5 for other scaffolding templates as needed.
+Repeat steps 3.2 to 3.5 for other scaffolding templates.
 
 ---
 
@@ -121,17 +121,5 @@ bash ./bin/scaffold/executables_init.sh --template "$HOME/Desktop/04_Today_Work/
 4. git commit -m "Initial commit: make executables executable" (manually)       
 5. git push -u origin development (manually)
 
-### 5.6 Enable staging of generated CSV files
-1. Open `.githooks/pre-commit`
-2. Uncomment following lines in step 4. `convert_ods_to_csv()`
-    ```markdown
-    # Stage the generated CSV files for commit
-    #log_info "Staging generated CSV files for commit..."  // Uncomment line
-    #git add -A -- ':(glob)**/exportsCSV/*.csv' // Uncomment line
-    ```
-3. Commit `Fix: Enable staging of generated CSV files in pre-commit hook`
-4. Push to GH 
-
-
-### 5.7 Repeat for other executables templates
+### 5.6 Repeat for other executables templates
 Repeat steps 5.2 to 5.5 for other executables templates as needed.
