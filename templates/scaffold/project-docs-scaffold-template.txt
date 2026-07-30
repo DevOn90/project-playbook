@@ -3419,9 +3419,10 @@ Rollback if any of the following occur:
 - Rollback artifact/version: <!-- link -->
 EOF>>>
     ├── 03_project-governance/
-    │   ├── assets/
-    │   │   └── .gitkeep 
-    │   ├── discovery-technique-guide.md
+    │   └── product-discovery/
+    │       ├── assets/
+    │       │   └── .gitkeep 
+    │       ├── discovery-technique-guide.md
 <<<EOF
 # Discovery Technique Guide
 
@@ -3598,7 +3599,7 @@ flowchart TB
    
 ```
 EOF>>>
-    │   └── product-discovery-guide-simple.md
+    │       └── product-discovery-guide-simple.md    
 <<<EOF
 # Product Discovery Guide - Simple
 
