@@ -2,15 +2,6 @@
 
 set -euo pipefail
 
-## This is my pseudo code:
-# 1. Prompt the user for a project name. - done
-# 2. Prompt the user for a path where they want to create the project directory. - done
-# 3. Let user confirm existance of GH repo for the project name. [n/Y] - done
-# 4. if yes clone the repo, else ask to create a new repo and ask for repo existence again.
-# 5. cd to the project directory.
-# 6. Setup project environment.
-# 6.1 Setup Git conf user.name and user.email for the new project.
-
 # ---------------------------------------------------------
 # Purpose: This script is designed to automate the setup of a new project environment. 
 # Logic:
@@ -74,8 +65,6 @@ prompt_project_name() {
 
     break
   done
-  echo ""
-  log_debug "Project name set to: $PROJECT_NAME"
 }
 
 # ---------------------------------------------------------
@@ -93,7 +82,6 @@ prompt_project_path() {
     exit 1
   fi
   
-  log_debug "Project path set to: $PROJECT_PATH"
 }
 
 # ---------------------------------------------------------
@@ -104,7 +92,6 @@ prompt_github_username() {
   read -p "Enter your GitHub username (default is 'gh-username'): " GH_USERNAME
   GH_USERNAME=${GH_USERNAME:-gh-username}
   echo ""
-  log_debug "GitHub username set to: $GH_USERNAME"
 } 
 
 # ---------------------------------------------------------
@@ -115,10 +102,8 @@ confirm_github_repo_existence() {
   read -p "Does a GitHub repository exist for the project '$PROJECT_NAME'? [n/Y]: " REPO_EXISTS
   echo ""
   REPO_EXISTS=${REPO_EXISTS:-Y}
-  log_debug "User response for GitHub repository existence: $REPO_EXISTS"
 
   if [[ "$REPO_EXISTS" =~ ^[Yy]$ ]]; then
-    log_debug "Validating the existence of the GitHub repository starts..."
 
     # Validate the existence of the GitHub repository using the GitHub API
     response=$(curl -s -o /dev/null -w "%{http_code}" \
@@ -278,7 +263,6 @@ main() {
     # Change directory to the project directory
     cd "$PROJECT_PATH/$PROJECT_NAME" || { log_error "Failed to change directory to '$PROJECT_PATH/$PROJECT_NAME'."; exit 1; }
     log_info "Changed directory to '$PROJECT_PATH/$PROJECT_NAME'."
-    log_debug "Current working directory: $(pwd)"
 
     # Prepare the project environment
     log_info "Preparing the project environment..."
