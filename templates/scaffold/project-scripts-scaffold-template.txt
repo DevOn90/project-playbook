@@ -74,7 +74,7 @@ echo "Health check placeholder - not implemented yet"
 EOF>>>    
     ├── ci/
     │   └── export_ods_to_csv.py
-<<EOF
+<<<EOF
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
@@ -101,8 +101,8 @@ This is useful for ignoring template files or
 other non-relevant ODS files in the documentation directories
 """
 EXCLUDED_PATHS = {
-    Path("docs/product/discovery/templates"),
-    Path("docs/product/architecture/templates"),
+    Path("docs/02_product/discovery/templates"),
+    Path("docs/02_product/architecture/templates"),
 }
 
 """
@@ -146,7 +146,7 @@ for ods in ods_files:
         out = export_dir / f"{base.name}_{safe_sheet}.csv"
         df.to_csv(out, index=False)
         print(f"Converted {ods} [{sheet_name}] -> {out}")
-EOF>>
+EOF>>>
     ├── deploy/
     │   └── .gitkeep
     ├── local/
