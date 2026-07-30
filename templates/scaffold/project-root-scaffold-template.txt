@@ -644,8 +644,8 @@ convert_ods_to_csv() {
     "${UV_BIN}" run scripts/ci/export_ods_to_csv.py
  
     # Stage the generated CSV files for commit
-    log_info "Staging generated CSV files for commit..."
-    git add -A -- ':(glob)**/exportsCSV/*.csv'
+    #log_info "Staging generated CSV files for commit..."
+    #git add -A -- ':(glob)**/exportsCSV/*.csv'
 }
 
 
