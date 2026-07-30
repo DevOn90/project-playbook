@@ -314,7 +314,6 @@ or
 
 If no issues are found, explicitly state that.
 EOF>>>
-│   │
 │   ├── workflows/
 │   │   ├── ci-export_ods_to_csv.yml
 <<<EOF
@@ -490,7 +489,7 @@ jobs:
               - "**/exportsCSV/*.csv"
               - ".githooks/pre-commit"
               - "scripts/ci/export_ods_to_csv.py"
-              - ".github/workflows/ci-export-ods-to-csv.yml"
+              - ".github/workflows/ci-export_ods_to_csv.yml"
               - ".github/workflows/ci.yml"
 
   # The "export-ods-to-csv" job runs the export process if relevant files have changed or 
@@ -499,7 +498,7 @@ jobs:
   export-ods-to-csv:
      needs: [changes]
      if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.ods_pipeline == 'true'
-     uses: ./.github/workflows/ci-export-ods-to-csv.yml
+     uses: ./.github/workflows/ci-export_ods_to_csv.yml
 
   # Placeholder job for linting. This job runs after the export-ods-to-csv job and is defined in the ci-lint.yml workflow file.   
   lint:
@@ -544,6 +543,7 @@ EOF>>>
 │   │   └── actions/
 │   │       └── .gitkeep   
 │   └── tests/
+│       └── .gitkeep
 ├── .githooks/
 │   └── pre-commit
 <<<EOF
@@ -682,7 +682,17 @@ EOF>>>
 EOF>>>
 ├── .gitignore
 ├── .vscode/
-│   └── .gitkeep
+│   └── settings.json
+<<<EOF
+{
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    }
+}
+EOF>>>
 └── README.md
 <<<EOF
 ## Metadata
