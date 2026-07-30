@@ -100,7 +100,11 @@ convert_ods_to_csv() {
  
     # Stage the generated CSV files for commit
     log_info "Staging generated CSV files for commit..."
-    git add -A -- ':(glob)**/exportsCSV/*.csv'
+    if find . -path '*/exportsCSV/*.csv' -type f 2>/dev/null | grep -q .; then
+        git add -A -- ':(glob)**/exportsCSV/*.csv'
+    else
+        log_warning "No CSV files found in exportsCSV directories. Skipping git add."
+    fi
 }
 
 
