@@ -160,7 +160,6 @@ template_parser() {
             # construct full path
             local full_exec_path="$TARGET_ROOT/$exec_path"
 
-            log_debug "Full executable path: $full_exec_path"
 
             if [[ ! -f "$full_exec_path" ]]; then
                 log_error "Executable file not found: $full_exec_path"
@@ -172,7 +171,6 @@ template_parser() {
             else
                 chmod +x "$full_exec_path"
                 log_info "Made executable: $full_exec_path"
-                log_debug "Check ownership $(ls -ltr "$full_exec_path")"
             fi
 
         else
