@@ -1,15 +1,20 @@
 # Git LFS Installation Guide
 
-## Pre-requisites
+## ToC:
+1. [Pre-requisites](#1-pre-requisites)
+2. [Scope](#2-scope)
+3. [Installation Steps](#3-installation-steps)
+
+## 1. Pre-requisites
 **Prerequisites:**
 - Git installed on your local machine
 - Sudo/admin access on your machine
 - Internet connection to download Git LFS
 
-## Scope
+## 2. Scope
 This step enables Git LFS on the local machine. Configuration may be applied at system level (/etc/gitconfig) or user global level (~/.gitconfig). 
 
-## Installation Steps
+## 3. Installation Steps
 
 1. Check if Git LFS is already installed:
     ```bash

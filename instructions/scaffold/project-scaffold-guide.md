@@ -6,6 +6,7 @@
 3. [Scaffold new project (for text based files)](#3-scaffold-new-project-for-text-based-files)
 4. [Scaffold new project (for binary files)](#4-scaffold-new-project-for-binary-files)
 5. [Make executable files executable](#5-make-executable-files-executable)
+6. [Next Steps](#6-next-steps)
 
 ---
 
@@ -123,3 +124,11 @@ bash ./bin/scaffold/executables_init.sh --template "$HOME/Desktop/04_Today_Work/
 
 ### 5.6 Repeat for other executables templates
 Repeat steps 5.2 to 5.5 for other executables templates as needed.
+
+## 6. Next Steps
+
+Now as base scaffolding is done, you start addiing project modules, specfic to your project need. The modules contains all necessary tools, scripts, and files to build your project.
+
+### Modules References:
+
+- [Angular Module](../../modules/angular/README.md)
