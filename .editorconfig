@@ -1,0 +1,36 @@
+# EditorConfig is awesome: https://EditorConfig.org
+# EditorConfig helps maintain consistent coding styles
+# across different editors and IDEs.
+
+# top-most EditorConfig file
+root = true
+
+[*]
+# 4 space indentation
+indent_style = space
+indent_size = 4
+# Unix-style newlines with a newline ending every file
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true 
+
+[*.md]
+# 2 space indentation for markdown files
+indent_size = 4
+trim_trailing_whitespace = false
+
+[*.{json,xml,yml,yaml}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{js,ts,jsx,tsx}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{html,css,scss}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
