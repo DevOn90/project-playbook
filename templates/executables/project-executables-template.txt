@@ -11,6 +11,7 @@
 # ------------------------------------------------------
 
 @exec .githooks/pre-commit
+@exec .githooks/commit-msg
 @exec scripts/ci/export_ods_to_csv.py
 @exec scripts/backup.sh
 @exec scripts/dev.sh
