@@ -190,6 +190,7 @@ EOF>>>
 ├── apps/
 │   └── .gitkeep
 ├── .github/
+│   ├── dependabot.yml
 │   ├── ISSUE_TEMPLATE/
 │   │   └── issue-discovery.md
 <<<EOF
@@ -586,6 +587,37 @@ jobs:
       - name: TestPlaceholder
         run: echo "Test workflow placeholder - not implemented yet"
 EOF>>>
+│   │   ├── ci-npm-audit.yml
+<<<EOF
+name: ci-npm-audit
+
+on:
+  workflow_call
+
+jobs:
+    npm-audit:
+        runs-on: ubuntu-latest
+
+        defaults:
+          run:
+            working-directory: apps/front-end
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'npm'
+                  cache-dependency-path: 'apps/front-end/package-lock.json'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run npm audit
+              run: npm audit --audit-level=high
+EOF>>>
 │   │   ├── ci-lint.yml
 <<<EOF
 name: ci-lint
@@ -646,7 +678,7 @@ jobs:
 EOF>>>
 │   │   ├── ci.yml
 <<<EOF
-# Orchestration workflow for all CI jobs. 
+# Orchestration workflow for all CI jobs.
 # This workflow is triggered on push, pull request and manual dispatch.
 name: ci-orchestration
 
@@ -680,25 +712,30 @@ jobs:
               - ".github/workflows/ci-export_ods_to_csv.yml"
               - ".github/workflows/ci.yml"
 
-  # The "export-ods-to-csv" job runs the export process if relevant files have changed or 
+  # The "export-ods-to-csv" job runs the export process if relevant files have changed or
   # if the workflow was manually triggered. For job details, see the ci-export-ods-to-csv.yml workflow file.
-  # Policy: CSV files under exportsCSV are generated artifacts and must match ODS + exporter output.             
+  # Policy: CSV files under exportsCSV are generated artifacts and must match ODS + exporter output.
   export-ods-to-csv:
-     needs: [changes]
+     needs: changes
      if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.ods_pipeline == 'true'
      uses: ./.github/workflows/ci-export_ods_to_csv.yml
 
-  # Placeholder job for linting. This job runs after the export-ods-to-csv job and is defined in the ci-lint.yml workflow file.   
+  # Placeholder job for npm audit. This job runs after the export-ods-to-csv job and is defined in the ci-npm-audit.yml workflow file.
+  npm-audit:
+     needs: changes
+     uses: ./.github/workflows/ci-npm-audit.yml
+
+  # Placeholder job for linting. This job runs after the export-ods-to-csv job and is defined in the ci-lint.yml workflow file.
   lint:
-     needs: export-ods-to-csv
+     needs: npm-audit
      uses: ./.github/workflows/ci-lint.yml
 
-  # Placeholder job for testing. This job runs after the lint job and is defined in the ci-test.yml workflow file.   
+  # Placeholder job for testing. This job runs after the lint job and is defined in the ci-test.yml workflow file.
   test:
      needs: lint
      uses: ./.github/workflows/ci-test.yml
 
-  # Placeholder job for building. This job runs after the test job and is defined in the ci-build.yml workflow file.   
+  # Placeholder job for building. This job runs after the test job and is defined in the ci-build.yml workflow file.
   build:
      needs: test
      uses: ./.github/workflows/ci-build.yml 
