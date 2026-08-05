@@ -1,0 +1,776 @@
+├── public/
+│   ├── config/
+│   │   └── config.json
+│   ├── images/
+│   │   └── .gitkeep
+│   ├── icons/
+│   │   └── .gitkeep
+│   └── data/
+│       └── .gitkeep
+<<<EOF
+{
+    "apiUrl": "http://localhost:8080/v1/api",
+    "authUrl": "http://localhost:8080/v1/auth",
+    "production": false,
+    "appName": "MyApp",
+    "version": "1.0.0",
+    "features": {
+        "enableDebugTools": true,
+        "enableExperimentalFeatures": false
+    }
+}
+EOF>>>
+├── .vscode/
+│   ├── settings.json
+<<<EOF
+{
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+
+    "js/ts.preferences.importModuleSpecifier": "relative", 
+
+}
+EOF>>>
+│   └── extensions.json
+<<<EOF
+{
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
+  "recommendations": [
+    "angular.ng-template",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
+  ]
+}
+EOF>>>
+├── .editorconfig
+<<<EOF
+# EditorConfig is awesome: https://EditorConfig.org
+# EditorConfig helps maintain consistent coding styles
+# across different editors and IDEs.
+
+# top-most EditorConfig file
+root = true
+
+[*]
+# 4 space indentation
+indent_style = space
+indent_size = 2
+# Unix-style newlines with a newline ending every file
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true 
+
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+
+[*.{json,xml,yml,yaml}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.{js,ts,jsx,tsx}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.{html,css,scss}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+EOF>>>
+├── .prettierrc
+<<<EOF
+{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf"
+}
+EOF>>>
+├── .prettierignore
+<<<EOF
+node_modules
+dist
+coverage
+.git
+.angular
+*.min.js
+EOF>>>
+├── tsconfig.app.json
+<<<EOF
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "rootDir": "./src",
+    "types": []
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}
+EOF>>>
+├── tsconfig.spec.json
+<<<EOF
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "rootDir": "./src",
+    "types": ["jasmine"]
+  },
+  "include": ["src/**/*.ts"]
+}
+EOF>>>
+├── contracts/
+│   └── README.md
+<<<EOF
+# API Contract
+
+This project uses an OpenAPI-based contract to define the public API surface of the service.
+
+The contract is generated at runtime from the application and committed to the repository to prevent accidental breaking changes.
+
+[See Flowchart](#api-contract-flow)
+
+---
+
+## Contract Source
+
+The API contract is generated from the following endpoint:
+
+```bash
+GET /v3/api-docs
+```
+The generated OpenAPI specification is stored as:
+```bash
+docs/design/api-contract.openapi.json
+```
+This file represents the **expected API contract** and is validated in CI.
+
+---
+
+## Contract Validation
+
+1. [Manual Script](#manual-script)
+2. [Automated Git Hook](#automated-githook)
+3. [Automated CI](#automated-ci)
+
+*The check fails if any backward-incompatible API change is detected.*
+
+<h3 id="manual-script">1. Manual Script</h3>
+
+Developers may run the same contract check locally before pushing changes:
+```bash
+scripts/api/api-diff.sh
+```
+This allows early detection of contract changes without waiting for CI.
+
+---
+
+<h3 id="automated-githook">2. Automated Git Hook</h3>
+
+The contract check is integrated into a Git hook (e.g. `pre-commit`) to enforce validation automatically on each commit by using the same script as for `manual-check`.
+
+
+This is intended for developer convenience; CI remains the source of truth.
+
+<h3 id="automated-ci">3. Automated CI</h3>
+
+During CI, the API is started in **contract mode** and the live OpenAPI definition is compared with the committed contract.
+
+Validation steps:
+1. Build the API JAR
+2. Start the application with profile `contract`
+3. Fetch `/v3/api-docs`
+4. Compare with `api-contract.openapi.json`
+5. Fail CI if differences are detected
+
+Script:
+```bash
+scripts/ci/api-diff-ci.sh
+```
+
+---
+
+## Contract Mode
+
+Contract mode runs the application **without external infrastructure** (e.g. database).
+
+- Database auto-configuration is disabled
+- Database-backed services use stub implementations
+- All API endpoints remain available
+
+This ensures the API contract is **independent of infrastructure availability**.
+
+---
+
+## Updating the Contract
+
+When API changes are intentional:
+
+1. Update the application code
+2. Regenerate the contract
+3. Review changes
+4. Commit the updated `api-contract.openapi.json`
+
+CI will fail until the contract is updated.
+
+---
+
+<h2 id="api-contract-flow">Flowchart</h2>
+
+```mermaid
+flowchart TD
+    A["Developer changes API code"]
+    A1["Build app & run server<br/>(/v3/api-docs available — contract mode)"]
+
+    B["(Optional) Developer runs api-diff.sh locally"]
+    C{"OpenAPI diff detected?"}
+
+    D["Regenerate OpenAPI contract"]
+    E["Review contract diff"]
+    F["Commit code + contract"]
+
+    G["Developer skips manual check"]
+    H["Git pre-commit hook runs api-diff.sh"]
+    I{"Diff detected?"}
+
+    J["Commit blocked locally"]
+
+    K["Push / PR"]
+    L["CI runs OpenAPI diff check"]
+    M{"Diff detected?"}
+    N["❌ CI fails — PR blocked"]
+
+    O["✅ CI passes"]
+
+    %% Flow
+    A --> A1 --> B
+    B --> C
+    C -- Yes --> D --> E --> F
+    C -- No --> F
+
+    B -- Skipped --> G
+    G --> H --> I
+    I -- Yes --> J
+    I -- No --> F
+
+    F --> K --> L --> M
+    M -- Yes --> N
+    M -- No --> O
+```
+EOF>>>
+├── docs/
+│   ├── README.md
+<<<EOF
+Purpose of the frontend project.
+
+Contents:
+
+- Purpose of the Angular application
+- Tech stack (Angular, TypeScript, SCSS, ESLint, Prettier...)
+- Links to higher-level project documentation
+- Quick navigation to the other documents
+EOF>>>
+│   ├── architecture.md
+<<<EOF
+Implementation architecture only.
+
+Examples:
+
+- Folder structure
+- `core`
+- `shared`
+- `features`
+- `shell`
+- Lazy loading strategy
+- Signals usage
+- Dependency rules
+EOF>>>
+│   ├── development.md
+<<<EOF
+Developer onboarding.
+
+Examples:
+```plaintext
+npm install
+npm start
+npm test
+npm run lint
+npm run build
+```
+Also include:
+- Node version
+- Angular version
+- VS Code recommendations
+- Common commands
+- Build optimizations (if any)
+EOF>>>
+│   ├── routing.md
+<<<EOF
+How routing is organized.
+
+Examples:
+- Feature routes
+- Lazy loading
+- Guards
+- Shells
+- Route naming conventions
+EOF>>>
+│   ├── api.md
+<<<EOF
+Everything related to backend communication.
+
+Examples:
+- Location of `contracts/backend.openapi.json`
+- How the API client is generated (later)
+- HTTP interceptors
+- Authentication flow
+- Error handling
+- API versioning (if applicable)
+EOF>>>
+│   ├── styling.md
+<<<EOF
+UI implementation rules.
+
+Examples:
+- SCSS organization
+- Variables
+- Mixins
+- Component styles
+- Global styles
+- CSS naming conventions
+EOF>>>
+│   └── testing.md
+<<<EOF
+Testing strategy.
+
+Examples:
+- Unit tests
+- Component tests
+- Coverage test
+- CI tests 
+- E2E (later)
+- Test naming conventions
+EOF>>>
+└── src/
+    ├── app/
+    │   ├── app.config.ts
+<<<EOF
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+import { AppConfigService } from './core/config/app-config.service';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient(),
+    provideAppInitializer(
+      () => {
+        const config = inject(AppConfigService);
+        return config.load();
+      }
+    )
+  ]
+};
+EOF>>>
+    │   ├── core/
+    │   │   ├── guards/
+    │   │   │   └── .gitkeep
+    │   │   ├── interceptors/
+    │   │   │   └── .gitkeep
+    │   │   ├── services/
+    │   │   │   └── .gitkeep
+    │   │   ├── storage/
+    │   │   │   └── .gitkeep
+    │   │   ├── http/
+    │   │   │   └── .gitkeep
+    │   │   ├── models/
+    │   │   │   ├── api-response.model.ts
+    │   │   │   └── error-response.model.ts
+    │   │   └── config/
+    │   │       ├── app-config.service.ts
+<<<EOF
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { AppConfig } from './app-config.model';
+import { firstValueFrom } from 'rxjs';
+
+/**
+ * Service to load and provide application configuration settings.
+ * @usage
+ * In Angular main.ts, add the following to the providers settings:
+ *
+ * ```Angular
+ * private readonly appConfigService = inject(AppConfigService);
+ * console.log('AppConfigService settings:', appConfigService.settings);
+ * ```
+ * @returns {AppConfigService} An instance of the AppConfigService.
+ */
+@Injectable({
+    providedIn: 'root',
+})
+export class AppConfigService {
+
+    private readonly http = inject(HttpClient);
+
+    private config!: AppConfig;
+
+    async load(): Promise<void> {
+        this.config = await firstValueFrom(
+            this.http.get<AppConfig>('config/config.json')
+        )
+    };
+
+    get settings(): AppConfig {
+        if (!this.config) {
+            throw new Error('AppConfigService not initialized.');
+        }
+        return this.config;
+    }
+
+    get apiUrl(): string {
+        return this.settings.apiUrl;
+    }
+
+    get authUrl(): string {
+        return this.settings.authUrl;
+    }
+
+    get production(): boolean {
+        return this.settings.production;
+    }
+
+    get appName(): string {
+        return this.settings.appName;
+    }
+
+    get version(): string {
+        return this.settings.version;
+    }
+
+    get features(): { enableDebugTools: boolean; enableExperimentalFeatures: boolean } {
+        return this.settings.features;
+    }
+}
+EOF>>>
+    │   │       └── app-config.model.ts
+<<<EOF
+export interface AppConfig {
+
+    apiUrl: string;
+    authUrl: string;
+
+    production: boolean;
+
+    appName: string;
+    version: string;
+
+    features: {
+        enableDebugTools: boolean;
+        enableExperimentalFeatures: boolean;
+    }
+}
+EOF>>>
+    │   ├── shared/
+    │   │   ├── components/
+    │   │   │   └── .gitkeep
+    │   │   ├── directives/
+    │   │   │   └── .gitkeep
+    │   │   ├── pipes/
+    │   │   │   └── .gitkeep
+    │   │   ├── validators/
+    │   │   │   └── .gitkeep
+    │   │   └── utils/
+    │   │       └── .gitkeep
+    │   ├── shell/
+    │   │   ├── main-shell/
+    │   │   │   └── components/
+    │   │   │       └── .gitkeep
+    │   │   └── auth-shell/
+    │   │       └── components/
+    │   │           └── .gitkeep
+    │   ├── features/
+    │   │   ├── auth/
+    │   │   │   ├── pages/
+    │   │   │   │   └── .gitkeep
+    │   │   │   ├── components/
+    │   │   │   │   └── .gitkeep
+    │   │   │   ├── services/
+    │   │   │   │   └── .gitkeep
+    │   │   │   ├── models/
+    │   │   │   │   └── .gitkeep
+    │   │   │   └── auth.routes.ts
+<<<EOF
+// import { Route } from '@angular/router';
+// import { LoginComponent } from './components/login/login.component';
+// import { RegisterPageComponent } from './components/register-page/register-page.component';
+
+// export const AUTH_ROUTES: Route[] = [
+//     {
+//         path: 'login',
+//         component: LoginComponent
+//     },
+//     {
+//         path: 'register',
+//         component: RegisterPageComponent
+//     }
+// ]
+EOF>>>
+    │   │   ├── dashboard/
+    │   │   │   ├── pages/
+    │   │   │   │   └── .gitkeep
+    │   │   │   ├── components/
+    │   │   │   │   └── .gitkeep
+    │   │   │   ├── services/
+    │   │   │   │   └── .gitkeep
+    │   │   │   ├── models/
+    │   │   │   │   └── .gitkeep
+    │   │   │   └── dashboard.routes.ts
+<<<EOF
+// import { Routes } from '@angular/router';
+// import { DashboardComponent } from './pages/dashboard/dashboard-page-component.component';
+
+// export const DASHBOARD_ROUTES: Routes = [
+
+//     {
+//         path: '',
+//         component: DashboardPageComponent,
+//     }
+// ];
+EOF>>>
+    │   │   └── users/
+    │   │       ├── pages/
+    │   │       │   └── .gitkeep
+    │   │       ├── components/
+    │   │       │   └── .gitkeep
+    │   │       ├── services/
+    │   │       │   └── .gitkeep
+    │   │       ├── models/
+    │   │       │   └── .gitkeep
+    │   │       └── users.routes.ts
+<<<EOF
+// import { Routes } from '@angular/router';
+// import { UsersListPageComponent } from './pages/users-list-page/users-list-page.component';
+// import { UserDetailsPageComponent } from './pages/user-details-page/user-details-page.component';
+
+// export const USERS_ROUTES: Routes = [
+
+//     {
+//         path: '',
+//         component: UsersListPageComponent,
+//     },
+//     {
+//         path: ':id',
+//         component: UserDetailsPageComponent,
+//     }
+// ];
+EOF>>>
+    │   └── app.routes.ts
+<<<EOF
+import { Routes } from '@angular/router';
+// import { MainShellComponent } from './shell/main-shell/main-shell.component';
+// import { AuthShellComponent } from './shell/auth-shell/auth-shell.component';
+
+export const routes: Routes = [
+
+    // {path:'', component: MainShellComponent, children:[
+    //         {
+    //             path: '',
+    //             redirectTo: 'dashboard',
+    //             pathMatch: 'full'
+    //         },
+    //         {
+    //             path: 'dashboard',
+    //             loadChildren: () =>
+    //             import('./features/dashboard/dashboard.routes')
+    //             .then(m => m.DASHBOARD_ROUTES)
+    //         },
+    //         {
+    //             path: 'users',
+    //             loadChildren: () =>
+    //             import('./features/users/users.routes')
+    //             .then(m => m.USERS_ROUTES)
+    //         }
+    //     ]
+    // },
+    // {path: 'auth', component: AuthShellComponent, children:[
+    //         {
+    //             path: '',
+    //             loadChildren: () =>
+    //             import('./features/auth/auth.routes')
+    //             .then(m => m.AUTH_ROUTES)
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: '**',
+    //     redirectTo: 'dashboard'
+    // }
+];
+EOF>>> 
+    ├── styles/
+    │   ├── _variables.scss
+<<<EOF
+/**
+* Usage:
+* Define your SCSS variables here.
+* .card { padding: vars.$spacing-md }
+*/
+
+
+// /*Color variables*/
+// $primary-color: #3498db;
+// $secondary-color: #2ecc71;
+// $accent-color: #e74c3c;
+
+// $success-color: #28a745;
+// $warning-color: #ffc107;
+// $error-color: #dc3545;
+
+// /*Text variables*/
+// $text-color: #333;
+// $text-muted-color: #777;
+
+// /*Background variables*/
+// $background-color: #f8f9fa;
+// $surface-color: #ffffff;
+
+// /*Border variables*/
+// $border-color: #dee2e6;
+// $border-radius: 4px;
+
+// /*Spacing variables*/
+// $spacing-xs: 4px;
+// $spacing-sm: 8px;
+// $spacing-md: 16px;
+// $spacing-lg: 24px;
+// $spacing-xl: 32px;
+
+// /*Layout variables*/
+// $container-max-width: 1200px;
+
+// /*Breakpoint variables*/
+// $mobile-breakpoint: 640px;
+// $tablet-breakpoint: 768px;
+// $desktop-breakpoint: 1024px;
+EOF>>>
+    │   ├── _mixins.scss
+<<<EOF
+/**
+* Usage:
+* Define mixins here.
+* .header { @include mixins.flex-center; }
+*/
+
+// @mixin flex-center {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+
+// @mixin flex-between {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// }
+
+
+// @mixin container {
+//   width: 100%;
+//   max-width: 1200px;
+//   margin-inline: auto;
+// }
+
+
+// @mixin mobile {
+//   @media (max-width: 640px) {
+//     @content;
+//   }
+// }
+
+
+// @mixin tablet {
+//   @media (max-width: 768px) {
+//     @content;
+//   }
+// }
+EOF>>>
+    │   └── _theme.scss
+<<<EOF
+/**
+* Usage:
+* Define your theme here.
+* .card { background-color: theme.$color-surface; }
+* <body class="dark"></body>
+*/
+
+// :root {
+//   --color-primary: #2563eb;
+//   --color-background: #ffffff;
+//   --color-surface: #f8fafc;
+//   --color-text: #111827;
+//   --color-border: #e5e7eb;
+// }
+
+
+// .dark {
+//   --color-primary: #60a5fa;
+//   --color-background: #111827;
+//   --color-surface: #1f2937;
+//   --color-text: #f9fafb;
+//   --color-border: #374151;
+// }
+EOF>>>
+    └── styles.scss
+<<<EOF
+/**
+* Use the @use rule to import the partials (variables, mixins,
+* theme) files into the main styles.scss file.
+* This allows you to access the variables, mixins,
+* and theme styles throughout your application.
+*/
+
+// /* Import partials */
+// @use "styles/variables" as vars;
+// @use "styles/mixins" as mixins;
+// @use "styles/theme" as theme;
+
+
+// /* Set global styles */
+// *,
+// html,
+// body {
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+// }
+EOF>>>
