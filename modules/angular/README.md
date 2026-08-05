@@ -16,6 +16,7 @@ The Angular project is:
 - SCSS based styling
 - Runtime configuration (config.json) based project
 - No SSR (Server Side Rendering) and no Zoneless project
+- Zone.js based change detection (not zoneless)
 - Angular v20+
 
 ## 2. Scope
@@ -210,18 +211,7 @@ Update NPM metadata in `package.json` file:
 }
 "engines": {
     "node": "^22.0.0",
-    "vscode": "^1.132.0",
-    "runtime": [{"name": "","onFail": "download", "version": ""}]
-},
-"exports": {
-    ".": "./lib/index.js",
-    "./lib": "./lib/index.js",
-    "./lib/index": "./lib/index.js",
-    "./lib/index.js": "./lib/index.js",
-    "./feature": "./feature/index.js",
-    "./feature/index": "./feature/index.js",
-    "./feature/index.js": "./feature/index.js",
-    "./package.json": "./package.json"
+    "vscode": "^1.132.0"
 }
 ```
 
