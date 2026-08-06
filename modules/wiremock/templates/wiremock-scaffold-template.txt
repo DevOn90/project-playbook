@@ -1925,5 +1925,321 @@ EOF>>>
 EOF>>>
 └── README.md
 <<<EOF
-How to need to be added.
+# WireMock
+
+## ToC
+1. [Introduction](#1-introduction)
+2. [Architecture](#2-architecture)
+3. [Folder Structure](#3-folder-structure)
+4. [Getting Started](#4-getting-started)
+5. [Default Mock APIs](#5-default-mock-apis)
+6. [Creating New Mappings](#6-creating-new-mappings)
+7. [Response Files](#7-response-files)
+8. [Mock Scenarios](#8-mock-scenarios)
+9. [Useful Commands](#9-useful-commands)
+10. [Advanced Configuration](#10-advanced-configuration)
+11. [Troubleshooting](#11-troubleshooting)
+
+---
+
+## 1. Introduction
+
+This module provides a local WireMock server for API mocking during development and testing.
+
+Typical use cases:
+- Frontend development before backend APIs are available
+- Backend integration testing
+- API contract development
+- Simulation of error and performance scenarios
+
+WireMock runs locally using Docker Compose and exposes mocked HTTP endpoints.
+
+---
+
+## 2. Architecture
+
+```mermaid
+flowchart TB
+    A[Frontend Application / Backend Service] -->|HTTP Requests| B[localhost:8085]
+    B --> C[WireMock Docker Container]
+
+    C -->|Mocked HTTP Responses| B
+
+    D[mappings Directory<br/>Request + Response Definitions] -->|Loaded by| C
+    E[__files Directory<br/>Response Payload Files] -->|Referenced by bodyFileName| C
+    F[__extensions Directory<br/>Custom Extensions] -->|Loaded by| C
+```
+
+---
+
+## 3. Folder Structure
+
+```
+.
+├── docker-compose.yml
+│   WireMock container configuration
+│
+├── mappings
+│   Request matching and response definitions
+│
+├── __files
+│   External response bodies referenced by mappings
+│
+├── __extensions
+│   Optional custom WireMock extensions
+│
+├── schema
+│   JSON schema for mapping validation/autocomplete
+│
+└── README.md
+```
+
+---
+
+## 4. Getting Started
+
+### 4.1 Start WireMock Server
+```bash
+docker compose up -d
+```
+### 4.2 Validate
+```bash
+docker compose ps
+```
+Expected output:
+```
+wiremock running
+0.0.0.0:8085->8080/tcp
+```
+### 4.3 Stop WireMock Server
+```bash
+docker compose down
+```
+
+---
+
+## 5. Default Mock APIs
+
+| Endpoint      | Method       | Purpose                     |
+| ------------- | ------------ | --------------------------- |
+| `/api/health` | GET          | WireMock health check       |
+| `/api/users`  | GET          | Example successful response |
+| `/api/users`  | GET + header | Error simulation            |
+| `/api/users`  | GET + header | Slow response simulation    |
+
+---
+
+**Health Check**
+```bash
+GET http://localhost:8085/api/health
+```
+Response
+```json
+{
+  "status": "UP",
+  "service": "wiremock"
+}
+```
+---
+
+**User API**
+
+Normal:
+```bash
+GET http://localhost:8085/api/users
+```
+Error Simulation:
+```bash
+curl -H "X-Mock-Scenario: error" http://localhost:8085/api/users
+```
+Returns
+```json
+{
+  "timestamp": "2026-01-01T00:00:00Z",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "Mocked backend failure"
+}
+```
+Delay:
+```bash
+curl -H "X-Mock-Scenario: slow" http://localhost:8085/api/users
+```
+Returns after 5 seconds delay
+
+---
+
+## 6. Creating New Mappings
+
+A WireMock mapping contains:
+```json
+{
+  "request": {},
+  "response": {}
+}
+```
+Example:
+```json
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/products"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "products-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
+```
+
+**Mapping Convention**
+
+This project uses:
+- `<resource>-<method>.json` naming
+- `X-Mock-Scenario` header for alternative responses
+- external response bodies stored in `__files`
+
+---
+
+## 7. Response Files
+
+```mermaid
+flowchart LR
+    A[mappings/products-get.json] --BodyFileName--> B[__files/products-response.json]
+```
+Example:
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Product A",
+      "price": 19.99
+    },
+    {
+      "id": 2,
+      "name": "Product B",
+      "price": 29.99
+    }
+  ]
+}
+```
+Advantages:
+- cleaner mapping
+- easier maintenance
+- reusable payloads
+
+---
+
+## 8. Mock Scenarios
+
+Example convention:
+
+```json
+"headers": {
+      "X-Mock-Scenario": {
+        "equalTo": "<value>"
+      }
+}
+```
+Supported values:
+| Value  | Purpose          |
+| ------ | ---------------- |
+| normal | default response |
+| error  | backend failure  |
+| slow   | delayed response |
+| empty  | empty result     |
+
+---
+
+## 9. Useful Commands
+
+```plaintext
+# Start
+docker compose up -d
+
+# Stop
+docker compose down
+
+# Logs
+docker compose logs -f
+
+# Restart after changes
+docker compose restart
+
+# Container status
+docker compose ps
+```
+Admin API:
+```plaintext
+http://localhost:8085/__admin
+```
+
+---
+
+## 10. Advanced Configuration
+
+**Change Port**
+
+`docker-compose.yml`
+```yaml
+services:
+  wiremock:
+    ports:
+      - "8085:8080" 
+      # Change 8085 to desired port
+      # <host_port>:<container_port>, keep container port as 8080
+```
+
+**Add Extensions**
+
+Place custom extensions:
+```
+__extensions/
+```
+and configure in `docker-compose.yml`:
+```yaml
+    volumes:
+      - ./__extensions:/home/wiremock/extensions
+```
+
+**Add request matching**
+
+Supported matchers:
+- URL
+- HTTP Method
+- headers
+- cookies
+- query parameters
+- request body (JSON, XML, regex)
+
+---
+
+## 11. Troubleshooting
+
+Examples:
+
+**Endpoint returns 404**
+
+Check:
+```bash
+docker compose logs -f
+```
+Verify mapping file exists in `mappings/` and is valid JSON.
+
+**Changes are not visible**
+
+Restart:
+```bash
+docker compose restart
+```
+
+**Mapping JSON Validation (Autocomplete)**
+
+Open `apps/wiremock` as root folder in vscode to enable autocomplete and validation for mapping JSON files.
+
+---
 EOF>>>
