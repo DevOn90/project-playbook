@@ -277,5 +277,5 @@ If you need in your base project other modules like `Spring Boot`, `api-mocks`, 
 
 Example modules:
 - [Spring Boot](../../modules/spring-boot/README.md)
-- [API Mocks](../../modules/api-mocks/README.md)
+- [Wiremock](../../modules/wiremock/README.md)
 
