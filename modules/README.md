@@ -13,3 +13,13 @@
 ## Monitoring - Prometheus / Grafana
 
 ## Messaging - Kafka / RabbitMQ
+
+## Github repo hardening / protection (gh-protection)
+
+@ =====================================================================<br>
+@ Next Steps:<br>
+@ ======================================================================<br>
+
+## 1. Finish/upgrade ui-library repo
+
+## 2. Harden repos in GH with module 
