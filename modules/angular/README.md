@@ -152,7 +152,7 @@ Below is the folder structure of Angular project with extra files and configurat
 
 ## 5. Getting Started
 
-### 1. Create Angular Default Project
+### 5.1 Create Angular Default Project
 
 Navigate to `apps/` directory and create a new Angular project using the Angular CLI command:
 ```bash
@@ -169,7 +169,7 @@ git commit -m "feat: create angular project <project-name>"
 git push origin <branch-name>  // e.g. "main"
 ```
 
-### 2. Scaffold Angular Project with Custom Folder Structure
+### 5.2 Scaffold Angular Project with Custom Folder Structure
 
 - Use script `bin/scaffold/scaffold_project.sh`
 - Use template `modules/angular/templates/ng-custom-folder-structure.txt`
@@ -179,9 +179,9 @@ bash ./bin/scaffold/scaffold_project.sh --template "$HOME/<full-path-to-playbook
 ```
 Use `--dry-run` to see what changes will be made without actually making any changes. Once you are satisfied with the output, remove the `--dry-run` flag to apply the changes.
 
-### 3. Manual extra steps
+### 5.3 Manual extra steps
 
-#### 3.1 Update package.json file
+#### 5.3.1 Update package.json file
 
 ```json
 scripts: {
@@ -215,7 +215,7 @@ Update NPM metadata in `package.json` file:
 }
 ```
 
-#### 3.2 Install Prettier and ESLint
+#### 5.3.2 Install Prettier and ESLint
 
 ```bash
 npm install --save-dev prettier
@@ -224,7 +224,7 @@ ng add angular-eslint --skip-confirmation
 
 ---
 
-#### 3.3 Install Google Chrome (Optional)
+#### 5.3.3 Install Google Chrome (Optional)
 
 Validate installation
 ```bash
@@ -255,7 +255,7 @@ google-chrome --version
 
 ---
 
-#### 3.4 Validate NPM scripts
+#### 5.3.4 Validate NPM scripts
 To validate the NPM scripts, run the following commands in the terminal:
 
 ```bash
