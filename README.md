@@ -50,6 +50,7 @@ To get started with the Project Playbook, follow these steps:
    - Git LFS installed and configured
 2. Run the bootstrap script to set up the project environment:
    ```bash
+   cd /path/to/project-playbook
    bash ./bootstrap/bootstrap.sh
    ```
    Script will do:
