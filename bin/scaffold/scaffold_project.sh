@@ -42,21 +42,23 @@ declare -a STACK=()
 # --------------------------------------------------------------
 
 log_info() {
-    echo "[INFO][$TS][$SCRIPT_NAME] $1"
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;34m[INFO][$TS][$script_name] \033[0m $1"
 }
-
-
-log_warning() {
-    echo "[WARNING][$TS][$SCRIPT_NAME] $1"
-}
-
 
 log_error() {
-    echo "[ERROR][$TS][$SCRIPT_NAME] $1" >&2
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;31m[ERROR][$TS][$script_name] \033[0m $1"
+} 
+
+log_warning() {
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;33m[WARNING][$TS][$script_name] \033[0m $1"
 }
 
 log_debug() {
-    echo "[DEBUG][$TS][$SCRIPT_NAME] $1"
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;36m[DEBUG][$TS][$script_name] \033[0m $1"
 }
 
 # --------------------------------------------------------------

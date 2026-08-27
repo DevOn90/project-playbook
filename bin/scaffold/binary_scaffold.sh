@@ -6,13 +6,13 @@ set -euo pipefail
 # Purpose: The script copies files and directories from a template
 #          to a target destination based on a specified template file.
 # Logic:
-# 1. Set up local variables.
-# 2. Set up logging functions.
-# 3. Create a helper function to display usage information.
-# 4. Parse command-line arguments.
-# 5. Copy function to handle the copying of files and directories.
-# 6. Template parser to read the template file and execute copy commands.
-# 7. Main function to orchestrate the script's execution.
+#          1. Set up local variables.
+#          2. Set up logging functions.
+#          3. Create a helper function to display usage information.
+#          4. Parse command-line arguments.
+#          5. Copy function to handle the copying of files and directories.
+#          6. Template parser to read the template file and execute copy commands.
+#          7. Main function to orchestrate the script's execution.
 # --------------------------------------------------------------
 
 # --------------------------------------------------------------
@@ -33,19 +33,23 @@ DRY_RUN=false
 # --------------------------------------------------------------
 
 log_info() {
-    echo "[INFO][$TS][$SCRIPT_NAME] $1"
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;34m[INFO][$TS][$script_name] \033[0m $1"
 }
 
 log_error() {
-    echo "[ERROR][$TS][$SCRIPT_NAME] $1" >&2
-}
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;31m[ERROR][$TS][$script_name] \033[0m $1"
+} 
 
 log_warning() {
-    echo "[WARNING][$TS][$SCRIPT_NAME] $1"
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;33m[WARNING][$TS][$script_name] \033[0m $1"
 }
 
 log_debug() {
-    echo "[DEBUG][$TS][$SCRIPT_NAME] $1"
+    script_name="$(basename "${BASH_SOURCE[1]}")"
+    echo -e "\033[1;36m[DEBUG][$TS][$script_name] \033[0m $1"
 }
 
 # --------------------------------------------------------------
