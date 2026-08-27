@@ -1,0 +1,16 @@
+mutation CreateNewRoadmapView($projectId: ID!, $name: String!) {
+    createProjectV2View(
+        input:  {
+           projectId: $projectId
+           name: $name
+           layout: ROADMAP_LAYOUT
+        }
+    ) {
+        projectV2View {
+            id
+            name
+            number
+            layout
+        }
+     }
+}

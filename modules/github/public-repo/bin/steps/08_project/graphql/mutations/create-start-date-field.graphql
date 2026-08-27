@@ -1,0 +1,17 @@
+mutation CreateStartDateField($projectId: ID!) {
+    createProjectV2Field(
+        input:  {
+           projectId: $projectId
+           name: "Start Date"
+           dataType: DATE
+        }  
+    ) {
+        projectV2Field {
+            ... on ProjectV2Field {
+                id
+                name
+                dataType
+            }
+        }
+    }
+}

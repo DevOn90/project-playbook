@@ -1,0 +1,25 @@
+mutation CreateSprintField($projectId: ID!, $name: String!, $startDate: Date!, $duration: Int!) {
+    createProjectV2Field(
+        input:  {
+           projectId: $projectId
+           name: $name
+           dataType: ITERATION
+           iterationConfiguration: {
+              duration: $duration
+              startDate: $startDate
+              iterations: []
+           }
+        }
+    ) {
+        projectV2Field {
+            ... on ProjectV2IterationField {
+                id
+                name
+                dataType
+                configuration {
+                    duration
+                }
+            }
+        }
+    }
+}

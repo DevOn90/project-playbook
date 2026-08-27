@@ -1,0 +1,40 @@
+mutation RenameProjectView($viewId: ID!, $name: String!, $layout: ProjectV2ViewLayout!, $fieldIds: [ID!]!) {
+    updateProjectV2View(
+        input:  {
+           viewId: $viewId
+           name: $name
+           layout: $layout
+           configuration:  {
+              visibleFieldIds: $fieldIds
+           }
+        }
+    ) {
+        projectV2View {
+            id
+            name
+            layout
+            configuration {
+                visibleFields(first: 20) {
+                    nodes {
+                        ... on ProjectV2Field {
+                            id
+                            name
+                        }
+                        ... on ProjectV2IterationField {
+                            id
+                            name
+                        }
+                        ... on ProjectV2SingleSelectField {
+                            id
+                            name
+                        }
+                        ... on ProjectV2MultiSelectField {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

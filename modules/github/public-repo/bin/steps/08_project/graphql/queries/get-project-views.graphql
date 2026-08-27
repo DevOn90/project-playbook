@@ -1,0 +1,14 @@
+query GetProjectViews($login: String!, $number: Int!) {
+    user(login: $login) {
+        projectV2(number: $number) {
+            views(first: 20) {
+                nodes {
+                    id
+                    name
+                    number
+                    layout
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,43 @@
+mutation CreateNewView($projectId: ID!, $name: String!, $layout: ProjectV2ViewLayout!, $fieldIds: [ID!]!) {
+    createProjectV2View(
+        input:  {
+           projectId: $projectId
+           name: $name
+           layout: $layout
+           configuration:  {
+              visibleFieldIds: $fieldIds
+           }
+        }
+    ) {
+        ... on CreateProjectV2ViewPayload {
+            projectV2View {
+                id
+                name
+                number
+                layout
+                configuration {
+                    visibleFields(first: 20) {
+                        nodes {
+                            ... on ProjectV2Field {
+                                id
+                                name
+                            }
+                            ... on ProjectV2IterationField {
+                                id
+                                name
+                            }
+                            ... on ProjectV2SingleSelectField {
+                                id
+                                name
+                            }
+                            ... on ProjectV2MultiSelectField {
+                                id
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        }
+     }
+}
