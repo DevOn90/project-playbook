@@ -28,6 +28,7 @@ PROJECT_NAME=""
 TS=$(date +%Y-%m-%dT%H:%M:%S)
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd -- "$SCRIPT_DIR/../" && pwd)"
 SCRIPT_NAME="$(basename -- "${BASH_SOURCE[0]}")"
 GIT_HOOK_PATH=".githooks"
 
@@ -58,8 +59,6 @@ log_debug() {
     script_name="$(basename "${BASH_SOURCE[1]}")"
     echo -e "\033[1;36m[DEBUG][$TS][$script_name] \033[0m $1"
 }
-
-log_info "I am child process at $SCRIPT_DIR/main-bootstrap.sh"
 
 # ---------------------------------------------------------
 # 3. Function to prompt the user for a project name
@@ -93,6 +92,9 @@ prompt_project_path() {
     log_error "The provided path '$PROJECT_PATH' does not exist. Please provide a valid directory path."
     exit 1
   fi
+
+  # Store the final project path in temp file
+  echo "$PROJECT_PATH" > "$PROJECT_ROOT/temp/.project_dir_path_temp"
   
 }
 
