@@ -1,0 +1,350 @@
+.
+└── .github/
+    ├── dependabot.yml
+<<<EOF
+# version: 2
+# updates:
+#   # =====================================
+#   # GitHub Actions
+#   # =====================================
+#   - package-ecosystem: "github-actions"
+#     directory: "/"  
+#     schedule:
+#       interval: "weekly"      
+#       day: "friday"          
+#       time: "12:00"           
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][github-actions]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ======================================
+#   # NPM (frontend)
+#   # ====================================== 
+#   - package-ecosystem: "npm"
+#     directory: "/apps/frontend"
+#     schedule:
+#       interval: "weekly"      
+#       day: "friday"           
+#       time: "12:00"           
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][npm][frontend]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"] 
+
+#   # ========================================
+#   # Docker (API)
+#   # ========================================
+#   - package-ecosystem: "docker"
+#     directory: "/apps/api"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][docker][api]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ==========================================
+#   # Docker (Frontend)
+#   #===========================================
+#   - package-ecosystem: "docker"
+#     directory: "/apps/frontend/app"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][docker][frontend]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ==========================================
+#   # Docker-compose (dev-environment)
+#   # ========================================== 
+#   - package-ecosystem: "docker-compose"
+#     directory: "/infra/runtime/dev"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][docker-compose][dev]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ============================================
+#   # Docker-compose (base-environment)
+#   # ============================================
+#   - package-ecosystem: "docker-compose"
+#     directory: "/infra/runtime/base"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][docker-compose][base]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ============================================
+#   # Docker-compose (local-environment)
+#   # ============================================
+#   - package-ecosystem: "docker-compose"
+#     directory: "/infra/local"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][docker-compose][local]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ==============================================
+#   # Maven (Api)
+#   # ==============================================
+#   - package-ecosystem: "maven"
+#     directory: "/apps/api"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][maven]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+
+#   # ================================================
+#   # Pre-commit
+#   # ================================================
+#   - package-ecosystem: "pre-commit"
+#     directory: "/"
+#     schedule:
+#       interval: "weekly"
+#       day: "friday"
+#       time: "12:00"
+#       timezone: "UTC"
+#     open-pull-requests-limit: 10
+#     labels:
+#       - "dependencies"
+#     commit-message:
+#       prefix: "[deps][pre-commit]: "
+#     groups:
+#       safe:
+#         patterns: ["*"]
+#         update-types: ["minor","patch"]
+#       major:
+#         patterns: ["*"]
+#         update-types: ["major"]
+EOF>>>
+    └── workflows
+        └── ci-dependabot-pr-review.yml
+<<<EOF
+name: Dependabot PR Review 
+
+on: 
+  pull_request: 
+    types: 
+      - opened
+      - reopened
+
+permissions: 
+  pull-requests: write
+
+jobs:
+  add-review-checklist:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add dependency review checklist
+        
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        
+        shell: bash
+
+        run: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          # Set Variables
+          MARKER="DEPENDENCY_REVIEW_CHECKLIST"
+          BODY="$(gh api \ "/repos/${REPO}/pulls/${PR_NUMBER}" \ --jq '.body // ""')"
+
+          if grep -qF "$MARKER" <<< "$BODY"; then 
+            echo "Dependency review checklist already exists."
+            exit 0
+          fi
+
+          BODY="$(gh api \
+             "/repos/${REPO}/pulls/${PR_NUMBER}" \
+              --jq '.body // ""')"
+              
+          if grep -qF "$MARKER" <<< "$BODY"; then
+            echo "Dependency review checklist already exists."
+            exit 0 
+          fi 
+          
+          CHECKLIST=$(cat <<'EOF'
+          <!-- DEPENDENCY_REVIEW_CHECKLIST -->
+          
+          ## 🧠 Human Review Required — Dependency Update
+          
+          Please complete this checklist before merging this Dependabot PR. 
+          
+          ### 📊 Change Scope 
+          
+          - [ ] Small — single dependency, no breaking changes 
+          - [ ] Medium — multiple updates or minor risk 
+          - [ ] Large — framework, major version, build/runtime impact 
+          
+          ### 📦 Dependency Changes 
+          
+          - Added: 
+          - Updated: 
+          - Removed: 
+          
+          ### 🧠 Reason for Change 
+          
+          - [ ] Security 
+          - [ ] Feature requirement 
+          - [ ] Maintenance 
+          - [ ] Other Explain: 
+          
+          ### 🤖 Dependabot Configuration 
+          
+          Confirm that `.github/dependabot.yml` is correct:
+          
+          - [ ] No changes required 
+          - [ ] `dependabot.yml` updated 
+          - [ ] New ecosystem/path added and verified 
+          
+          Explain: 
+          
+          ### 🔍 Impact Analysis 
+          
+          - Affected services/modules: 
+          - Build impact: 
+          - Runtime impact: 
+          
+          ### 🧪 Testing 
+          
+          - [ ] Dependency installation verified 
+          - [ ] Tests pass 
+          - [ ] CI build passes 
+          - [ ] Other relevant checks pass 
+          
+          ### ⚠️ Risk Assessment 
+          
+          - [ ] Low 
+          - [ ] Medium 
+          - [ ] High 
+          
+          Describe risks: 
+          
+          ### 📏 Governance 
+          
+          - [ ] PR title follows convention 
+          - [ ] Linked issue where applicable 
+          - [ ] Self-review completed 
+         
+          ### ✅ Ready for Review 
+         
+          - [ ] Dependency impact is understood 
+          - [ ] Dependabot configuration is correct 
+          - [ ] CI/security checks passed 
+          - [ ] This PR is safe to merge 
+          EOF
+          )
+
+          if [[ -n "$BODY" ]]; then
+           NEW_BODY="${BODY}"$'\n\n'"${CHECKLIST}"
+          else 
+           NEW_BODY="${CHECKLIST}"
+          fi
+
+          jq -n \ 
+            --arg body "$NEW_BODY" \ 
+            '{body: $body}' |
+          gh api \ 
+            --method PATCH \
+            "/repos/${REPO}/pulls/${PR_NUMBER}" \
+            --input -
+EOF>>>

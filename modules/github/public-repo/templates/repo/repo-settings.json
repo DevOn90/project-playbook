@@ -1,0 +1,17 @@
+{
+  "private": false,
+  "is_template": false,
+  "has_wiki": false,
+  "has_issues": true,
+  "has_discussions": false,
+  "has_projects": true,
+  "has_pull_requests": true,
+  "pull_request_creation_policy": "all",
+  "allow_squash_merge": true,
+  "allow_merge_commit": false,
+  "allow_rebase_merge": false,
+  "allow_update_branch": true,
+  "allow_auto_merge": false,
+  "delete_branch_on_merge": true,
+  "web_commit_signoff_required": false
+}
