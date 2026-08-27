@@ -10,7 +10,8 @@
 #       4. Module selection function
 #       5. Parse arguments
 #       6. Run module function
-#       7. Main function
+#       7. Clear temporary files
+#       8. Main function
 # ============================================================
 
 set -euo pipefail
@@ -228,15 +229,36 @@ run_module() {
 }
 
 # ============================================================
-# 7. Execute main function
+# 7. Clear temporary files
+# ============================================================
+
+clear_temp_files() {
+
+    log_info "Clearing temporary files in $SCRIPT_NAME"
+
+    local temp_file_path="$PROJECT_ROOT/temp/.project_dir_path_temp"
+
+    if [[ -f "$temp_file_path" ]]; then
+        log_info "Removing temporary file: $temp_file_path"
+        rm -f "$temp_file_path"
+        log_info "Temporary file removed: $temp_file_path"
+    else
+        log_warning "Temporary file does not exist: $temp_file_path. Skipping removal."
+    fi
+}
+
+# ============================================================
+# 8. Execute main function
 # ============================================================
 
 main() {
     
     log_info "Executing main function in $SCRIPT_NAME"
     
+    # Parse command-line arguments
     parse_arguments "$@"
     
+    # Validate that at least one module has been selected
     if [[ ${#SELECTED_MODULES[@]} -eq 0 ]]; then
         log_error "No modules selected."
         log_error "Use --module <name> or --help."
@@ -245,9 +267,13 @@ main() {
 
     log_info "Selected modules: ${SELECTED_MODULES[*]}"
 
+    # Execute each selected module 
     for module in "${SELECTED_MODULES[@]}"; do
         run_module "$module"
     done
+
+    # Remove temporary files after module execution
+    clear_temp_files
 
     log_info "All selected modules completed successfully."
 

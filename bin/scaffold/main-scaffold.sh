@@ -111,10 +111,9 @@ scaffold_project() {
     local path_to_project="$(cat "$PROJECT_ROOT/temp/.project_dir_path_temp")"
     local template
 
-    # Validate and remove the temp file after reading its content
+    # Validate temporary files with existence
     if [[ -n "$path_to_project" ]]; then
        log_info "Scaffolding project at path: $path_to_project"
-       rm -f "$PROJECT_ROOT/temp/.project_dir_path_temp"
     else
        log_error "Project path is empty. Please ensure the project path is set correctly."
        log_error "Check temp file at $PROJECT_ROOT/temp/* and/or script $PROJECT_ROOT/bin/bootstrap/main-bootstrap.sh func 04 for issues."
