@@ -152,6 +152,17 @@ Below is the folder structure of Angular project with extra files and configurat
 
 ## 5. Getting Started
 
+### 5.0 Remove Front-end Provision
+
+The folder `apps/front-end` created during repo scaffold with root template serves as provision only to satisfy workflow `ci-npm-audit`. Without this provision the workflow will fails. As `Angular Module` will create necessary files `package.json` and `package-lock.json` in the `apps/<ng-project-name>` folder, you can safely remove the provision folder `apps/front-end`.
+
+```bash
+cd apps/ || exit 1
+rm -rf front-end
+
+Note: Dont commit till `ng new <project-name>` is done and `package.json` and `package-lock.json` files are created in the `apps/<ng-project-name>` folder.
+```
+
 ### 5.1 Create Angular Default Project
 
 Navigate to `apps/` directory and create a new Angular project using the Angular CLI command:
@@ -161,6 +172,12 @@ cd apps/
 Create a new Angular project using the following command:
 ```bash
 ng new <project-name> --style=scss --ssr=false --zoneless=false --dry-run  // e.g. "front-end"
+
+Note: If you choose other then 'front-end' name, update `ci-npm-audit` workflow with:
+
+defaults:
+          run:
+            working-directory: apps/<your-project-name>
 ```
 Commit and push the changes to the repository.
 ```bash
@@ -175,7 +192,9 @@ git push origin <branch-name>  // e.g. "main"
 - Use template `modules/angular/templates/ng-custom-folder-structure.txt`
 
 ```bash
-bash ./bin/scaffold/scaffold_project.sh --template "$HOME/<full-path-to-playbook-repo>/project-playbook/modules/angular/templates/ng-custom-folder-structure.txt" --path "$HOME/<full-path-to-repo>/apps/<ng-project-name>" --dry-run
+cd /<full-path-to-playbook-repo>/project-playbook
+
+bash ./bin/scaffold/scaffold_project.sh --template "/<full-path-to-playbook-repo>/project-playbook/modules/angular/templates/ng-custom-folder-structure.txt" --path "/<full-path-to-repo>/apps/<ng-project-name>" --dry-run
 ```
 Use `--dry-run` to see what changes will be made without actually making any changes. Once you are satisfied with the output, remove the `--dry-run` flag to apply the changes.
 
@@ -203,16 +222,18 @@ Update NPM metadata in `package.json` file:
 "version": "1.0.0",
 "description": "<your-project-description>",
 "private": true,        // Prevent accidental publishing to NPM registry
-"author": {},
+"author": {
+    "name": "<your-name>"
+},
 "license": "MIT",
 "repository": {
     "type": "git",
     "url": "<your-repo-url>"
-}
+},
 "engines": {
     "node": "^22.0.0",
     "vscode": "^1.132.0"
-}
+},
 ```
 
 #### 5.3.2 Install Prettier and ESLint
@@ -266,6 +287,15 @@ npm run lint
 npm run test:ci
 npm run build:prod
 ```  
+---
+
+#### 5.3.5 Commit and Push Changes
+
+```bash
+git add .
+git commit -m "feat: scaffold angular project <project-name> with custom folder structure"
+git push origin <branch-name>  // e.g. "main"
+```
 
 ---
 
