@@ -43,7 +43,7 @@ cd /home/<user-name>/path-to/project-playbook
 Run the script with the template and project path as arguments. Use `--dry-run` to see what will be created without actually creating the files and directories.
 
 ```bash
-bash ./bin/scaffold/scaffold_project.sh --template="$HOME/Desktop/04_Today_Work/project-playbook/templates/scaffold/project-root-scaffold-template.txt" --path="$HOME/Desktop/04_Today_Work/my-test-project" --dry-run
+bash ./bin/scaffold/scaffold_project.sh --template="/<full-path-to-your-playbook-location>/project-playbook/templates/scaffold/project-root-scaffold-template.txt" --path="<full-path-to-your-project-location>/my-test-project" --dry-run
 ```
 
 ### 3.5 Commit and push changes
@@ -78,7 +78,7 @@ cd /home/<user-name>/path-to/project-playbook
 Run the script with the template and project path as arguments. Use `--dry-run` to see what will be created without actually creating the files and directories.
 
 ```bash
-bash ./bin/scaffold/binary_scaffold.sh --template "$HOME/Desktop/04_Today_Work/project-playbook/templates/scaffold/binary/binary-root-scaffold-template.txt" --path "$HOME/Desktop/04_Today_Work/my-test-project" --dry-run
+bash ./bin/scaffold/binary_scaffold.sh --template "/<full-path-to-playbook>/project-playbook/templates/scaffold/binary/binary-root-scaffold-template.txt" --path "/<full-path-to-your-project-location>/my-test-project" --dry-run
 ```
 
 ### 4.5 Commit and push changes
@@ -112,14 +112,14 @@ cd /home/<user-name>/path-to/project-playbook
 Run the script with the template and project path as arguments. Use `--dry-run` to see what will be created without actually creating the files and directories.
 
 ```bash
-bash ./bin/scaffold/executables_init.sh --template "$HOME/Desktop/04_Today_Work/project-playbook/templates/executables/project-executables-template.txt" --path "$HOME/Desktop/04_Today_Work/my-test-project" --dry-run
+bash ./bin/scaffold/executables_init.sh --template "/<full-path-to-playbook>/project-playbook/templates/executables/project-executables-template.txt" --path "/<full-path-to-your-project-location>/my-test-project" --dry-run
 ```
 
 ### 5.5 Commit and push changes
 1. Open new terminal
 2. Go to directory of the new project e.g. `cd /home/<user-name>/path-to/my-test-project`  
 3. git add . (manually)
-4. git commit -m "Initial commit: make executables executable" (manually)       
+4. git commit -m "chore: Initial commit make executables executable" (manually)       
 5. git push -u origin development (manually)
 
 ### 5.6 Repeat for other executables templates
