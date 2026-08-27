@@ -3,5 +3,6 @@
         "*": true,
         "plaintext": false,
         "markdown": true,
-    }
+    },
+    "graphql-config.load.filepath": "./modules/github/public-repo/bin/steps/08_project/graphql/graphql.config.yml"
 }
