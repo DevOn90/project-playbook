@@ -67,6 +67,8 @@ Options:
   --help             Show this help.
 
 Available modules:
+  bootstrap       (Local project environment setup)
+  scaffold        (Project scaffolding)
   angular
   github/public-repo
   graphql     --> Unlock it once available 
@@ -78,6 +80,8 @@ Examples:
   $(basename "$0") --module angular
   $(basename "$0") --module angular --module wiremock
   $(basename "$0") --module github/public-repo
+
+For more information, visit the project-playbook documentation at README.md.
 
 EOF
 }
@@ -91,6 +95,14 @@ select_module() {
     local module="$1"
 
     case "$module" in
+        bootstrap)
+            SELECTED_MODULES+=("bootstrap")
+            ;;
+
+        scaffold)
+            SELECTED_MODULES+=("scaffold")
+            ;;
+        
         angular)
             SELECTED_MODULES+=("angular")
             ;;
@@ -164,6 +176,14 @@ run_module() {
     local module_entrypoint
 
     case "$module" in
+        bootstrap)
+            module_entrypoint="$PROJECT_ROOT/bootstrap/main-bootstrap.sh"
+            ;;
+
+        scaffold)
+            module_entrypoint="$PROJECT_ROOT/bin/scaffold/main-scaffold.sh"
+            ;;
+        
         angular)
             module_entrypoint="$PROJECT_ROOT/modules/angular/bin/main-angular.sh"
             ;;
