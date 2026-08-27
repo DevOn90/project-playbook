@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# Purpose: This is collection of script/s managing GitHub repo labels   
+# Content: 1. Support functions to create labels
+#          2. Remove existing labels 
+#          3. Create priority labels
+#          4. Create type labels
+#          5. Create area labels
+#          6. Create dependabot labels
+# ============================================================
+set -euo pipefail
+
+# ============================================================
+# 1. Support functions to create labels
+# ============================================================
+
+create_or_update_label() {
+  local name="$1"
+  local color="$2"
+  local description="$3"
+
+  log_info "Processing label: $name"
+
+  if gh api \
+      "repos/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/labels/${name}" \
+      >/dev/null 2>&1; then
+  
+
+    gh api \
+      --method PATCH \
+      "repos/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/labels/${name}" \
+      -f new_name="$name" \
+      -f color="$color" \
+      -f description="$description" \
+      >/dev/null
+
+    echo "  Updated"
+  else
+    gh api \
+      --method POST \
+      "repos/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/labels" \
+      -f name="$name" \
+      -f color="$color" \
+      -f description="$description" \
+      >/dev/null
+
+    echo "  Created"
+  fi
+}
+
+# ============================================================
+# 2. Remove existing labels
+# ============================================================
+
+remove_existing_labels() {
+  log_info "Removing existing labels..."
+  # Read label names line-by-line to avoid word-splitting and handle empty
+  # output gracefully. Use gh label delete which accepts names with spaces.
+  while IFS= read -r label; do
+    [ -z "${label:-}" ] && continue
+    gh label delete "$label" --repo "${GITHUB_USERNAME}/${GITHUB_REPO_NAME}" --yes >/dev/null
+    log_info "Removed label: $label"
+  done < <(gh api "repos/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/labels" --jq '.[].name' || true)
+}
+
+# ============================================================
+# 3. Create priority labels
+# ============================================================
+
+create_priority_labels() {
+  log_info "Creating priority labels..."
+  create_or_update_label "low" "0E8A16" "Low Priority"
+  create_or_update_label "moderate" "DBAB09" "Moderate Priority"
+  create_or_update_label "high" "B60205" "High Priority"
+  create_or_update_label "critical" "D93F0B" "Critical Priority"
+}
+
+# ============================================================
+# 4. Create type labels
+# ============================================================
+
+create_type_labels() {
+    log_info "Creating type labels..."
+    create_or_update_label "business-problem" "5319E7" "Business/Strategy Work"
+    create_or_update_label "epic" "B60205" "New Epic"
+    create_or_update_label "feature" "0E8A16" "New Feature"
+    create_or_update_label "bug" "D93F0B" "New Bug"
+    create_or_update_label "documentation" "0075CA" "Documentation Work"
+    create_or_update_label "chore" "C2E0C6" "Chore/Task"
+}
+
+# ============================================================
+# 5. Create area labels
+# ============================================================
+
+create_area_labels() {
+    log_info "Creating area labels..."
+    create_or_update_label "discovery" "5319E7" "Discovery Work"
+    create_or_update_label "delivery" "0075CA" "Delivery Work"
+    create_or_update_label "backend" "0E8A16" "Backend Work"
+    create_or_update_label "frontend" "0075CA" "Frontend Work"
+    create_or_update_label "data" "5319E7" "Data Work"
+    create_or_update_label "devops" "C2E0C6" "DevOps Work"
+    create_or_update_label "qa" "DBAB09" "QA Work"
+    create_or_update_label "reoccurring" "B60205" "Reoccurring Work"
+}
+
+# ============================================================
+# 6. Create dependabot labels
+# ============================================================
+
+create_dependabot_labels() {
+    log_info "Creating dependabot labels..."
+    create_or_update_label "dependencies" "0E8A16" "Dependency update PRs"
+    create_or_update_label "automated" "0075CA" "Automated PRs"
+    create_or_update_label "security" "B60205" "Security-related PRs"
+}

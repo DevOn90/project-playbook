@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ============================================================
+# Purpose: This script is collection of functions to configure and validate
+#          the access control for a public repository.
+# Content:
+#          1. Validate only admin in collaborators list
+#          2. Validate no teams in teams list
+# ============================================================
+
+# ============================================================
+# 1. Validate only admin in collaborators list
+# ============================================================  
+
+validate_only_admin_in_collaborators_list() {
+
+    log_info "Validating only admin in collaborators list for the repository..."
+
+    # Validate that only '1' collaborator is present in the list of collaborators for the repository. The collaborator should be the admin user.
+    if [[ "$(gh api \
+              repos/${GITHUB_REPO_FULL_NAME}/collaborators \
+              --jq 'length')" -eq 1  ]];then
+        log_info "✅ Only 1 collaborator is present in the list for the repository as expected."
+    else
+        log_error "More than 1 collaborator is present in the list for the repository. Please remove all the collaborators except the admin user from the list"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 2. Validate no teams in teams list
+# ============================================================
+
+validate_no_teams_in_teams_list() {
+
+    log_info "Validating no teams in teams list for the repository..."
+
+    # Validate that no teams are present in the list of teams for the repository.
+    if [[ "$(gh api \
+              repos/${GITHUB_REPO_FULL_NAME}/teams \
+              --jq 'length')" -eq 0  ]];then
+        log_info "✅ No teams are present in the list for the repository as expected."
+    else
+        log_error "Teams are present in the list for the repository. Please remove all the teams from the list"
+        exit 1
+    fi
+}

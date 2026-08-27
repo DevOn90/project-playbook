@@ -1,0 +1,517 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# Purpose: This script is collection of functions to configure branch protection rules for a public repository
+# Content:
+#          1. Configure main branch protection rules
+# ------------------------------------------------------------
+#          2. Validate enforcement status of the main branch protection ruleset
+#          3. Validate bypass actor
+#          4. Validate main branch is the only target branch
+#          5. Validate rule "Restrict creations"
+#          6. Validate rule "Restrict updates"
+#          7. Validate rule "Restrict deletions"
+#          8. Validate rule "Require linear history"
+#          9. Validate rule "Require deployments to succeed"
+#          10. Validate rule "Require signed commits"
+#          11. Validate rule "Require a pull request before merging"
+#          12. Validate rule "Require status checks to pass"
+#          13. Validate rule "Block force pushes"
+#          14. Validate rule "Require code scanning results"
+#          15. Validate rule "Require code quality results"
+#          16. Validate rule "Restrict code coverage"
+#          17. Validate rule "Automatically request Copilot code review"
+# ============================================================
+
+set -euo pipefail
+
+# ============================================================
+# 1. Configure main branch protection rules
+# ============================================================
+
+configure_main_branch_protection_rules() {
+
+    log_info "Configuring main branch protection rules..."
+
+    log_info "Validate that no ruleset exists"
+
+    ruleset_count=$(gh api --method GET "repos/${GITHUB_REPO_FULL_NAME}/rulesets"  --jq '. | length')
+
+    if [[ "$ruleset_count" -eq 0 ]]; then
+        log_info "No existing rulesets found"
+    else
+        log_error "Existing rulesets found"
+        log_error "Please check the existing rulesets and resolve them before re-running this script"
+        exit 1
+    fi
+
+    # Create a new ruleset for the main branch
+    log_info "Creating a new ruleset for the main branch"
+
+    # Validate that the ruleset file exists
+    if [[ ! -f "${MODULE_ROOT}/public-repo/templates/rulesets/ruleset-branch-main.json" ]]; then
+        log_error "Ruleset file '${MODULE_ROOT}/public-repo/templates/rulesets/ruleset-branch-main.json' not found"
+        exit 1
+    fi
+
+    local response
+    
+    response="$(gh api \
+    --method POST \
+    repos/${GITHUB_REPO_FULL_NAME}/rulesets \
+    --input "${MODULE_ROOT}/public-repo/templates/rulesets/ruleset-branch-main.json")"
+
+    if [[ -n "$response" ]]; then
+        log_info "Ruleset created successfully"
+    else
+        log_error "Failed to create ruleset"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 2. Validate enforcement status of the main branch protection ruleset
+# ============================================================
+
+validate_enforcement_status() {
+    
+    log_info "Validating enforcement status of the main branch protection ruleset..."
+
+    # Get the ruleset ID for the main branch protection ruleset
+    ruleset_id=$(
+        gh api \
+        --method GET \
+        "repos/${GITHUB_REPO_FULL_NAME}/rulesets" \
+        --jq '.[] | select(.name == "branch-main-protection") | .id'
+    )
+
+    # Validate enforcement status
+    if [[ "$(gh api --method GET "repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id}" --jq '.enforcement')" == "active" ]];then
+        log_info "✅ Main branch protection ruleset is active"
+    else
+        log_error "Main branch protection ruleset is not active"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 3. Validate bypass actor
+# ============================================================
+
+validate_bypass_actor() {
+
+    log_info "Validating bypass actor for the main branch protection ruleset..."
+
+    # Validate the bypass actor is 'Me'
+    # Get repo owner id (my id)
+    my_id=$(gh api repos/${GITHUB_REPO_FULL_NAME} --jq '.owner.id')
+
+    # Check if there is only single bypass actor and his id is equal to repo owner id (my id)
+    if [[ "$(gh api \
+        --method GET "repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id}" \
+        --jq '.bypass_actors | length')" -eq "1" \
+        && "$(gh api \
+        --method GET "repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id}" \
+        --jq '.bypass_actors[] | .actor_id')" -eq "$my_id" ]];then
+        log_info "✅ Bypass actor is correctly set to the authenticated user"
+    else
+        log_error "Bypass actor is not correctly set to the authenticated user"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 4. Validate main branch is the only target branch
+# ============================================================
+
+is_main_only_target_branch() {
+
+    log_info "Validating that main branch is the only target branch"
+
+    # Validate that target branch is 'main' only and no other branches are included or excluded
+    if [[ "$(gh api \
+        --method GET repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.conditions.ref_name.include | length')" -eq "1" \
+        && "$(gh api \
+        --method GET repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.conditions.ref_name.include[]')" == "refs/heads/main" \
+        && "$(gh api \
+        --method GET repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.conditions.ref_name.exclude | length')" -eq "0" ]];then
+        log_info "✅ Target branch is correctly set to 'main' only"
+    else
+        log_error "Target branch is not correctly set to 'main only' or may include/exclude other branches"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 5. Validate rule "Restrict creations"
+# ============================================================
+
+validate_rule_restrict_creations() {
+
+    log_info "Validating rule 'Restrict creations'"
+
+    # Validate rule "Restrict creations"
+    if [[ "$(gh api \
+        repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.rules[] | select(.type == "creation")')" == "" ]];then
+        log_info "✅ Rule 'Restrict creations' is disabled as expected"
+    else
+        log_error "Rule 'Restrict creations' is enabled, but it should be disabled"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 6. Validate rule "Restrict updates"
+# ============================================================
+
+validate_rule_restrict_updates() {
+
+    log_info "Validating rule 'Restrict updates'"
+
+    # Validate rule "Restrict updates"
+    if [[ "$( gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "update") | .type')" == "update" ]];then
+        log_info "✅ Rule 'Restrict updates' is enabled as expected"
+    else
+        log_error "Rule 'Restrict updates' is disabled, but it should be enabled"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 7. Validate rule "Restrict deletions"
+# ============================================================
+
+validate_rule_restrict_deletions() {
+
+    log_info "Validating rule 'Restrict deletions'"
+
+    # Validate rule "Restrict deletions"
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "deletion")')" ]];then
+        log_info "✅ Rule 'Restrict deletions' is enabled as expected"
+    else
+        log_error "Rule 'Restrict deletions' is disabled, but it should be enabled"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 8. Validate rule "Require linear history"
+# ============================================================
+
+validate_rule_require_linear_history() {
+
+    log_info "Validating rule 'Require linear history'"
+
+    # Validate rule "Require linear history"
+    if [[ "$(gh api \
+        repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.rules[] | select(.type == "required_linear_history")')" ]];then
+        log_info "✅ Rule 'Require linear history' is enabled as expected"
+    else
+        log_error "Rule 'Require linear history' is disabled, but it should be enabled"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 9. Validate rule "Require deployments to succeed"
+# ============================================================
+
+validate_rule_require_deployments_to_succeed() {
+
+    log_info "Validating rule 'Require deployments to succeed'"
+
+    # Validate rule "Require deployments to succeed"
+    if [[ "$(gh api \
+        repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.rules[] | select(.type == "required_deployments")')" == "" ]];then
+        log_info "✅ Rule 'Require deployments to succeed' is disabled as expected"
+    else
+        log_error "Rule 'Require deployments to succeed' is enabled, but it should be disabled"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 10. Validate rule "Require signed commits"
+# ============================================================
+
+validate_rule_require_signed_commits() {
+
+    log_info "Validating rule 'Require signed commits'"
+
+    # Validate rule "Require signed commits"
+    if [[ "$(gh api \
+        repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.rules[] | select(.type == "required_signatures")')" == "" ]];then
+        log_info "✅ Rule 'Require signed commits' is disabled as expected"
+    else
+        log_error "Rule 'Require signed commits' is enabled, but it should be disabled"
+        exit 1
+    fi
+}
+
+# ============================================================
+# 11. Validate rule "Require a pull request before merging"
+# ============================================================
+
+validate_rule_pull_request() {
+
+    log_info "Validating rule 'Require a pull request before merging'"
+
+    # Validate the rule "Require a pull request before merging" is enabled
+    if [[ "$(gh api \
+        repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+        --jq '.rules[] | select(.type == "pull_request") | .type')" == "pull_request" ]];then
+        log_info "✅ Rule 'Require a pull request before merging' is enabled as expected"
+    else
+        log_error "Rule 'Require a pull request before merging' is disabled, but it should be enabled"
+        exit 1
+    fi 
+
+    # Validate PR detail - required approvers is equal to 1
+    if [[ "$(gh api \
+            "repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id}" \
+            --jq '.rules[] | select(.type == "pull_request") | .parameters.required_approving_review_count')" == "1" ]];then
+        log_info "✅ Rule 'Require a pull request before merging' has set '1' required approver as expected"
+    else
+        log_error "Rule 'Require a pull request before merging' has not set '1' required approver, but it should be set to '1'"
+        exit 1
+    fi
+
+    # Validate PR detail - dismiss stale reviews is enabled
+    if [[ "$(gh api repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} --jq '.rules[] | select(.type == "pull_request") | .parameters.dismiss_stale_reviews_on_push')" == "true" ]]; then
+        log_info "✅ Rule 'Require a pull request before merging' has 'dismiss stale reviews on push' enabled as expected"
+    else
+        log_error "Rule 'Require a pull request before merging' has 'dismiss stale reviews on push' disabled, but it should be enabled"
+        exit 1
+    fi
+
+    # Validate PR detail - Require review from specific teams is disabled
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "pull_request") | .parameters.required_reviewers | length')" == "0" ]]; then
+    log_info "✅ Rule 'Require review from specific teams' has no teams set as expected."
+    else
+    log_error "Rule 'Require review from specific teams' is enabled, but it should be disabled."
+    fi
+
+    # Validate PR detail - Require review from Code Owners is disabled
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "pull_request") | .parameters.require_code_owner_review')" == "false" ]];then
+        log_info "✅ Rule 'Require review from Code Owners' is disabled as expected"
+    else
+        log_error "Rule 'Require review from Code Owners' is enabled, should be disabled"
+    fi
+
+    # Validate PR detail - Require approval of the most recent reviewable push is enabled
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "pull_request") | .parameters.require_last_push_approval')" == "true" ]]; then
+        log_info "✅ Rule 'Require approval of the most recent reviewable push' is enabled as expected"
+    else
+        log_error "Rule 'Require approval of the most recent reviewable push' is disabled, but it should be enabled"
+        exit 1
+    fi
+
+    # Validate PR detail - Require conversation resolution before merging is enabled
+    if [[ "$(gh api \
+                repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+                --jq '.rules[] | select(.type == "pull_request") | .parameters.required_review_thread_resolution')" == "true" ]]; then
+        log_info "✅ Rule 'Require conversation resolution before merging' is enabled as expected"
+    else
+        log_error "Rule 'Require conversation resolution before merging' is disabled, but it should be enabled"
+        exit 1
+    fi
+
+    # Validate PR detail - Allowed merge methods is set to 'Squash' ONLY`
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "pull_request") | .parameters.allowed_merge_methods.[]')" == "squash" ]]; then
+        log_info "✅ Allowed merge method is set to 'Squash' as expected"
+    else
+        log_error "Allowed merge method is not set to 'Squash' ONLY, but it should be"
+        exit 1
+    fi
+
+}
+
+# ============================================================
+# 12. Validate rule "Require status checks to pass"
+# ============================================================
+
+validate_rule_checks_to_pass() {
+
+    log_info "Validating rule 'Require status checks to pass'"
+
+    # Validate the rule "Require status checks to pass" is enabled
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "required_status_checks") | .type')" == "required_status_checks" ]]; then
+        log_info "✅ Rule 'Required status checks' is enabled as expected"
+    else
+        log_error "Rule 'Required status checks' is not enabled, but it should be"
+        exit 1
+    fi
+
+    # Validate the rule "Require branches to be up to date before merging"
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "required_status_checks") | .parameters.strict_required_status_checks_policy')" == "true" ]];then
+        log_info "✅ Rule 'Require branches to be up to date before merging' is enabled as expected"
+    else
+        log_error "Rule 'Require branches to be up to date before merging' is not enabled, but it should be"
+        exit 1
+    fi
+
+    # Validate the rule "Do not require status checks on creation"
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "required_status_checks") | .parameters.do_not_enforce_on_create')" == "false"  ]];then
+        log_info "✅ Rule 'Do not require status checks on creation' is disabled as expected"
+    else
+        log_error "Rule 'Do not require status checks on creation' is enabled, but it should be disabled"
+        exit 1
+    fi
+
+    # Validate status checks are available and list them
+    status_checks_count="$(gh api \
+                            repos/"$GITHUB_REPO_FULL_NAME"/rulesets/"$ruleset_id" \
+                            --jq '.rules[] | select(.type == "required_status_checks") | .parameters.required_status_checks | length')"
+    
+    if [[ "$status_checks_count" -gt 0 ]]; then
+        log_info "✅ Status checks found for the ruleset"
+        # List the status checks
+        ruleset_title="$(gh api repos/"$GITHUB_REPO_FULL_NAME"/rulesets/"$ruleset_id" --jq '.name')"
+        log_info "Listing the status checks for the ruleset: $ruleset_title"
+        gh api \
+        repos/"$GITHUB_REPO_FULL_NAME"/rulesets/"$ruleset_id" \
+        --jq '.rules[] | select(.type == "required_status_checks") | .parameters.required_status_checks[] | .context'
+    else
+        log_warning "No checks found for the ruleset, but the ruleset must have at least one check to be valid. Please add a check to the ruleset."
+    fi
+
+}
+
+# ============================================================
+# 13. Validate rule "Block force pushes"
+# ============================================================
+
+validate_rule_block_force_pushes() {
+
+    log_info "Validating rule 'Block force pushes'"
+
+    # Validate the rule "Block force pushes" is enabled
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "non_fast_forward") | .type')" == "non_fast_forward" ]];then
+        log_info "✅ Rule 'Block force pushes' is enabled as expected."
+    else
+        log_error "Rule 'Block force pushes' is NOT enabled. Please enable the rule 'Block force pushes' before continuing."
+        exit 1
+    fi
+}
+
+# ============================================================
+# 14. Validate rule "Require code scanning results"
+# ============================================================
+
+validate_rule_require_code_scanning_results() {
+
+    log_info "Validating rule 'Require code scanning results'"
+
+    # Validate the rule "Require code scanning results" is enabled
+    if [[ "$(gh api \
+                repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+                --jq '.rules[] | select(.type == "code_scanning") | .type')" == "code_scanning" ]];then
+        log_info "✅ Rule 'Require code scanning results' is enabled as expected."
+    else
+        log_error "Rule 'Require code scanning results' is disabled. Enable it before continuing."
+        exit 1
+    fi
+
+    # Validate alerts threshold is set to 'Errors'
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "code_scanning") | .parameters.code_scanning_tools[] | .alerts_threshold')" == "errors" ]];then
+        log_info "✅ Rule code scanning 'Alerts threshold' is set to 'Errors', as expected."
+    else
+        log_warning "Rule code scanning 'Alerts threshold' is NOT set to 'Error'. Consider selecting appropriate level."
+    fi
+
+    # Validate security alerts threshold is set to 'High or higher'
+    if [[ "$(gh api repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} --jq '.rules[] | select(.type == "code_scanning") | .parameters.code_scanning_tools[] | .security_alerts_threshold')" == "high_or_higher" ]];then
+       log_info "✅ Rule code scanning 'Security Alerts threshold' is set to 'High or higher', as expected."
+    else
+       log_warning "Rule code scanning 'Security Alerts threshold' is NOT set to 'High or higher' as recommended. Consider selecting appropriate level." 
+    fi
+}
+
+# ============================================================
+# 15. Validate rule "Require code quality results"
+# ============================================================
+
+validate_rule_require_code_quality_results() {
+
+    log_info "Validating rule 'Require code quality results'"
+
+    # Validate the rule "Require code quality results" is disabled.
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "code_quality") | .type')" == "code_quality" ]]
+    then
+        log_error "Rule 'Require code quality results' is enabled. Please disable it before continuing."
+        exit 1
+    else
+        log_info "✅ Rule 'Require code quality results' is disabled as expected."
+    fi
+}
+
+# ============================================================
+# 16. Validate rule "Restrict code coverage"
+# ============================================================
+
+validate_rule_restrict_code_coverage() {
+
+    log_info "Validating rule 'Restrict code coverage'"
+
+    # Validate the rule "Restrict code coverage" is disabled.
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "code_coverage") | .type')" == "code_coverage" ]]
+    then
+        log_error "Rule 'Restrict code coverage' is enabled. Please disable it before continuing."
+        exit 1
+    else
+        log_info "✅ Rule 'Restrict code coverage' is disabled as expected."
+    fi
+}
+
+# ============================================================
+# 17. Validate rule "Automatically request Copilot code review"
+# ============================================================
+
+validate_rule_automatically_request_copilot_code_review() {
+
+    log_info "Validating rule 'Automatically request Copilot code review'"
+
+    # Validate the rule "Automatically request Copilot code review" is disabled.
+    if [[ "$(gh api \
+            repos/${GITHUB_REPO_FULL_NAME}/rulesets/${ruleset_id} \
+            --jq '.rules[] | select(.type == "copilot_code_review") | .type')" == "copilot_code_review" ]]
+    then
+        log_error "Rule 'Automatically request Copilot code review' is enabled. Please disable it before continuing."
+        exit 1
+    else
+        log_info "✅ Rule 'Automatically request Copilot code review' is disabled as expected."
+    fi
+}

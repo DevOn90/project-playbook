@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# Purpose: This is collection of user prompts for the Github 
+#          public repo module
+# Content:
+#          1. Get the Github username from the Github cli
+#          2. Prompt the user to select a Github repository from the list
+#             of repositories for the user
+# ============================================================
+
+set -euo pipefail
+
+# ============================================================
+# 1. Get the Github username from the Github cli
+# ============================================================
+
+get_github_username() {
+    GITHUB_USERNAME=$(gh api user --jq '.login' 2>/dev/null)
+
+    echo ""
+    log_info "Github username detected: $GITHUB_USERNAME"
+    echo ""
+    export GITHUB_USERNAME
+}
+
+# ============================================================
+# 2. Prompt the user to select a Github repository from the list of repositories for the user
+# ============================================================
+
+select_github_repositories() {
+    log_info "Listing Github repositories for user: $GITHUB_USERNAME"
+
+    mapfile -t GITHUB_REPOSITORIES < <(
+        gh repo list "$GITHUB_USERNAME" \
+            --limit 100 \
+            --json name \
+            --jq '.[].name'
+    )
+
+    if [[ ${#GITHUB_REPOSITORIES[@]} -eq 0 ]]; then
+        log_error "No Github repositories found for user: $GITHUB_USERNAME"
+        exit 1
+    fi
+
+    echo ""
+    echo "Select a repository:"
+    echo ""
+
+    select GITHUB_REPO_NAME in "${GITHUB_REPOSITORIES[@]}"; do
+        if [[ -n "$GITHUB_REPO_NAME" ]]; then
+            break
+        fi
+
+        log_warning "Invalid selection. Please select a repository from the list."
+    done
+
+    GITHUB_REPO_FULL_NAME="${GITHUB_USERNAME}/${GITHUB_REPO_NAME}"
+
+    log_info "Github repository selected: $GITHUB_REPO_FULL_NAME"
+
+    export GITHUB_REPO_NAME
+    export GITHUB_REPO_FULL_NAME
+}
+
+validate_selected_repository() {
+    if ! gh repo view "$GITHUB_REPO_FULL_NAME" > /dev/null 2>&1; then
+        log_error "The selected repository '$GITHUB_REPO_FULL_NAME' does not exist or you do not have access to it."
+        exit 1
+    else
+        log_info "The selected repository '$GITHUB_REPO_FULL_NAME' is valid and accessible."
+    fi
+}
+
+determine_private_or_public() {
+
+    REPO_VISIBILITY=$(gh api "repos/$GITHUB_REPO_FULL_NAME" --jq '.private')
+
+    if [[ "$REPO_VISIBILITY" == "true" ]]; then
+        log_error "The selected repository '$GITHUB_REPO_FULL_NAME' is private."
+        log_error "This script is intended for public repositories only. Please select a public repository."
+        exit 1
+    else
+        log_info "The selected repository '$GITHUB_REPO_FULL_NAME' is public."
+    fi
+
+    export REPO_VISIBILITY
+}

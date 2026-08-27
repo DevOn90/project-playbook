@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ============================================================
+# Purpose: This script is collection of functions to manage security settings for a Github repository.
+#          Equivalent Github UI settings can be found at: settings -> Advanced Security
+# Content:
+#         1. Enable Vulnerability Alerts ( Enables:
+#            - Dependency graph
+#            - Dependabot alerts
+#            - Dependabot malware alerts )
+#         2. Enable Dependabot Security Update
+#         3. Enable Private vulnerability reporting
+#         4. Enable CodeQL scanning
+#=============================================================
+
+enable_vulnerability_alerts() {
+
+    log_info "Enabling vulnerability alerts for the repository..."
+
+    # Validate if vulnerability alerts are already enabled
+    if [[ "$(gh api \
+             --include \
+             repos/${GITHUB_REPO_FULL_NAME}/vulnerability-alerts \
+             2>/dev/null | head -1)" != *"204"* ]];then
+        
+        # Enable vulnerability alerts
+        gh api \
+           --method PUT \
+           repos/${GITHUB_REPO_FULL_NAME}/vulnerability-alerts
+
+        # Double check 
+        log_info "$(gh api \
+             --include \
+             repos/${GITHUB_REPO_FULL_NAME}/vulnerability-alerts \
+             2>/dev/null | head -1)"
+    else
+       log_info "✅ Vulnerability alerts are enabled."    
+    fi
+}
+
+# ============================================================
+# 2. Enable Dependabot Security Updates
+# ============================================================
+
+enable_dependabot_security_updates() {
+
+    log_info "Enabling dependabot security updates..."
+
+    # Validate if NOT already enabled
+    if [[ "$(gh api \
+                --method GET \
+                "repos/${GITHUB_REPO_FULL_NAME}/automated-security-fixes" \
+                --jq '.enabled')" == "false" ]];then
+        
+        log_info "Dependabot security updates disabled, now enabling"
+        gh api --method PUT "repos/${GITHUB_REPO_FULL_NAME}/automated-security-fixes"
+    
+        log_info "✅ Dependabot security update are enabled"
+    else
+        log_info "✅ Dependabot security update are enabled" 
+    fi
+}
+
+# ============================================================
+# 3. Enable Private Vulnerability Reporting
+# ============================================================
+
+enable_private_vulnerability_reporting() {
+
+    log_info "Enabling private vulnerability reporting for the repository..."
+
+    # Validate if NOT already enabled
+    if [[ "$(gh api \
+                --method GET \
+                "repos/${GITHUB_REPO_FULL_NAME}/private-vulnerability-reporting" \
+                --jq '.enabled')" == "false" ]];then
+        
+        log_info "Private vulnerability reporting disabled, now enabling"
+        gh api --method PUT "repos/${GITHUB_REPO_FULL_NAME}/private-vulnerability-reporting"
+    
+        log_info "✅ Private vulnerability reporting are enabled"
+    else
+        log_info "✅ Private vulnerability reporting are enabled" 
+    fi
+}
+
+# ============================================================
+# 4. Enable CodeQL scanning
+# ============================================================
+
+enable_codeql_scanning() {
+
+    log_info "Enabling CodeQL scanning for the repository..."
+
+    # Validate if NOT already enabled/configured
+    if [[ "$(gh api \
+             repos/${GITHUB_REPO_FULL_NAME}/code-scanning/default-setup \
+             --jq '.state')" == "not-configured" ]];then
+        
+        log_info "CodeQL scanning is not configured, now configuring..."
+        gh api \
+           --method PATCH \
+           "repos/${GITHUB_REPO_FULL_NAME}/code-scanning/default-setup" \
+           --input - > /dev/null <<EOF 
+{
+  "state": "configured",
+  "query_suite": "default",
+  "threat_model": "remote",
+  "runner_type": "standard"
+}
+EOF
+        log_info "✅ CodeQL scanning is enabled"
+    else    
+        log_info "✅ CodeQL scanning is enabled"
+    fi
+}

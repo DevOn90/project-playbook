@@ -1,0 +1,233 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# Purpose: This is collection of script/s managing Github public repo settings
+# Content: 1. Change default branch name to 'main' (Removed from main.sh)
+#          2. Update repository description
+#          3. Configure repository settings
+#          4. Enable release immutability in the repository settings
+# ============================================================
+set -euo pipefail
+
+# ============================================================
+# 1. Change default branch name to 'main' - 'Removed from main.sh'
+# Change default branch to 'main' of other name will be done manually
+# ============================================================
+
+change_default_branch_to_main() {
+    
+    log_info "Changing default branch name to 'main'..."
+
+    CURRENT_DEFAULT_BRANCH=$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.default_branch')
+    log_info "Current default branch: '${CURRENT_DEFAULT_BRANCH}'"
+
+    if [[ "${CURRENT_DEFAULT_BRANCH}" != "main" ]];then
+       
+       log_info "Changing default branch name from '${CURRENT_DEFAULT_BRANCH}' to 'main'..."
+       
+       # Rename the default branch to 'main'
+       gh api \
+       --method POST "repos/${GITHUB_REPO_FULL_NAME}/branches/${CURRENT_DEFAULT_BRANCH}/rename" \
+       -f new_name="main" > /dev/null 2>&1
+       
+       log_info "Current default branch is: '${CURRENT_DEFAULT_BRANCH}' and it has been renamed to 'main'"
+    else
+        log_info "Current default branch is already 'main', no changes needed"
+    fi
+    log_info "Default branch name changed to 'main' successfully"
+}
+
+# ============================================================
+# 2. Update repository description
+# ============================================================
+
+update_repository_description() {
+
+    log_info "Getting current repository description..."
+    CURRENT_REPO_DESCRIPTION=$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.description')
+    echo ""
+    log_info "Current repository description: '${CURRENT_REPO_DESCRIPTION}'"    
+
+    echo ""
+    read -p "Enter new repository description (leave blank to keep current description): " NEW_REPO_DESCRIPTION
+    echo ""
+    
+    if [[ -n "${NEW_REPO_DESCRIPTION}" ]]; then
+        log_info "Updating repository description to: '${NEW_REPO_DESCRIPTION}'"
+        gh api \
+        --method PATCH "repos/${GITHUB_REPO_FULL_NAME}" \
+        -f description="${NEW_REPO_DESCRIPTION}" > /dev/null 2>&1
+        log_info "Repository description updated successfully"
+    else
+        log_info "No changes made to repository description"
+    fi
+}
+
+# ============================================================
+# 3. Configure repository settings
+# ============================================================
+
+configure_repository_settings() {
+
+    local template_path="${MODULE_ROOT}/public-repo/templates/repo/repo-settings.json"
+
+    log_info "Configuring repository settings..."
+
+    # Validate if the template file exists
+    if [[ ! -f "${template_path}" ]]; then
+        log_error "Template file '${template_path}' not found"
+        exit 1
+    fi
+
+    # Update repository settings using the template file
+    gh api \
+    --method PATCH \
+    "repos/${GITHUB_REPO_FULL_NAME}" \
+    --input "${template_path}" > /dev/null 2>&1
+
+    # Validate all settings have been applied successfully
+
+    # Validate if the repository is public
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.private')" == "false" ]]; then
+        log_info "✅ Repository is public"
+    else
+        log_error "Repository is private"
+        exit 1
+    fi
+
+    # Validate if template
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.is_template')" == "false" ]]; then
+        log_info "✅ Repository is not a template"
+    else
+        log_error "Repository is a template"
+        exit 1
+    fi
+
+    # Validate repo has wiki
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.has_wiki')" == "false" ]]; then
+        log_info "✅ Repository does not have wiki enabled"
+    else
+        log_error "Repository has wiki enabled"
+        exit 1
+    fi
+
+    # Validate repo has issues
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.has_issues')" == "true" ]]; then
+        log_info "✅ Repository has issues enabled"
+    else
+        log_error "Repository does not have issues enabled"
+        exit 1
+    fi
+
+    # Validate repo discussions
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.has_discussions')" == "false" ]]; then
+        log_info "✅ Repository does not have discussions enabled"
+    else
+        log_error "Repository has discussions enabled"
+        exit 1
+    fi
+
+    # Validate repo projects
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.has_projects')" == "true" ]]; then
+        log_info "✅ Repository have projects enabled"
+    else
+        log_error "Repository does not have projects enabled"
+        exit 1
+    fi
+
+    # Validate has PR
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.has_pull_requests')" == "true" ]]; then
+        log_info "✅ Repository has pull-requests enabled"
+    else
+        log_error "Repository does not have pull-requests enabled"
+        exit 1
+    fi
+
+    # Validate PR creation policy to 'all'
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.pull_request_creation_policy')" == "all" ]]; then
+        log_info "✅ Repository allows pull-request creation for all users including forks"
+    else
+        log_error "Repository does not allow pull-request creation from forks"
+        exit 1
+    fi
+
+    # Validate PR squash merge is enabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.allow_squash_merge')" == "true" ]]; then
+        log_info "✅ Repository allows squash merge for pull-requests"
+    else
+        log_error "Repository does not allow squash merge for pull-requests"
+        exit 1
+    fi
+
+    # Validate PR merge commit is disabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.allow_merge_commit')" == "false" ]]; then
+        log_info "✅ Repository does not allow merge commit for pull-requests"
+    else
+        log_error "Repository allows merge commit for pull-requests"
+        exit 1
+    fi
+
+    # Validate PR rebase merge is disabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.allow_rebase_merge')" == "false" ]]; then
+        log_info "✅ Repository does not allow rebase merge for pull-requests"
+    else
+        log_error "Repository allows rebase merge for pull-requests"
+        exit 1
+    fi
+
+    # Validate update branch is enabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.allow_update_branch')" == "true" ]]; then
+        log_info "✅ Repository allows update branch for pull-requests"
+    else
+        log_error "Repository does not allow update branch for pull-requests"
+        exit 1
+    fi
+
+    # Validate auto-merge is disabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.allow_auto_merge')" == "false" ]]; then
+        log_info "✅ Repository does not allow auto-merge for pull-requests"
+    else
+        log_error "Repository allows auto-merge for pull-requests"
+        exit 1
+    fi
+
+    # Validate auto-delete branch after PR merge is enabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.delete_branch_on_merge')" == "true" ]]; then
+        log_info "✅ Repository automatically deletes the branch after a pull request is merged"
+    else
+        log_error "Repository does not automatically delete the branch after a pull request is merged"
+        exit 1
+    fi
+
+    # Validate Require contributors to sign off on web-based commits is disabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}" --jq '.web_commit_signoff_required')" == "false" ]]; then
+        log_info "✅ Repository does not require contributors to sign off on web-based commits"
+    else
+        log_error "Repository requires contributors to sign off on web-based commits"
+        exit 1
+    fi
+
+}
+
+# ============================================================
+# 4. Enable release immutability in the repository settings
+# ============================================================
+
+enable_release_immutability() {
+
+    log_info "Enabling release immutability in the repository settings..."
+
+    # Enable release immutability
+    gh api \
+    --method PUT \
+    "repos/${GITHUB_REPO_FULL_NAME}/immutable-releases" > /dev/null 2>&1
+
+    # Validate if release immutability is enabled
+    if [[ "$(gh api "repos/${GITHUB_REPO_FULL_NAME}/immutable-releases" --jq '.enabled')" == "true" ]]; then
+        log_info "✅ Release immutability is enabled in the repository settings"
+    else
+        log_error "Release immutability is not enabled in the repository settings"
+        exit 1
+    fi
+}
+

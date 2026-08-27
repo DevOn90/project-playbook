@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ============================================================
+# Purpose: This script is collection of functions to configure and 
+#          validate the actions permissions for a public repository.
+#          Github UI equivalent: settings > Actions > General > Actions permissions
+# Content:
+#          1. Enable permission "Allow <user-name>, and select non-<user-name> actions and reusable workflows "
+#          2. Enable permission "Require approval for all external contributors"
+#          3. Enable permission "Workflow permissions"
+#          4. Enable permission "Artifact and log retention"
+# ============================================================
+
+# ============================================================
+# 1. Enable permission "Allow <user-name>, and select non-<user-name> actions and reusable workflows "
+# ============================================================
+
+enable_permission_allow_user_and_select_non_user_actions() {
+
+    log_info "Enabling permission 'Allow <user-name>, and select non-<user-name> actions and reusable workflows' for the repository..."
+
+    # Validate if NOT already enabled
+    if [[ "$(gh api \
+              repos/${GITHUB_REPO_FULL_NAME}/actions/permissions \
+              --jq '.allowed_actions')" == "selected" ]];then
+        log_info "✅ Permission 'Allow <user-name>, and select non-<user-name> actions and reusable workflows' is already enabled for the repository"
+    
+    else
+        # Enable the permission + require SHA pinning
+        log_info "✅ Enabling permission 'Allow <user-name>, and select non-<user-name> actions and reusable workflows' for the repository..."
+        log_info "✅ Enabling SHA pinning requirement for the repository..."
+        gh api \
+           --method PUT \
+           repos/${GITHUB_REPO_FULL_NAME}/actions/permissions \
+           --input - > /dev/null 2>&1 <<EOF
+{
+  "enabled": true,
+  "allowed_actions": "selected",
+  "sha_pinning_required": true
+}
+EOF
+
+        # Enable in seleted actions and reusable workflows
+        # Allow actions created by Github
+        # Allow Allow actions by Marketplace verified creators
+        log_info "✅ Enabling 'Allow actions created by Github' and 'Allow actions by Marketplace verified creators' for the repository..."
+        gh api \
+           --method PUT \
+           repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/selected-actions \
+           --input - > /dev/null 2>&1 <<EOF
+{
+  "github_owned_allowed": true,
+  "patterns_allowed": [],
+  "verified_allowed": true
+}
+EOF
+
+    fi
+}
+
+# ============================================================
+# 2. Enable permission "Require approval for all external contributors"
+# ============================================================
+
+enable_permission_require_approval_for_all_external_contributors() {
+
+    log_info "Enabling permission 'Require approval for all external contributors' for the repository..."
+
+    # Validate if NOT already enabled
+    if [[ "$(gh api \
+              --method GET \
+              "/repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/fork-pr-contributor-approval" \
+              --jq '.approval_policy')" == "all_external_contributors"  ]];then
+        
+        log_info "✅ Permission 'Require approval for all external contributors' is already enabled for the repository"
+    else 
+        # Enable the permission
+        log_info "✅ Enabling permission 'Require approval for all external contributors' for the repository..."
+        gh api \
+           --method PUT \
+           "/repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/fork-pr-contributor-approval" \
+           --input - > /dev/null 2>&1 <<EOF
+{
+    "approval_policy": "all_external_contributors"
+}
+EOF
+    fi               
+}
+
+# ============================================================
+# 3. Enable permission "Workflow permissions"
+# ============================================================
+
+enable_permission_workflow_permissions() {
+
+    log_info "Enabling permission 'Workflow permissions' for the repository..."
+
+    # Validate if default NOT 'write'
+    if [[ "$(gh api \
+               --method GET \
+               "/repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/workflow" \
+               --jq '.default_workflow_permissions')" == "read" ]];then
+
+        log_info "✅ Permission 'Workflow permissions' is already set to 'read' for the repository"
+    else 
+        # Enable the permission
+        log_info "✅ Enabling permission 'Workflow permissions' to 'read' for the repository..."
+        log_info "✅ Default workflow permissions are set to 'read' and 'can approve pull request reviews' is set to 'false' for the repository..."
+        gh api \
+           --method PUT \
+           "/repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/workflow" \
+           --input - > /dev/null 2>&1 <<EOF
+{
+    "default_workflow_permissions": "read",
+    "can_approve_pull_request_reviews": false
+}
+EOF
+    fi
+}
+
+# ============================================================
+# 4. Enable permission "Artifact and log retention"
+# ============================================================
+
+enable_permission_artifact_and_log_retention() {
+
+    log_info "Enabling permission 'Artifact and log retention' for the repository..."
+
+    # Validate if NOT set to 30 days
+    if [[ "$(gh api \
+               --method GET \
+               "/repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/artifact-and-log-retention" \
+               --jq '.retention_days')" == "30" ]];then
+
+        log_info "✅ Permission 'Artifact and log retention' is already set to '30 days' for the repository"
+    else 
+        # Enable the permission
+        log_info "✅ Enabling permission 'Artifact and log retention' to '30 days' for the repository..."
+        gh api \
+           --method PUT \
+           "/repos/${GITHUB_REPO_FULL_NAME}/actions/permissions/artifact-and-log-retention" \
+           --input - > /dev/null 2>&1 <<EOF
+{
+    "days": 30,
+    "maximum_allowed_days": 90          
+}   
+EOF
+    fi
+}

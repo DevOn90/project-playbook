@@ -1,0 +1,700 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ============================================================
+# Purpose: This script is collection of functions to create and configure
+#          a new project in a public repository.
+# Content:
+#           0. Source the helper scripts
+#           1. Create a new project
+#           2. Link the project to the repository
+#           3. Set project default repository
+#           4. Get project ID
+#           5. Create custom field Start Date
+#           6. Create custom field Target Date
+#           7. Create custom field Point Estimate
+#           8. Create custom field Sprint
+#           9. Update view fields in project view
+#           10. Create a new view in the project (valid for Table & Board view types)
+#           11. Create a new Roadmap view in the project (valid for Roadmap view type)
+# ============================================================
+
+# ============================================================
+# 0. Source the helper scripts
+# ============================================================
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source the helper scripts
+source "$SCRIPT_DIR/08_helpers"
+
+
+# ============================================================
+# 1. Create a new project
+# ============================================================
+
+create_new_project() {
+
+    log_info "Creating a new project in the repository..."
+    
+    local project_name
+    
+    # 1. Get the project name from the user and validate if not empty
+    echo ""
+    read -r -p "Enter the name of the new Github project: " project_name
+    echo ""
+
+    # 1.1 Validate if the project name is not empty
+    if [[ -z "$project_name" ]]; then
+        read -r -p "Project name cannot be empty. Please enter a valid project name: " project_name
+        if [[ -z "$project_name" ]]; then
+            log_error "Project name cannot be empty. Exiting..."
+            exit 1
+        fi
+    fi
+
+    # 3. Prompt for unique project title
+    prompt_for_unique_project_title "$project_name"
+    
+    # 4. Create the project with the provided name and title
+    create_project "$project_name" "$PROJECT_TITLE"  # The PROJECT_TITLE variable is set in the prompt_for_unique_project_title function
+
+    # 5. Get project number and export it as an environment variable for use in other scripts
+    export PROJECT_NUMBER=$(gh project list \
+                              --format json \
+                              --jq ".projects[] | select(.title == \"$PROJECT_TITLE\") | .number")
+
+
+    # Unset the PROJECT_TITLE variable to avoid conflicts with other scripts
+    unset PROJECT_TITLE
+}
+
+# ============================================================
+# 2. Link the project to the repository
+# ============================================================
+
+link_project_to_repository() {
+
+    local project_number="$1"
+    local repository_name
+    local username="$(gh api user --jq '.login' 2>/dev/null)"
+
+    log_info "Linking the project to the repository..."
+
+    # 1. Prompt for the repository name and validate if not empty
+    repository_name="$(prompt_to_select_repository)"
+
+    if gh project link "$project_number" \
+               --owner "$username" \
+               --repo "$repository_name" > /dev/null 2>&1; then
+       
+       log_info "Project linked to the repository $repository_name successfully."
+    else
+       log_error "Failed to link the project to the repository $repository_name."
+       exit 1
+    fi   
+}
+
+# ============================================================
+# 3. Set project default repository
+# ============================================================
+
+set_project_default_repository() {
+
+    log_info "Setting a default repository for the project..."
+
+    # Currently, there is no public GraphQL mutation available to create
+    # a default repository for a project on Github. 
+    # This function serves as a placeholder for future implementation 
+    # when such a mutation becomes available.
+
+    log_warning "Public GraphQL 'mutation' to create a default repository is not available on Github."
+    log_warning "As a workaround, you can create a default repository manually in the Github UI."
+}
+
+# ============================================================
+# 4. Get project ID
+# ============================================================
+
+get_project_id() {
+
+    log_info "Getting the project ID..." >&2
+    local project_number="$1"
+
+    project_id="$(gh project list \
+        --format json \
+        --jq ".projects[] | select(.number == $project_number) | .id")"
+
+    echo "$project_id"
+}
+
+# ============================================================
+# 5. Create custom field Start Date
+# ============================================================
+
+create_custom_field_start_date() {
+
+    log_info "Creating custom fields Start Date..."
+
+    local project_id="$1"
+    local output
+    local field_name="Start Date"
+    local field_data_type="DATE"
+
+    output="$(gh api graphql \
+        -f query='
+        mutation CreateStartDateField($projectId: ID!, $name: String!, $dataType: ProjectV2CustomFieldType!) {
+            createProjectV2Field(
+                input:  {
+                projectId: $projectId
+                name: $name
+                dataType: $dataType
+                }  
+            ) {
+                projectV2Field {
+                    ... on ProjectV2Field {
+                        id
+                        name
+                        dataType
+                    }
+                }
+            }
+        }
+        ' \
+        -F projectId="$project_id" \
+        -F name="$field_name" \
+        -F dataType="$field_data_type"
+        )"
+
+    # Validate if the custom field name is "Start Date" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.name")" == "Start Date" ]]; then
+        log_info "Custom field 'Start Date' created successfully."
+    else
+        log_error "Failed to create custom field 'Start Date'."
+        exit 1
+    fi
+
+    # Validate if the custom field data type is "DATE" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.dataType")" == "DATE" ]]; then
+        log_info "Custom field 'Start Date' has the correct data type $field_data_type."
+    else
+        log_error "Custom field 'Start Date' does not have the correct data type '$field_data_type'."
+        exit 1
+    fi
+}
+
+# ============================================================
+# 6. Create custom field Target Date
+# ============================================================
+
+create_custom_field_target_date() {
+
+    log_info "Creating custom fields Target Date..."
+
+    local project_id="$1"
+    local output
+    local field_name="Target Date"
+    local field_data_type="DATE"
+
+    output="$(gh api graphql \
+        -f query='
+        mutation CreateTargetDateField($projectId: ID!, $name: String!, $dataType: ProjectV2CustomFieldType!) {
+            createProjectV2Field(
+                input:  {
+                projectId: $projectId
+                name: $name
+                dataType: $dataType
+                }  
+            ) {
+                projectV2Field {
+                    ... on ProjectV2Field {
+                        id
+                        name
+                        dataType
+                    }
+                }
+            }
+        }
+        ' \
+        -F projectId="$project_id" \
+        -F name="$field_name" \
+        -F dataType="$field_data_type"
+        )"
+        
+    # Validate if the custom field name is "Target Date" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.name")" == "Target Date" ]]; then
+        log_info "Custom field 'Target Date' created successfully."
+    else
+        log_error "Failed to create custom field 'Target Date'."
+        exit 1
+    fi
+
+    # Validate if the custom field data type is "DATE" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.dataType")" == "DATE" ]]; then
+        log_info "Custom field 'Target Date' has the correct data type $field_data_type."
+    else
+        log_error "Custom field 'Target Date' does not have the correct data type '$field_data_type'."
+        exit 1
+    fi
+}
+
+# ============================================================
+# 7. Create custom field Point Estimate
+# ============================================================
+
+create_custom_field_point_estimate() {
+
+    log_info "Creating custom fields Point Estimate..."
+
+    local project_id="$1"
+    local output
+    local field_name="Point Estimate"
+    local field_data_type="NUMBER"
+
+    output="$(gh api graphql \
+        -f query='
+        mutation CreatePointEstimateField($projectId: ID!, $name: String!, $dataType: ProjectV2CustomFieldType!) {
+            createProjectV2Field(
+                input:  {
+                projectId: $projectId
+                name: $name
+                dataType: $dataType
+                }  
+            ) {
+                projectV2Field {
+                    ... on ProjectV2Field {
+                        id
+                        name
+                        dataType
+                    }
+                }
+            }
+        }
+        ' \
+        -F projectId="$project_id" \
+        -F name="$field_name" \
+        -F dataType="$field_data_type"
+        )"
+
+    # Validate if the custom field name is "Point Estimate" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.name")" == "Point Estimate" ]]; then
+        log_info "Custom field 'Point Estimate' created successfully."
+    else
+        log_error "Failed to create custom field 'Point Estimate'."
+        exit 1
+    fi
+
+    # Validate if the custom field data type is "NUMBER" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.dataType")" == "NUMBER" ]]; then
+        log_info "Custom field 'Point Estimate' has the correct data type $field_data_type."
+    else
+        log_error "Custom field 'Point Estimate' does not have the correct data type '$field_data_type'."
+        exit 1
+    fi
+}
+
+# ============================================================
+# 8. Create custom field Sprint
+# ============================================================
+
+create_custom_field_sprint() {
+
+    log_info "Creating custom field Sprint..."
+
+    local project_id="$1"
+    local output
+    local field_name="Sprint"
+    local field_data_type="ITERATION"
+    local start_date="$(date +%Y-%m-%d)"
+    local duration=14
+
+    output="$(gh api graphql \
+        -f query='
+        mutation CreateSprintField($projectId: ID!, $name: String!, $startDate: Date!, $duration: Int!, $field_data_type: ProjectV2CustomFieldType!) {
+            createProjectV2Field(
+                input:  {
+                projectId: $projectId
+                name: $name
+                dataType: $field_data_type
+                iterationConfiguration: {
+                    duration: $duration
+                    startDate: $startDate
+                    iterations: []
+                }
+                }
+            ) {
+                projectV2Field {
+                    ... on ProjectV2IterationField {
+                        id
+                        name
+                        dataType
+                        configuration {
+                            duration
+                        }
+                    }
+                }
+            }
+        }
+        ' \
+        -F projectId="$project_id" \
+        -F name="$field_name" \
+        -F startDate="$start_date" \
+        -F duration="$duration" \
+        -F field_data_type="$field_data_type")"
+
+    # Validate if the custom field name is "Sprint" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.name")" == "Sprint" ]]; then
+        log_info "Custom field 'Sprint' created successfully."
+    else
+        log_error "Failed to create custom field 'Sprint'."
+        exit 1
+    fi
+
+    # Validate if the custom field data type is "ITERATION" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.dataType")" == "ITERATION" ]]; then
+        log_info "Custom field 'Sprint' has the correct data type $field_data_type."
+    else
+        log_error "Custom field 'Sprint' does not have the correct data type '$field_data_type'."
+        exit 1
+    fi
+
+    # Validate if the custom field duration is "14" in the output
+    if [[ "$(echo "$output" | jq -r ".data.createProjectV2Field.projectV2Field.configuration.duration")" == "14" ]]; then
+        log_info "Custom field 'Sprint' has the correct duration $duration."
+    else
+        log_error "Custom field 'Sprint' does not have the correct duration '$duration'."
+        exit 1
+    fi  
+}
+
+# ============================================================
+# 9. Update view fields in project view
+# ============================================================
+
+update_view_fields_in_project_view() {
+
+    # Usage: 
+    # update_view_fields_in_project_view <project_number> <new_view_name> <layout_type> <field1_name> <field2_name> ... <fieldN_name>
+    # Parameters:
+    # <project_number> Integer (e.g. 25)
+    # <new_view_name> String (e.g. "New View")
+    # <layout_type> String (e.g. "TABLE_LAYOUT" | Options: TABLE_LAYOUT, BOARD_LAYOUT, ROADMAP_LAYOUT)
+    # <field1_name> String (e.g. "Title")
+    # <field2_name> String (e.g. "Assignee")
+
+    log_info "Adding fields to project view for project number: $1"
+
+    local project_number="$1"
+    local project_view_id
+    local new_view_name="$2"
+    local layout="$3"
+    local field_ids=$(get_list_of_field_ids "$project_number" "$@")
+    local field_args=()
+    local output
+
+    project_view_id="$(get_project_view_id_by_project_number "$project_number")"
+
+    # Build -F arguments dynamically
+    while IFS= read -r id; do
+        # Append each field ID to the field_args array in the required format for the GraphQL mutation
+        field_args+=(-F "fieldIds[]=$id")
+    done < <(jq -r '.[]' <<< "$field_ids")
+
+    # Execute the GraphQL mutation to update the project view with the new fields 
+    output="$(gh api graphql \
+    -f query='
+    mutation RenameProjectView($viewId: ID!, $name: String!, $layout: ProjectV2ViewLayout!, $fieldIds: [ID!]!) {
+        updateProjectV2View(
+            input:  {
+            viewId: $viewId
+            name: $name
+            layout: $layout
+            configuration:  {
+                visibleFieldIds: $fieldIds
+            }
+            }
+        ) {
+            projectV2View {
+                id
+                name
+                layout
+                configuration {
+                    visibleFields(first: 20) {
+                        nodes {
+                            ... on ProjectV2Field {
+                                id
+                                name
+                            }
+                            ... on ProjectV2IterationField {
+                                id
+                                name
+                            }
+                            ... on ProjectV2SingleSelectField {
+                                id
+                                name
+                            }
+                            ... on ProjectV2MultiSelectField {
+                                id
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ' \
+    -F viewId="$project_view_id" \
+    -F name="$new_view_name" \
+    -F layout="$layout" \
+    "${field_args[@]}")"
+
+    # Validate if the new project view name is correct in the output
+    if [[ "$(echo "$output" | jq -r ".data.updateProjectV2View.projectV2View.name")" == "$new_view_name" ]]; then
+        log_info "Project view name updated successfully to '$new_view_name'."
+    else
+        log_error "Failed to update project view name to '$new_view_name'."
+        exit 1
+    fi
+
+    # Validate if the provided layout type is correct in the output
+    if [[ "$(echo "$output" | jq -r ".data.updateProjectV2View.projectV2View.layout")" == "$layout" ]]; then
+        log_info "Project view layout updated successfully to '$layout'."
+    else
+        log_error "Failed to update project view layout to '$layout'."
+        exit 1
+    fi
+
+    # Validate if the provided fields are correct in the output
+    provided_field_names=("${@:4}")  # Get the field names starting from the 4th argument
+    for field_name in "${provided_field_names[@]}"; do
+        if echo "$output" | jq -e --arg name "$field_name" '.data.updateProjectV2View.projectV2View.configuration.visibleFields.nodes[] | select(.name == $name)' > /dev/null; then
+            log_info "Field '$field_name' added successfully to the project view."
+        else
+            log_error "Failed to add field '$field_name' to the project view."
+            exit 1
+        fi
+    done
+}
+
+# ============================================================
+# 10. Create a new view in the project
+# ============================================================
+
+create_new_view_in_project() {
+
+    # Usage:
+    # create_new_view_in_project <project_number>
+    # Parameters:
+    # <project_number> Integer (e.g. 25)
+
+    log_info "Starting creation of new views in the project..."
+
+    # Declare an associative array to hold view names
+    local -a view_names_list=("Board" "Backlog" "Epic" "Bugs")  # !!! ATTENTION make sure no empty spaces in the view names
+    #                                                             (instead of "Board View" use "BoardView" or "Board_View")
+
+    local count=0
+
+    for view_name in "${view_names_list[@]}"; do
+        log_info "Checking if view exists: $view_name"
+        
+        if is_project_view_exists "$1" "$view_name"; then
+            log_warning "View '$view_name' exists. Checking next view..."
+            count=$((count + 1))
+        else
+            log_info "View '$view_name' does not exist. Project view creation will be initiated."
+        fi 
+    done
+
+    if (( $count > 0 ));then
+       log_error "Some views already exist. Please delete manually the existing views before proceeding with the creation of new views."
+       exit 1
+    else
+       log_info "Views do not exist. Proceeding with views creation."
+    fi 
+
+    # Declare constant for the project number
+    local project_number="$1"
+
+    # Get the project ID for the given project number
+    local project_id=$(get_project_board_id_by_project_number "$project_number")
+
+    # Hardcode the view configurations for each view name
+    local Board_view_config='{"name": "Board","layout": "BOARD_LAYOUT","fields": [
+            "Title","Assignees","Status","Linked pull requests","Sub-issues progress"    
+            ]
+        }'
+    local Backlog_view_config='{
+            "name": "Backlog","layout": "TABLE_LAYOUT","fields": [
+            "Title","Labels","Start Date","Target Date","Point Estimate","Sub-issues progress","Status"
+            ]
+        }'
+    local Epic_view_config='{
+            "name": "Epic","layout": "TABLE_LAYOUT","fields": [
+            "Title","Labels","Sub-issues progress","Start Date", "Target Date"
+            ]
+        }'
+    local Bugs_view_config='{"name": "Bugs","layout": "TABLE_LAYOUT","fields": [
+             "Title","Status","Labels","Assignees","Start Date","Target Date","Linked pull requests"
+            ]
+        }' 
+    
+    # Declare an array to hold field ID arguments for the GraphQL mutation
+    local field_id_args=()
+    
+    
+    # Loop through the view names and create each view in the project
+    for view_name in "${view_names_list[@]}"; do
+
+        log_info "Creating view: $view_name" 
+
+        # Create dinamically the variable name for the selected view configuration
+        local selected_config="${view_name}_view_config"
+
+        # Get the layout type and fields for the selected view configuration
+        local layout_type=$(echo "${!selected_config}" | jq -r '.layout')
+
+        # Get the list of field names for the selected view configuration 
+        local fields="$(echo "${!selected_config}" | jq -r '.fields[]')"
+
+        # Initialize an empty array to hold field names
+        local -a fields_name_agrs=()
+
+        # Loop through the fields and append each field name to the fields_name_agrs array
+        while IFS= read -r id; do
+            fields_name_agrs+=("$id")
+        done <<< "$fields"
+        
+        # Get the list of field IDs for the given project number and the field names
+        local field_ids=$(get_list_of_field_ids "$project_number" "${fields_name_agrs[@]}")
+        fields_name_agrs=()  # Clear the fields_name_agrs array for the next iteration
+        
+        # Build -F arguments dynamically
+        while IFS= read -r id; do
+            # Append each field ID to the field_id_args array in the required format for the GraphQL mutation
+            field_id_args+=(-F "fieldIds[]=$id")
+        done < <(jq -r '.[]' <<< "$field_ids")
+
+        # Execute the GraphQL mutation to create a new view in the project
+        # See `modules/github/public-repo/bin/steps/08_project/graphql/mutations/create-new-view.graphql` for the GraphQL mutation definition`
+        output="$(gh api graphql \
+            -f query='
+            mutation CreateNewView($projectId: ID!, $name: String!, $layout: ProjectV2ViewLayout!, $fieldIds: [ID!]!) {
+                createProjectV2View(
+                    input:  {
+                    projectId: $projectId
+                    name: $name
+                    layout: $layout
+                    configuration:  {
+                        visibleFieldIds: $fieldIds
+                    }
+                    }
+                ) {
+                    ... on CreateProjectV2ViewPayload {
+                        projectV2View {
+                            id
+                            name
+                            number
+                            layout
+                            configuration {
+                                visibleFields(first: 20) {
+                                    nodes {
+                                        ... on ProjectV2Field {
+                                            id
+                                            name
+                                        }
+                                        ... on ProjectV2IterationField {
+                                            id
+                                            name
+                                        }
+                                        ... on ProjectV2SingleSelectField {
+                                            id
+                                            name
+                                        }
+                                        ... on ProjectV2MultiSelectField {
+                                            id
+                                            name
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            ' \
+            -F projectId="$project_id" \
+            -F name="$view_name" \
+            -F layout="$layout_type" \
+            "${field_id_args[@]}" \
+            )"
+
+        field_id_args=()  # Clear the field_id_args array for the next iteration
+
+        log_info "View '$view_name' created successfully in project number $project_number."
+    done
+}
+
+# ============================================================
+# 11. Create a new Roadmap view in the project
+# ============================================================
+
+create_new_roadmap_view_in_project() {
+
+    # Usage:
+    # create_new_roadmap_view_in_project <project_number>
+    # Parameters:
+    # <project_number> Interger (e.g. 25)
+
+    log_info "Starting creation of new Roadmap view in the project..."
+
+    local project_number="$1"
+    local view_name="Roadmap"
+    local output
+
+    # Get the project ID for the given project number
+    local project_id=$(get_project_board_id_by_project_number "$project_number")
+
+    # Validate if roadmap view already exists
+    if is_project_view_exists "$project_number" "$view_name";then
+       log_warning "Roadmap view already exists in project number: $project_number. Please delete manually the existing views before proceeding with the creation of new views."
+       exit 1
+    else
+       log_info "Roadmap view does not exist in project number: $project_number. Proceeding with the creation of new Roadmap view."
+    fi
+
+    # Execute the GraphQL mutation to create a new Roadmap view in the project
+    # See `modules/github/public-repo/bin/steps/08_project/graphql/mutations/create-new-roadmap-view.graphql` for the GraphQL mutation definition`
+    output="$(gh api graphql \
+       -f query='
+       mutation CreateNewRoadmapView($projectId: ID!, $name: String!) {
+            createProjectV2View(
+                input:  {
+                projectId: $projectId
+                name: $name
+                layout: ROADMAP_LAYOUT
+                }
+            ) {
+                projectV2View {
+                    id
+                    name
+                    number
+                    layout
+                }
+            }
+        }
+       ' \
+       -F projectId="$project_id" \
+       -F name="$view_name"
+    )"
+
+    # Validate if the GraphQL mutation was successful
+    if [[ "$(echo "$output" | jq -r '.data.createProjectV2View.projectV2View.name')" == "$view_name" ]]; then
+        log_info "$view_name view created successfully in project number: $project_number."
+    else
+        log_error "Failed to create Roadmap view in project number: $project_number. Please check the output for more details."
+        exit 1
+    fi
+}

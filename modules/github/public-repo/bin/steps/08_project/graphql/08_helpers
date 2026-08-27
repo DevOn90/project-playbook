@@ -1,0 +1,371 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ==================================================================
+# Purpose: This script contains helper functions for GraphQL 
+#          operations used in 08_project.
+# Content:
+#          1. Prompt for unique project title
+#          2. Get Github project board ID by title
+#          3. Create Github project board
+#          4. Prompt to select repository from existing repositories
+#          5. Get list of field IDs
+#          6. Get project view ID by project number
+#          7. Get project board ID by project number
+#          8. Validate project view existence by project number and view name
+# ==================================================================
+
+# ==================================================================
+# 1. Prompt for unique project title
+# ==================================================================
+
+prompt_for_unique_project_title() {
+
+    local attempt=1
+    local max_attempts=3
+    local project_name="$1"
+    local default_project_title="Project Board for $project_name"
+    local existing_project_id
+    local project_count
+    local project_title
+
+    while (( attempt <= max_attempts ));do
+    
+        echo ""
+        echo -e "Default Project Title: \033[1;33m$default_project_title\033[0m"
+        read -r -p "Enter the title of the new Github project (or press Enter to use the default): " project_title
+        echo ""
+
+        # If the project title is empty, use the default project title
+        [[ -z "$project_title" ]] && project_title="$default_project_title"
+
+        # Get existing project ID by title
+        existing_project_id="$(get_project_id_by_title "$project_title")"
+
+        # Count number of returned IDs
+        project_count=$(printf '%s\n' "$existing_project_id" | sed '/^$/d' | wc -l)
+        
+        if (( "$project_count" == 0 ));then
+           
+           # Export the unique project title as an environment variable for use in other scripts
+           PROJECT_TITLE="$project_title"
+           export PROJECT_TITLE
+           
+           log_info "Project with title '$project_title' is available. Proceeding to project creation."
+           break
+        elif (( "$project_count" == 1 ));then
+           log_warning "Project with the title '$project_title' already exists. Please provide a new unique title."
+        else
+           log_error "There are $project_count projects with the title '$project_title'."
+           log_error "Please resolve the duplicate projects manually."
+           exit 1
+        fi
+        
+        (( attempt++ ))
+    done
+
+    if (( attempt > max_attempts )); then
+        log_error "Maximum attempts reached. Exiting..."
+        exit 1
+    fi
+}
+
+# ==================================================================
+# 2. Get Github Project board ID by Title
+# ==================================================================
+
+get_project_id_by_title() {
+
+    local project_title="$1"
+
+    gh project list \
+       --format json \
+       --jq ".projects[] | select(.title == \"$project_title\") | .id"
+}
+
+# ==================================================================
+# 3. Create Github Project board
+# ==================================================================
+
+create_project() {
+
+    local project_name="$1"
+    local project_title="$2"
+
+    gh project create "$project_name" \
+       --title "$project_title" \
+       --owner "@me" 2>&1
+}
+
+# =================================================================
+# 4. Prompt to select repository from existing repositories
+# =================================================================
+
+prompt_to_select_repository() {
+
+    # This function is almost identical to function in 01_user_prompts.sh,
+    # but it is placed here for use in 08_project. In the future,
+    # consider refactoring to avoid code duplication.
+
+    local github_repositories
+    local username="$(gh api user --jq '.login' 2>/dev/null)"
+    local github_repo_name  
+   
+    log_info "Prompting user to select a repository from existing repositories..." >&2
+
+    mapfile -t github_repositories < <(gh repo list "$username" \
+       --limit 100 \
+       --json name \
+       --jq ".[].name"
+    )
+
+    if [[ ${#github_repositories[@]} -eq 0 ]]; then
+        log_error "No Github repositories found for user: $username" >&2
+        exit 1
+    fi
+
+    echo "" >&2
+    echo "Select a repository:" >&2
+    echo "" >&2
+
+    select github_repo_name in "${github_repositories[@]}"; do
+        if [[ -n "$github_repo_name" ]]; then
+            break
+        fi
+
+        log_warning "Invalid selection. Please select a repository from the list." >&2
+    done
+
+    printf '%s\n' "$github_repo_name"
+}
+
+# =================================================================
+# 5. Get list of field IDs
+# =================================================================
+
+get_list_of_field_ids() {
+
+    # Usage:
+    #      get_list_of_field_ids Project Number "Field1" "Field2" "Field3"
+    #      Example: get_list_of_field_ids 36 "Title" "Assignee" "Status" "Linked pull requests" "Sub-issues progress"
+    #
+    # Note: Keep Field order same as the order of fields in the project view.
+    #
+    # Returns: Space-separated list of field IDs corresponding to the provided field names.
+
+    log_info "Fetching list of field IDs for the project view..." >&2
+
+    local project_number="$1"
+    shift
+
+    local list_of_fields=("$@")
+    local list_of_field_ids=()
+    local response
+    local login="$(gh api user --jq '.login')"
+
+    # Validate that at least one field name is provided
+    if [[ ${#list_of_fields[@]} -eq 0 ]]; then
+        log_error "No field names provided. Please provide at least one field name." >&2
+        exit 1
+    fi
+
+    # Validate that the project number is a positive integer
+    if ! [[ "$project_number" =~ ^[0-9]+$ ]]; then
+        log_error "Invalid project number: $project_number. Please provide a valid positive integer."
+        exit 1
+    fi
+
+    # Validate that the project number corresponds to an existing project
+    if ! gh project view "$project_number" --owner "$login" > /dev/null 2>&1; then
+        log_error "Project number $project_number does not correspond to an existing project."
+        exit 1
+    fi
+     
+
+    # Fetch the project view fields using the GitHub GraphQL API and store the response in a variable
+    response="$(gh api graphql \
+    -f query='
+    query GetProjectViewFields($login: String!, $number: Int!) {
+        user(login: $login) {
+            projectV2(number: $number) {
+                fields(first: 20) {
+                    nodes {
+                    __typename
+                    ... on ProjectV2Field {
+                        id
+                        name
+                    }
+                    ... on ProjectV2IterationField {
+                        id
+                        name
+                    }
+                    ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                    }
+                    ... on ProjectV2FieldCommon {
+                        id
+                        name
+                    }
+                    ... on ProjectV2MultiSelectField {
+                        id
+                        name
+                    }
+                }
+            }
+            }
+        }
+    }
+    ' \
+    -F login="$login" \
+    -F number="$project_number")"
+
+    # Loop through the list of fields and extract their IDs from the response
+    for field in "${list_of_fields[@]}"; do
+        list_of_field_ids+=("$(echo "$response" | \
+                                 jq -r ".data.user.projectV2.fields.nodes[] | select(.name == \"$field\") | .id")")
+    done
+    
+    # Return the list of field IDs as a space-separated string
+    printf "%s\n" "${list_of_field_ids[@]}" | jq -R -s 'split("\n") | map(select(length > 0))'
+}
+
+# =================================================================
+# 6. Get project view ID by project number
+# =================================================================
+
+get_project_view_id_by_project_number() {
+
+    log_info "Fetching project view ID for project number: $1" >&2
+    
+    local project_number="$1"
+    local project_view_name="${2:-View 1}"  # Default view name is "View 1" for newly created projects
+    local response
+    local login="$(gh api user --jq '.login')"
+
+    # Validate that the project number is a positive integer
+    if ! [[ "$project_number" =~ ^[0-9]+$ ]]; then
+        log_error "Invalid project number: $project_number. Please provide a valid positive integer."
+        exit 1
+    fi
+
+    # Validate that the project number corresponds to an existing project
+    if ! gh project view "$project_number" --owner "$login" > /dev/null 2>&1; then
+        log_error "Project number $project_number does not correspond to an existing project."
+        exit 1
+    fi
+
+    # Validate that the project view name is not empty
+    if [[ -z "$project_view_name" ]]; then
+        log_error "Project view name is empty. Please provide a valid project view name."
+        exit 1
+    fi
+
+    response="$(gh api graphql \
+        -f query='
+        query GetProjectViews($login: String!, $number: Int!) {
+            user(login: $login) {
+                projectV2(number: $number) {
+                    views(first: 20) {
+                        nodes {
+                            id
+                            name
+                            number
+                            layout
+                        }
+                    }
+                }
+            }
+        }
+        ' \
+        -F login="$login" \
+        -F number="$project_number" \
+        | jq -r ".data.user.projectV2.views.nodes[] | select(.name == \"$project_view_name\") | .id")"
+
+        echo "$response"
+}
+
+# =================================================================
+# 7. Get project board ID by project number
+# =================================================================
+
+get_project_board_id_by_project_number() {
+
+    log_info "Fetching project board ID for project number: $1" >&2
+
+    local project_number="$1"
+    local response
+
+    response="$(gh project list \
+       --format json | \
+       jq ".projects[] | select(.number == $project_number) | .id")"
+
+    # Validate that the project number corresponds to an existing project
+    if [[ -z "$response" ]]; then
+        log_error "Project number $project_number does not correspond to an existing project."
+        exit 1
+    fi
+    
+    echo "$response"
+}
+
+# =================================================================
+# 8. Validate project view existence by project number and view name
+# =================================================================
+
+is_project_view_exists() {
+
+    log_info "Checking if project view exists for project number: $1 and view name: $2" >&2
+
+    local project_number="$1"
+    local project_view_name="$2"
+    local project_id="$(get_project_board_id_by_project_number "$project_number")"
+    local response=""
+
+    # Validate that the project number is a positive integer
+    if ! [[ "$project_number" =~ ^[0-9]+$ ]]; then
+        log_error "Invalid project number: $project_number. Please provide a valid positive integer." 
+        exit 1
+    fi
+
+    # Validate that the project number corresponds to an existing project
+    if ! gh project view "$project_number" --owner "$(gh api user --jq '.login')" > /dev/null 2>&1; then
+        log_error "Project number $project_number does not correspond to an existing project."
+        exit 1
+    fi
+
+    # Validate that the project view name is not empty
+    if [[ -z "$project_view_name" ]]; then
+        log_error "Project view name is empty. Please provide a valid project view name."
+        exit 1
+    fi
+
+    response="$(gh api graphql \
+        -f query='
+        query GetProjectViews($login: String!, $number: Int!) {
+            user(login: $login) {
+                projectV2(number: $number) {
+                    views(first: 20) {
+                        nodes {
+                            id
+                            name
+                            number
+                            layout
+                        }
+                    }
+                }
+            }
+        }
+        ' \
+        -F login="$(gh api user --jq '.login')" \
+        -F number="$project_number" \
+        | jq -r ".data.user.projectV2.views.nodes[] | select(.name == \"$project_view_name\")"
+    )"   
+ 
+    if [[ -n "$response" ]]; then
+         return 0
+     else
+         return 1
+    fi
+}
