@@ -26,15 +26,15 @@ SCRIPT_NAME="$(basename -- "${BASH_SOURCE[0]}")"
 TS=$(date +%Y-%m-%dT%H:%M:%S)
 
 declare -a SCAFFOLD_TEMPLATES=(
-    "$PROJECT_ROOT/templates/scaffold/project-root-scaffold-template.txt"
-    "$PROJECT_ROOT/templates/scaffold/project-docs-scaffold-template.txt"
-    "$PROJECT_ROOT/templates/scaffold/project-infra-scaffold-template.txt"
-    "$PROJECT_ROOT/templates/scaffold/project-logs-scaffold-template.txt"
-    "$PROJECT_ROOT/templates/scaffold/project-scripts-scaffold-template.txt"
+    "${PROJECT_ROOT}/templates/scaffold/project-root-scaffold-template.txt"
+    "${PROJECT_ROOT}/templates/scaffold/project-docs-scaffold-template.txt"
+    "${PROJECT_ROOT}/templates/scaffold/project-infra-scaffold-template.txt"
+    "${PROJECT_ROOT}/templates/scaffold/project-logs-scaffold-template.txt"
+    "${PROJECT_ROOT}/templates/scaffold/project-scripts-scaffold-template.txt"
 )
 
-declare BINARY_TEMPLATE="$PROJECT_ROOT/templates/scaffold/binary/binary-root-scaffold-template.txt"
-declare EXECUTABLE_TEMPLATE="$PROJECT_ROOT/templates/executables/project-executables-template.txt"
+declare BINARY_TEMPLATE="${PROJECT_ROOT}/templates/scaffold/binary/binary-root-scaffold-template.txt"
+declare EXECUTABLE_TEMPLATE="${PROJECT_ROOT}/templates/executables/project-executables-template.txt"
 
 # ============================================================
 # 2. Create logging scripts
@@ -105,24 +105,24 @@ scaffold_project() {
 
     log_info "Scaffolding project structure..."
 
-    local scaffolding_script="$PROJECT_ROOT/bin/scaffold/scaffold_project.sh"
-    local binary_script="$PROJECT_ROOT/bin/scaffold/binary_scaffold.sh"
-    local executable_script="$PROJECT_ROOT/bin/scaffold/executables_init.sh"
-    local path_to_project="$(cat "$PROJECT_ROOT/temp/.project_dir_path_temp")"
+    local scaffolding_script="${PROJECT_ROOT}/bin/scaffold/scaffold_project.sh"
+    local binary_script="${PROJECT_ROOT}/bin/scaffold/binary_scaffold.sh"
+    local executable_script="${PROJECT_ROOT}/bin/scaffold/executables_init.sh"
+    local path_to_project="$(cat "${PROJECT_ROOT}/temp/.project_dir_path_temp")"
     local template
     
     # Construct repo information for get default branch for git push 
     local github_user="$(gh api user --jq '.login')"
     local repo_name="$(basename "$path_to_project")"
-    local full_repo_name="$github_user/$repo_name"  
-    local default_branch="$(gh api repos/"$full_repo_name" --jq '.default_branch')"
+    local full_repo_name="${github_user}/${repo_name}"  
+    local default_branch="$(gh api repos/"${full_repo_name}" --jq '.default_branch')"
 
     # Validate temporary files with existence
     if [[ -n "$path_to_project" ]]; then
        log_info "Scaffolding project at path: $path_to_project"
     else
        log_error "Project path is empty. Please ensure the project path is set correctly."
-       log_error "Check temp file at $PROJECT_ROOT/temp/* and/or script $PROJECT_ROOT/bin/bootstrap/main-bootstrap.sh func 04 for issues."
+       log_error "Check temp file at ${PROJECT_ROOT}/temp/* and/or script ${PROJECT_ROOT}/bin/bootstrap/main-bootstrap.sh func 04 for issues."
        exit 1
     fi
 
@@ -138,7 +138,7 @@ scaffold_project() {
 
             # Git commit after each scaffolding step
             log_info "Committing changes for template: $template"
-            git -C "$path_to_project" commit -m "Scaffolded project structure using template: $(basename "$template")"
+            git -C "$path_to_project" commit -m "chore: scaffolded project structure using template: $(basename "$template")"
 
             # Git push after each scaffolding step
             log_info "Pushing changes to remote repository for template: $template"
@@ -159,7 +159,7 @@ scaffold_project() {
         git -C "$path_to_project" add .
 
         # Git commit after scaffolding binary structure
-        git -C "$path_to_project" commit -m "Scaffolded binary structure using template: $(basename "$BINARY_TEMPLATE")"
+        git -C "$path_to_project" commit -m "chore: scaffolded binary structure using template: $(basename "$BINARY_TEMPLATE")"
 
         # Git push after scaffolding binary structure
         git -C "$path_to_project" push -u origin "$default_branch"
@@ -178,7 +178,7 @@ scaffold_project() {
         git -C "$path_to_project" add .
 
         # Git commit after scaffolding executable structure
-        git -C "$path_to_project" commit -m "Scaffolded executable structure using template: $(basename "$EXECUTABLE_TEMPLATE")"
+        git -C "$path_to_project" commit -m "chore: scaffolded executable structure using template: $(basename "$EXECUTABLE_TEMPLATE")"
 
         # Git push after scaffolding executable structure
         git -C "$path_to_project" push -u origin "$default_branch"
