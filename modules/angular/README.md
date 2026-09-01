@@ -148,7 +148,7 @@ Below is the folder structure of Angular project with extra files and configurat
 
 1. [Repo bootstrap](../../README.md) done.
 2. [Repo scaffold](../../instructions/scaffold/project-scaffold-guide.md) done.
-3. Install Google Chrome (Optional) [Link](#33-install-google-chrome-optional)
+3. Install Google Chrome (Optional) [Link](#533-install-google-chrome-optional)
 
 ## 5. Getting Started
 
