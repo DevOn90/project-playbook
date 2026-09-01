@@ -95,6 +95,12 @@ prompt_project_path() {
 
   # Store the final project path in temp file
   echo "$PROJECT_PATH" > "$PROJECT_ROOT/temp/.project_dir_path_temp"
+  if [[ -f "$PROJECT_ROOT/temp/.project_dir_path_temp" ]]; then
+    log_info "Project path '$PROJECT_PATH' stored successfully in temp file."
+  else
+    log_error "Failed to store project path in temp file."
+    exit 1
+  fi
   
 }
 
@@ -141,8 +147,8 @@ confirm_github_repo_existence() {
 # ---------------------------------------------------------
 clone_github_repo() {
   echo ""
-  log_info "Cloning the GitHub repository '$GH_USERNAME/$PROJECT_NAME'..."
-  git clone "https://github.com/$GH_USERNAME/$PROJECT_NAME.git" "$PROJECT_PATH/$PROJECT_NAME"
+  log_info "Cloning the GitHub repository '${GH_USERNAME}/${PROJECT_NAME}'..."
+  git clone "https://github.com/${GH_USERNAME}/${PROJECT_NAME}.git" "${PROJECT_PATH}/${PROJECT_NAME}"
 }
 
 # ---------------------------------------------------------
@@ -260,23 +266,23 @@ main() {
     confirm_github_repo_existence
 
     # Log the final project path
-    log_info "Final project path: $PROJECT_PATH/$PROJECT_NAME"
+    log_info "Final project path: ${PROJECT_PATH}/${PROJECT_NAME}"
 
     # Clone the GitHub repository
     log_info "Cloning the GitHub repository..."
     clone_github_repo
 
     # Validate if the project directory was created successfully
-    if [[ -d "$PROJECT_PATH/$PROJECT_NAME" ]]; then
-        log_info "Project directory '$PROJECT_PATH/$PROJECT_NAME' created successfully."
+    if [[ -d "${PROJECT_PATH}/${PROJECT_NAME}" ]]; then
+        log_info "Project directory '${PROJECT_PATH}/${PROJECT_NAME}' created successfully."
     else
-        log_error "Failed to create project directory '$PROJECT_PATH/$PROJECT_NAME'."
+        log_error "Failed to create project directory '${PROJECT_PATH}/${PROJECT_NAME}'."
         exit 1
     fi
 
     # Change directory to the project directory
-    cd "$PROJECT_PATH/$PROJECT_NAME" || { log_error "Failed to change directory to '$PROJECT_PATH/$PROJECT_NAME'."; exit 1; }
-    log_info "Changed directory to '$PROJECT_PATH/$PROJECT_NAME'."
+    cd "${PROJECT_PATH}/${PROJECT_NAME}" || { log_error "Failed to change directory to '${PROJECT_PATH}/${PROJECT_NAME}'."; exit 1; }
+    log_info "Changed directory to '${PROJECT_PATH}/${PROJECT_NAME}'."
 
     # Prepare the project environment
     log_info "Preparing the project environment..."
