@@ -110,6 +110,12 @@ scaffold_project() {
     local executable_script="$PROJECT_ROOT/bin/scaffold/executables_init.sh"
     local path_to_project="$(cat "$PROJECT_ROOT/temp/.project_dir_path_temp")"
     local template
+    
+    # Construct repo information for get default branch for git push 
+    local github_user="$(gh api user --jq '.login')"
+    local repo_name="$(basename "$path_to_project")"
+    local full_repo_name="$github_user/$repo_name"  
+    local default_branch="$(gh api repos/"$full_repo_name" --jq '.default_branch')"
 
     # Validate temporary files with existence
     if [[ -n "$path_to_project" ]]; then
@@ -136,7 +142,7 @@ scaffold_project() {
 
             # Git push after each scaffolding step
             log_info "Pushing changes to remote repository for template: $template"
-            git -C "$path_to_project" push -u origin main
+            git -C "$path_to_project" push -u origin "$default_branch"
 
         else
             log_error "Template file '$template' does not exist. Please ensure all required templates are present."
@@ -156,7 +162,7 @@ scaffold_project() {
         git -C "$path_to_project" commit -m "Scaffolded binary structure using template: $(basename "$BINARY_TEMPLATE")"
 
         # Git push after scaffolding binary structure
-        git -C "$path_to_project" push -u origin main
+        git -C "$path_to_project" push -u origin "$default_branch"
 
     else
         log_error "Binary template file '$BINARY_TEMPLATE' does not exist. Please ensure the binary template is present."
@@ -175,7 +181,7 @@ scaffold_project() {
         git -C "$path_to_project" commit -m "Scaffolded executable structure using template: $(basename "$EXECUTABLE_TEMPLATE")"
 
         # Git push after scaffolding executable structure
-        git -C "$path_to_project" push -u origin main
+        git -C "$path_to_project" push -u origin "$default_branch"
 
     else
         log_error "Executable template file '$EXECUTABLE_TEMPLATE' does not exist. Please ensure the executable template is present."
