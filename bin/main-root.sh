@@ -272,9 +272,6 @@ main() {
         run_module "$module"
     done
 
-    # Remove temporary files after module execution
-    clear_temp_files
-
     log_info "All selected modules completed successfully."
 
 }
