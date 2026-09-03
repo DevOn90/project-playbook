@@ -618,6 +618,11 @@ EOF>>>
 ├── .github/
 │   ├── dependabot.yml
 <<<EOF
+# ====================================================================
+# Hint: Search files
+# In root run command: find . -type f \( -name 'Dockerfile' -o -name 'Dockerfile.*' \) -print
+# ====================================================================
+
 # version: 2
 # updates:
 # # =====================================
