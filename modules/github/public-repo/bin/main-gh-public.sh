@@ -193,8 +193,6 @@ main() {
     create_new_roadmap_view_in_project "$PROJECT_NUMBER"
     log_info "08_project: Project creation and configuration completed successfully"
     log_info "Main execution completed successfully"
-    log_warning "Ensure that all third-party packages (e.g. jq, gh) are checked if installed as part of the pre-requisites validation. If not, install them before running the script again."
-    log_warning "Consider change manually repo name from default 'development' to 'main' after script execution if needed"
 }
 
 main "$@"

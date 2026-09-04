@@ -98,7 +98,28 @@ To get started with the Project Playbook, follow these steps:
 3. Enter the repository name (e.g. `my-test-project`).
 4. Add README.md file
 ![Add README](./assets/img/repo_readme.png)
-5. Click on `Create repository` button to create the new repository.   
+5. Click on `Create repository` button to create the new repository.
+
+### 6.2 Rename Default Branch
+
+1. Navigate to your GitHub repository page.
+2. Click on the `Branch` tab.
+![Rename Default Branch](./assets/img/rename_default_branch.png)
+3. Click `three dots` next to the default branch name.
+4. Select `Rename branch`
+![Rename Default Branch Detail](./assets/img/rename_default_branch_detail.png)
+5. Enter the new branch name (e.g. `main`) instead of the default branch name.
+6. Click on `Rename branch` to apply the new branch name.
+7. Reload the repository page to see the updated default branch name.
+
+Optionally:<br>
+Update any local clones of the repository to use the new default branch name.
+```bash
+git branch -m development main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
+```
 
 ---
 
