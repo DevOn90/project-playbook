@@ -57,30 +57,12 @@ log_info "I am child process at $MODULE_ROOT/bin/main-gh-public.sh"
 
 log_info "Validating pre-requisites..."
 
-# Validate if the 'gh' command is available
-if command -v gh > /dev/null 2>&1; then
-    log_info "Github cli command 'gh' found"
-else
-    log_error "Github cli command 'gh' not found"
-    log_error "Use instruction 'modules/github/public-repo/instructions/github-cli-installation.md' to install the Github cli command"
-    exit 1
-fi
-
 # Validate your git authentication with Github cli
 if gh auth status > /dev/null 2>&1; then
     log_info "Github cli authentication is valid"
 else
     log_error "Github cli authentication is invalid"
     log_error "Use instruction 'modules/github/public-repo/instructions/github-cli-authentication.md' to authenticate the Github cli command"
-    exit 1
-fi
-
-# Validate if the 'jq' command is available
-if command -v jq > /dev/null 2>&1; then
-    log_info "JSON query command 'jq' found"
-else
-    log_error "JSON query command 'jq' not found"
-    log_error "Use instruction 'modules/github/public-repo/instructions/jq-installation.md' to install the JSON query command"
     exit 1
 fi
 
