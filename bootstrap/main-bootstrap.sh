@@ -6,8 +6,9 @@ set -euo pipefail
 # Purpose: This script is designed to automate the setup of a new project environment. 
 #
 # Logic:
-#        1. Set Global Variables
-#        2. Create logging scripts
+#        0. Set Global Variables
+#        1. Create logging scripts
+#        2. Validate third-party dependencies
 #        3. Prompt the user for a project name.
 #        4. Prompt the user for a path where they want to create the project directory.
 #        5. Let user confirm existence of GH repo for the project name. [n/Y]
@@ -22,7 +23,7 @@ set -euo pipefail
 # ---------------------------------------------------------
 
 # ---------------------------------------------------------
-# 1. Global Variables
+# 0. Global Variables
 # ---------------------------------------------------------
 PROJECT_NAME=""
 TS=$(date +%Y-%m-%dT%H:%M:%S)
@@ -37,7 +38,7 @@ GH_CONF_USER_NAME=""
 GH_CONF_USER_EMAIL=""
 
 # ---------------------------------------------------------
-# 2. Logging Scripts
+# 1. Logging Scripts
 # ---------------------------------------------------------
 
 log_info() {
@@ -58,6 +59,27 @@ log_warning() {
 log_debug() {
     script_name="$(basename "${BASH_SOURCE[1]}")"
     echo -e "\033[1;36m[DEBUG][$TS][$script_name] \033[0m $1"
+}
+
+# ---------------------------------------------------------
+# 2. Validation of third-party dependencies
+# ---------------------------------------------------------
+
+validate_dependencies() {
+
+  log_info "Validating third-party dependencies..."
+
+  local -a deps=("curl" "git" "git lfs" "gh" "ng" "node" "code" "npm" "jq")
+
+  for dep in "${deps[@]}"; do
+     if ! command -v $dep &> /dev/null; then
+       log_warning "Missing dependencies may cause the script to fail."
+       log_error "Dependency '$dep' is not installed. Please install it before proceeding."
+       exit 1
+     fi
+  done
+
+  log_info "All third-party dependencies are validated successfully."
 }
 
 # ---------------------------------------------------------
@@ -249,6 +271,9 @@ set_custom_git_hookpath() {
 main() {
     log_info "Bootstrap script started..."
 
+    # Validate third-party dependencies
+    validate_dependencies
+    
     # Prompt for project name
     log_info "Prompting for project name..."
     prompt_project_name
