@@ -5,8 +5,8 @@
 2. [Scope](#2-scope)
 3. [Repo Map](#3-repo-map)
 4. [Pre-requisites](#4-pre-requisites)
-5. [Getting Started](#5-getting-started)
-6. [Next Steps](#6-next-steps)
+
+---
 
 ## 1. Introduction
 This module provides the necessary tools, scripts, files and templates to work with Angular projects.
@@ -146,106 +146,15 @@ Below is the folder structure of Angular project with extra files and configurat
 
 ## 4. Pre-requisites
 
-1. [Repo bootstrap](../../README.md) done.
-2. [Repo scaffold](../../instructions/scaffold/project-scaffold-guide.md) done.
-3. Install Google Chrome (Optional) [Link](#533-install-google-chrome-optional)
+The pre-sequisites are validated automatically. If not meet, script will stop and provide instructions.
 
-## 5. Getting Started
+1. Module `Bootstrap` executed successfully
+2. Module `Scaffold` executed successfully
+3. Install Google Chrome (Optional) [Link](#41-install-google-chrome-optional)
 
-### 5.0 Remove Front-end Provision
+### 4.1 Install Google Chrome (Optional)
 
-The folder `apps/front-end` created during repo scaffold with root template serves as provision only to satisfy workflow `ci-npm-audit`. Without this provision the workflow will fails. As `Angular Module` will create necessary files `package.json` and `package-lock.json` in the `apps/<ng-project-name>` folder, you can safely remove the provision folder `apps/front-end`.
-
-```bash
-cd apps/ || exit 1
-rm -rf front-end
-
-Note: Dont commit till `ng new <project-name>` is done and `package.json` and `package-lock.json` files are created in the `apps/<ng-project-name>` folder.
-```
-
-### 5.1 Create Angular Default Project
-
-Navigate to `apps/` directory and create a new Angular project using the Angular CLI command:
-```bash
-cd apps/
-```
-Create a new Angular project using the following command:
-```bash
-ng new <project-name> --style=scss --ssr=false --zoneless=false --dry-run  // e.g. "front-end"
-
-Note: If you choose other then 'front-end' name, update `ci-npm-audit` workflow with:
-
-defaults:
-          run:
-            working-directory: apps/<your-project-name>
-```
-Commit and push the changes to the repository.
-```bash
-git add .
-git commit -m "feat: create angular project <project-name>"
-git push origin <branch-name>  // e.g. "main"
-```
-
-### 5.2 Scaffold Angular Project with Custom Folder Structure
-
-- Use script `bin/scaffold/scaffold_project.sh`
-- Use template `modules/angular/templates/ng-custom-folder-structure.txt`
-
-```bash
-cd /<full-path-to-playbook-repo>/project-playbook
-
-bash ./bin/scaffold/scaffold_project.sh --template "/<full-path-to-playbook-repo>/project-playbook/modules/angular/templates/ng-custom-folder-structure.txt" --path "/<full-path-to-repo>/apps/<ng-project-name>" --dry-run
-```
-Use `--dry-run` to see what changes will be made without actually making any changes. Once you are satisfied with the output, remove the `--dry-run` flag to apply the changes.
-
-### 5.3 Manual extra steps
-
-#### 5.3.1 Update package.json file
-
-```json
-scripts: {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "ng lint",
-    "lint:fix": "ng lint --fix",
-    "test": "ng test",
-    "test:watch": "ng test --watch",
-    "test:ci": "ng test --watch=false",
-    "test:coverage": "ng test --watch=false --code-coverage",
-    "build": "ng build",
-    "build:prod": "ng build --configuration production"
-}
-```
-
-Update NPM metadata in `package.json` file:
-```json
-"version": "1.0.0",
-"description": "<your-project-description>",
-"private": true,        // Prevent accidental publishing to NPM registry
-"author": {
-    "name": "<your-name>"
-},
-"license": "MIT",
-"repository": {
-    "type": "git",
-    "url": "<your-repo-url>"
-},
-"engines": {
-    "node": "^22.0.0",
-    "vscode": "^1.132.0"
-},
-```
-
-#### 5.3.2 Install Prettier and ESLint
-
-```bash
-npm install --save-dev prettier
-ng add angular-eslint --skip-confirmation
-```
-
----
-
-#### 5.3.3 Install Google Chrome (Optional)
+The Angular module validates automatically installation of Google Chrome browser. If not installed, follow the steps below to install it.
 
 Validate installation
 ```bash
@@ -275,37 +184,3 @@ google-chrome --version
 ``` 
 
 ---
-
-#### 5.3.4 Validate NPM scripts
-To validate the NPM scripts, run the following commands in the terminal:
-
-```bash
-cd apps/<ng-project-name> 
-
-npm run format:check
-npm run lint
-npm run test:ci
-npm run build:prod
-```  
----
-
-#### 5.3.5 Commit and Push Changes
-
-```bash
-git add .
-git commit -m "feat: scaffold angular project <project-name> with custom folder structure"
-git push origin <branch-name>  // e.g. "main"
-```
-
----
-
-### 6. Next Steps
-
-Currently you have base project structure and Angular project ready to go.
-
-If you need in your base project other modules like `Spring Boot`, `api-mocks`, etc. go to `./modules/<name-of-module>` folder and follow the instructions in the `README.md` file to add them to your project.
-
-Example modules:
-- [Spring Boot](../../modules/spring-boot/README.md)
-- [Wiremock](../../modules/wiremock/README.md)
-
