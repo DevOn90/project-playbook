@@ -492,7 +492,7 @@ create_new_view_in_project() {
     log_info "Starting creation of new views in the project..."
 
     # Declare an associative array to hold view names
-    local -a view_names_list=("Board" "Backlog" "Epic" "Bugs")  # !!! ATTENTION make sure no empty spaces in the view names
+    local -a view_names_list=("Board" "Backlog" "Epic" "Bugs" "Reoccurring" "Dependencies")  # !!! ATTENTION make sure no empty spaces in the view names
     #                                                             (instead of "Board View" use "BoardView" or "Board_View")
 
     local count=0
@@ -538,6 +538,14 @@ create_new_view_in_project() {
         }'
     local Bugs_view_config='{"name": "Bugs","layout": "TABLE_LAYOUT","fields": [
              "Title","Status","Labels","Assignees","Start Date","Target Date","Linked pull requests"
+            ]
+        }'
+    local Reoccurring_view_config='{"name": "Reoccurring","layout": "TABLE_LAYOUT","fields": [
+             "Title","Start Date","Labels","Status","Assignees","Linked pull requests"
+            ]
+        }'
+    local Dependencies_view_config='{"name": "Dependencies","layout": "TABLE_LAYOUT","fields": [
+             "Title","Assignees","Status","Linked pull requests"
             ]
         }' 
     
