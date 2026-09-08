@@ -116,9 +116,9 @@ prompt_project_path() {
   fi
 
   # Store the final project path in temp file
-  echo "$PROJECT_PATH" > "$PROJECT_ROOT/temp/.project_dir_path_temp"
-  if [[ -f "$PROJECT_ROOT/temp/.project_dir_path_temp" ]]; then
-    log_info "Project path '$PROJECT_PATH' stored successfully in temp file."
+  echo "${PROJECT_PATH}/${PROJECT_NAME}" > "${PROJECT_ROOT}/temp/.project_dir_path_temp"
+  if [[ -f "${PROJECT_ROOT}/temp/.project_dir_path_temp" ]]; then
+    log_info "Project path '${PROJECT_PATH}/${PROJECT_NAME}' stored successfully in temp file."
   else
     log_error "Failed to store project path in temp file."
     exit 1
