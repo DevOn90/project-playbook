@@ -338,7 +338,11 @@ setup_code_quality_tools() {
         log_info "Prettier installed successfully."
 
         # Install ESLint
-        ng add angular-eslint --skip-confirmation
+        # Get Angular version to match ESLint configuration
+        local angular_version
+        angular_version=$(ng --version | cut -d. -f1)
+
+        ng add angular-eslint@"$angular_version" --skip-confirmation
         log_info "ESLint installed successfully."
 
         # Commit & push the changes to the repository
