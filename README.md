@@ -71,7 +71,7 @@ bash ./main-root.sh \
 ## 6. Getting Started
 To get started with the Project Playbook, follow these steps:
 
-1. Create a new GitHub repository [Link] 
+1. Create a new GitHub repository [Link](#61-create-a-github-public-repository) 
 2. As per the pre-requisites, ensure you have:
    - a project name (e.g. `my-test-project`)
    - a project path for local use (e.g. `/home/user-name/Desktop/projects/my-test-project`)
@@ -114,7 +114,8 @@ To get started with the Project Playbook, follow these steps:
 
 Optionally:<br>
 Update any local clones of the repository to use the new default branch name.
-```bash
+
+```
 git branch -m development main
 git fetch origin
 git branch -u origin/main main
@@ -135,6 +136,10 @@ The script is designed to automate majority of the setup process, but there are 
 ### 7.1 Github Public Repo Setup Instructions
 
 #### 7.1.1 Project View Board
+
+1. Go to repository page on GitHub.
+2. Click on the `Projects` tab top bar.
+3. Select the project you want to view or manage.
 
 Change default field:
 - `ToDo` --> `Backlog`
