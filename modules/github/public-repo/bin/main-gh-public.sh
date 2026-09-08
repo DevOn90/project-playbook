@@ -184,7 +184,6 @@ main() {
     create_custom_field_target_date "$(get_project_id $PROJECT_NUMBER)"
     create_custom_field_point_estimate "$(get_project_id $PROJECT_NUMBER)"
     create_custom_field_sprint "$(get_project_id $PROJECT_NUMBER)"
-    log_warning "Think to add / adjust Sprint field in term of start date sprints ,etc manually after project creation"
     update_view_fields_in_project_view "$PROJECT_NUMBER" \
                                        "Table" \
                                        "TABLE_LAYOUT" \
