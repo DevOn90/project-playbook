@@ -116,7 +116,13 @@ prompt_project_path() {
   fi
 
   # Store the final project path in temp file
+  if ! mkdir -p "${PROJECT_ROOT}/temp"; then
+    log_error "Failed to create temp directory: ${PROJECT_ROOT}/temp"
+    exit 1
+  fi
+  
   echo "${PROJECT_PATH}/${PROJECT_NAME}" > "${PROJECT_ROOT}/temp/.project_dir_path_temp"
+
   if [[ -f "${PROJECT_ROOT}/temp/.project_dir_path_temp" ]]; then
     log_info "Project path '${PROJECT_PATH}/${PROJECT_NAME}' stored successfully in temp file."
   else
