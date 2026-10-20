@@ -37,8 +37,11 @@ EOF>>>
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
 
-    "js/ts.preferences.importModuleSpecifier": "relative", 
-
+    "js/ts.preferences.importModuleSpecifier": "relative",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "http-localhost-9000",
+        "projectKey": "ng-sonar"
+    }
 }
 EOF>>>
 │   └── extensions.json
@@ -142,6 +145,60 @@ EOF>>>
   },
   "include": ["src/**/*.ts"]
 }
+EOF>>>
+├── .sonarlint/
+│   └── connectedMode.json
+<<<EOF
+{
+    "sonarQubeUri": "http://localhost:9000",
+    "projectKey": "ng-sonar"
+}
+EOF>>>
+├── karma.conf.cjs
+<<<EOF
+const path = require('node:path');
+
+module.exports = function configureKarma(config) {
+  config.set({
+    frameworks: ['jasmine'],
+
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage'),
+    ],
+
+    browsers: ['Chrome'],
+    singleRun: true,
+
+    reporters: ['progress', 'kjhtml'],
+
+    coverageReporter: {
+      dir: path.join(__dirname, 'coverage/ng-sonar'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' },
+        { type: 'lcovonly', file: 'lcov.info' },
+      ],
+    },
+  });
+};
+EOF>>>
+├── sonar-project.properties
+<<<EOF
+sonar.projectKey=ng-sonar
+sonar.projectName=Ng Sonar
+
+sonar.sources=src
+sonar.tests=src
+sonar.test.inclusions=**/*.spec.ts
+
+sonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**
+sonar.javascript.lcov.reportPaths=coverage/ng-sonar/lcov.info
+
+sonar.sourceEncoding=UTF-8
 EOF>>>
 ├── contracts/
 │   └── README.md
@@ -377,6 +434,37 @@ Examples:
 EOF>>>
 └── src/
     ├── app/
+    │   ├── app.html
+<<<EOF
+<router-outlet></router-outlet>
+EOF>>>
+    │   ├── app.spec.ts
+<<<EOF
+import { TestBed } from '@angular/core/testing';
+import { App } from './app';
+
+describe('App', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [App],
+    }).compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    
+    const outlet = fixture.nativeElement.querySelector('router-outlet');
+    expect(outlet).not.toBeNull();
+  });
+});
+EOF>>>
     │   ├── app.config.ts
 <<<EOF
 import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';

@@ -30,3 +30,5 @@ yarn-error.log*
 # Temp
 temp/.project_dir_path_temp
 
+# SonarQube
+bin/.scannerwork/

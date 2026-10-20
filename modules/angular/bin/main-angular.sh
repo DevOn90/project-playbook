@@ -16,6 +16,7 @@
 #        7. Update package.json
 #        8. Set up project code quality tools
 #        9. Test tools
+#        10. Configure SonarQube
 #        X. Main function to orchestrate the above steps
 # ============================================================
 
@@ -411,7 +412,38 @@ test_tools() {
         return 1
     fi
 }
+
+# ============================================================
+# 10. Configure SonarQube
+# ============================================================
   
+configure_sonarqube() {
+
+    log_info "Configuring SonarQube..."
+
+    local front_end_directory="${PATH_TO_PROJECT}/${FRONT_END_NAME}"
+    local fe_name="front-end"
+
+    # Update '.gitignore' to include SonarQube-related files
+    log_info "Updating .gitignore for SonarQube..."
+    echo -e "\n# SonarQube \n.scannerwork" >> "${front_end_directory}/.gitignore"
+    log_info ".gitignore updated for SonarQube."
+
+    # Update 'angular.json' to include Karma configuration for SonarQube coverage reports
+    log_info "Updating angular.json for SonarQube coverage reports..."
+    /usr/bin/python3 "${PROJECT_ROOT}/shared/add-to-file.py" add -f "${front_end_directory}/angular.json" -t projects."${fe_name}".architect.test.options.codeCoverage -d 'true'
+    /usr/bin/python3 "${PROJECT_ROOT}/shared/add-to-file.py" add -f "${front_end_directory}/angular.json" -t projects."${fe_name}".architect.test.options.karmaConfig -d '"karma.conf.cjs"'
+    log_info "angular.json updated for SonarQube coverage reports."
+
+    git add \
+       "${front_end_directory}/.gitignore" \
+       "${front_end_directory}/angular.json"
+    git commit -m "chore: Update .gitignore and angular.json for SonarQube"
+    git push -u origin "$DEFAULT_BRANCH"
+    
+    log_info "Finished configuring SonarQube."
+}
+
 # ============================================================
 # X. Main
 # ============================================================
@@ -445,6 +477,9 @@ main() {
 
     # 9. Test tools
     test_tools
+
+    # 10. Configure SonarQube
+    configure_sonarqube
 
     log_info "Angular build process completed successfully."
 }

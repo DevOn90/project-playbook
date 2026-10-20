@@ -18,6 +18,8 @@ The Angular project is:
 - No SSR (Server Side Rendering) and no Zoneless project
 - Zone.js based change detection (not zoneless)
 - Angular v20+
+- Uses Karma + Jasmine for unit, integration, coverage testing
+- Ready for SonarQube static analysis
 
 ## 2. Scope
 Compared to default Angular CLI project, this module provides additional files and configurations to enhance the development experience and maintain code quality such as:
@@ -32,7 +34,8 @@ Compared to default Angular CLI project, this module provides additional files a
 - Testing - package.json scripts for testing
 - Production configuration - package.json scripts for production build
 - NPM audit & dependabot - dependabot.yml, ci-npm-audit.yml both in base repo `.github/workflows` folder
-- testing - uses Karma + Jasmine for unit and integration testing
+- testing - uses Karma + Jasmine for unit, integration, coverage testing
+- Code quality & Static analysis - ready for SonarQube static analysis
 
 
 ## 3. Repo Map
@@ -51,9 +54,12 @@ Below is the folder structure of Angular project with extra files and configurat
 │   ├── styling.md                        // extra to default 
 │   └── testing.md                        // extra to default
 ├── .editorconfig                         // extra to default
-├── .gitignore
-├── package.json
+├── .gitignore                            // modified
+├── package.json                          // modified
 ├── package-lock.json
+├── .angular.json                         // modified
+├── karma.conf.js                         // extra to default
+├── sonar-project.properties              // extra to default
 ├── .prettierignore                       // extra to default
 ├── .prettierrc                           // extra to default
 ├── public
@@ -70,10 +76,10 @@ Below is the folder structure of Angular project with extra files and configurat
 ├── src
 │   ├── app
 │   │   ├── app.config.ts
-│   │   ├── app.html
+│   │   ├── app.html                      // modified
 │   │   ├── app.routes.ts
 │   │   ├── app.scss
-│   │   ├── app.spec.ts
+│   │   ├── app.spec.ts                   // modified
 │   │   ├── app.ts
 │   │   ├── core                          // extra to default
 │   │   │   ├── config
@@ -137,11 +143,13 @@ Below is the folder structure of Angular project with extra files and configurat
 ├── tsconfig.app.json                     // modified
 ├── tsconfig.json
 ├── tsconfig.spec.json                    // modified
-└── .vscode
-    ├── extensions.json                   // modified 
-    ├── launch.json                     
-    ├── settings.json                     // modified
-    └── tasks.json
+├── .vscode
+│   ├── extensions.json                   // modified 
+│   ├── launch.json                     
+│   ├── settings.json                     // modified
+│   └── tasks.json
+└── .sonarlint
+    └── connectedMode.json                // extra to default
 ```
 
 ## 4. Pre-requisites
