@@ -53,7 +53,7 @@ Below is the folder structure of Angular project with extra files and configurat
 │   ├── routing.md                        // extra to default
 │   ├── styling.md                        // extra to default 
 │   └── testing.md                        // extra to default
-├── .editorconfig                         // extra to default
+├── .editorconfig                         // modified
 ├── .gitignore                            // modified
 ├── package.json                          // modified
 ├── package-lock.json
